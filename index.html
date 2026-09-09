@@ -42,29 +42,54 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}.h
 .villain-tag{position:absolute;right:8vw;bottom:2.5vh;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#7d8ba5}
 @keyframes vFloat{50%{transform:translateY(-10px) rotate(.6deg)}}@keyframes capeWave{50%{transform:skewX(-2deg) scaleX(1.02)}}@keyframes smirk{50%{height:30px;width:72px;left:99px}}@keyframes gesture{50%{transform:rotate(-18deg) translateY(-8px)}}@keyframes gesture2{50%{transform:rotate(14deg) translateY(-10px)}}
 @media(max-width:900px){.villain{right:-55px;opacity:.22;transform:scale(.8);transform-origin:bottom right}.villain-tag{right:20px}.loginbox{width:min(460px,92vw)}}
+
+/* V5 LOGIN + MOGAMBO CINEMATIC LAYER */
+.login{z-index:9999!important;isolation:isolate;background:#05070c!important;display:block!important;user-select:none}
+.login-ambient{position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at 72% 50%,rgba(255,197,58,.14),transparent 18%),radial-gradient(circle at 30% 25%,rgba(92,236,255,.12),transparent 28%),linear-gradient(120deg,#04050a,#090b13 48%,#05070c);animation:ambientPulse 7s ease-in-out infinite alternate}
+@keyframes ambientPulse{to{filter:hue-rotate(12deg) brightness(1.08);transform:scale(1.015)}}
+.login-layout{position:relative;z-index:100;min-height:100vh;width:min(1320px,100%);margin:auto;display:grid;grid-template-columns:minmax(360px,470px) minmax(320px,1fr);gap:70px;align-items:center;padding:40px 44px}
+.loginbox-v5{position:relative!important;z-index:1000!important;pointer-events:auto!important;user-select:text!important;background:rgba(9,13,22,.91)!important;border:1px solid rgba(92,236,255,.28)!important;box-shadow:0 35px 120px rgba(0,0,0,.62),0 0 60px rgba(92,236,255,.08)!important}
+.loginbox-v5 *{pointer-events:auto}
+.login-brand{display:flex;align-items:center;gap:11px;margin-bottom:18px}.brand-orb{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;border:1px solid rgba(92,236,255,.35);color:#5cecff;background:rgba(92,236,255,.08);font-weight:900;font-size:11px}
+.loginbox-v5 h1{font-size:39px;line-height:1.02;margin:13px 0 10px}.loginbox-v5 p{max-width:390px;margin-bottom:22px}
+.field{margin:12px 0}.field>label{display:block;font-size:9px;letter-spacing:1.8px;color:#7f8ca5;margin-bottom:6px}.field input{box-sizing:border-box!important;width:100%!important;height:48px!important;min-height:48px!important;display:block!important;position:relative!important;z-index:1100!important;pointer-events:auto!important;cursor:text!important;user-select:text!important;-webkit-user-select:text!important;touch-action:auto!important;border:1px solid rgba(129,151,193,.24)!important;background:#060a12!important;color:#fff!important;border-radius:12px!important;padding:0 14px!important;outline:none!important}.field input:focus{border-color:#5cecff!important;box-shadow:0 0 0 3px rgba(92,236,255,.11),0 0 25px rgba(92,236,255,.08)!important}.pass-wrap{position:relative}.pass-wrap input{padding-right:48px!important}.pass-toggle{position:absolute!important;right:8px;top:8px;width:32px;height:32px;border:0!important;background:rgba(92,236,255,.06)!important;border-radius:9px;color:#7890ae;z-index:1200!important;cursor:pointer!important}.login-submit{min-height:43px!important}.login-sidecopy{align-self:center;max-width:610px;position:relative;z-index:110;color:#dfe9fb}.login-sidecopy h2{font-size:clamp(40px,5vw,74px);line-height:.92;letter-spacing:-4px;margin:12px 0 28px}.login-sidecopy h2 span{color:#5cecff}.login-stat{border-left:2px solid rgba(92,236,255,.5);padding:8px 0 8px 14px;margin:13px 0;display:grid;gap:3px}.login-stat b{font-size:9px;letter-spacing:1.7px;color:#5cecff}.login-stat span{color:#8290a8;font-size:11px}.mogambo-login-stage{position:absolute;right:-70px;bottom:-55px;width:min(62vw,780px);height:100%;z-index:10;pointer-events:none;display:grid;align-items:end;justify-items:center;opacity:.92}.mogambo-badge-wrap{width:min(44vw,620px);aspect-ratio:1;animation:badgeFloat 5.4s ease-in-out infinite;filter:drop-shadow(0 30px 60px rgba(0,0,0,.55)) drop-shadow(0 0 55px rgba(255,196,50,.13))}.mogambo-badge{width:100%;height:100%;object-fit:contain}.villain-motion{position:absolute;color:#ffd34e;font-size:70px;opacity:.3;animation:orbit 6s ease-in-out infinite}.villain-left{left:12%;top:30%}.villain-right{right:12%;top:24%;animation-delay:1.7s}@keyframes badgeFloat{0%,100%{transform:translate3d(0,10px,0) rotate(-1deg) scale(.985)}50%{transform:translate3d(-12px,-12px,0) rotate(1.4deg) scale(1.01)}}@keyframes orbit{50%{transform:translateY(-22px) rotate(180deg);opacity:.65}}.mogambo-caption{position:absolute;bottom:78px;right:18%;font-size:10px;letter-spacing:2.5px;color:#ffd34e;opacity:.65}
+.intro-v5{width:min(900px,94vw)!important;padding:20px 30px 30px!important}.intro-character{width:250px;height:250px;margin:0 auto 4px;position:relative;border-radius:50%;overflow:hidden;filter:drop-shadow(0 20px 55px rgba(0,0,0,.55));animation:heroBob 2.8s ease-in-out infinite}.intro-mog-img{width:100%;height:100%;object-fit:cover;transform:scale(1.03);animation:faceFloat 3.2s ease-in-out infinite}.blink{position:absolute;width:18px;height:7px;background:rgba(40,31,27,.78);border-radius:50%;top:77px;animation:blink 5.8s infinite}.blink-a{left:72px}.blink-b{left:142px;animation-delay:.12s}@keyframes blink{0%,91%,100%{transform:scaleY(0);opacity:0}94%,97%{transform:scaleY(1);opacity:.75}}.smile-glow{position:absolute;left:91px;top:127px;width:78px;height:20px;border-bottom:3px solid rgba(255,211,78,.55);border-radius:0 0 50% 50%;animation:smilePulse 2.7s ease-in-out infinite}@keyframes faceFloat{50%{transform:scale(1.07) translateX(-3px) rotate(1deg)}}@keyframes heroBob{50%{transform:translateY(-8px) rotate(.8deg)}}@keyframes smilePulse{50%{transform:scaleX(1.08);filter:drop-shadow(0 0 8px rgba(255,211,78,.5))}}
+@media(max-width:900px){.login-layout{grid-template-columns:1fr;padding:25px;gap:10px}.login-sidecopy{display:none}.mogambo-login-stage{right:-170px;opacity:.32;width:650px}.loginbox-v5{margin:auto}.mogambo-caption{right:20%;bottom:60px}}
+.light .login{background:#eef3f9!important}.light .login-ambient{background:radial-gradient(circle at 78% 45%,rgba(255,197,58,.17),transparent 22%),radial-gradient(circle at 25% 25%,rgba(92,236,255,.13),transparent 28%),linear-gradient(120deg,#f9fbff,#e7edf5 55%,#f5f8fc)}.light .loginbox-v5{background:rgba(255,255,255,.94)!important;border-color:rgba(52,75,115,.18)!important;box-shadow:0 30px 90px rgba(45,60,90,.18)!important}.light .field input{background:#fff!important;color:#17233a!important;border-color:rgba(52,75,115,.22)!important}.light .login-sidecopy{color:#17233a}.light .login-sidecopy h2 span{color:#087f9a}.light .login-stat span{color:#5e6e86}.light .mogambo-caption{color:#8c6200}
 </style></head>
 <body>
 <div id="login" class="login">
-  <div class="loginstage" aria-hidden="true">
-    <div class="villain">
-      <div class="cape"></div><div class="hair"></div><div class="head"></div>
-      <div class="brow b1"></div><div class="brow b2"></div><div class="eye e1"></div><div class="eye e2"></div><div class="nose"></div><div class="mouth"></div>
-      <div class="body"></div><div class="collar"></div><div class="hand h1"></div><div class="hand h2"></div><div class="cane"></div>
-    </div><div class="villain-tag">THE BOSS IS WATCHING // MOGAMBO MODE</div>
+  <div class="login-ambient" aria-hidden="true"></div>
+  <div class="mogambo-login-stage" aria-hidden="true">
+    <div class="mogambo-badge-wrap"><img src="assets/mogambo-badge.png" class="mogambo-badge" alt=""></div>
+    <div class="mogambo-caption">MOGAMBO // THE BOSS IS WATCHING</div>
+    <div class="villain-motion villain-left">◈</div><div class="villain-motion villain-right">✦</div>
   </div>
-  <div class="loginbox">
-    <div class="eyebrow">MOGAMBO METRICS // SECURE GATE</div>
-    <h1>Performance, but make it dramatic.</h1>
-    <p>Enter your local profile to enter the command centre. Visitors can request access; the local admin can approve them.</p>
-    <label class="mini" for="loginId">PROFILE ID</label>
-    <input id="loginId" type="text" inputmode="text" spellcheck="false" autocapitalize="none" placeholder="Profile ID" autocomplete="username">
-    <label class="mini" for="loginPass">PASSCODE</label>
-    <input id="loginPass" type="password" inputmode="text" spellcheck="false" autocapitalize="none" placeholder="Passcode" autocomplete="current-password">
-    <div class="loginrow"><button type="button" class="btn primary" id="loginBtn">Enter Command</button><button type="button" class="btn" id="requestBtn">Request Access</button></div>
-    <div id="loginMsg" class="access">Local admin access enabled · use your configured admin credentials</div>
+  <div class="login-layout">
+    <section class="loginbox loginbox-v5" aria-label="Secure login">
+      <div class="login-brand"><span class="brand-orb">MM</span><div><div class="eyebrow">MOGAMBO METRICS</div><strong>SECURE COMMAND GATE</strong></div></div>
+      <h1>Enter the command centre.</h1>
+      <p>Sign in with your profile. Your cursor and keyboard stay fully isolated from the animation.</p>
+      <div class="field">
+        <label for="loginId">PROFILE ID</label>
+        <input id="loginId" name="loginId" type="text" inputmode="text" spellcheck="false" autocapitalize="none" autocomplete="username" placeholder="Enter Profile ID">
+      </div>
+      <div class="field">
+        <label for="loginPass">PASSCODE</label>
+        <div class="pass-wrap"><input id="loginPass" name="loginPass" type="password" inputmode="text" spellcheck="false" autocapitalize="none" autocomplete="current-password" placeholder="Enter passcode"><button type="button" class="pass-toggle" id="passToggle" aria-label="Show passcode">◉</button></div>
+      </div>
+      <div class="loginrow"><button type="button" class="btn primary login-submit" id="loginBtn">Enter Command ↗</button><button type="button" class="btn" id="requestBtn">Request Access</button></div>
+      <div id="loginMsg" class="access">Admin: use the configured local admin credentials.</div>
+    </section>
+    <aside class="login-sidecopy">
+      <div class="eyebrow">HI ABHIJITH HERE 👿</div>
+      <h2>Paste the mess.<br><span>Let Mogambo find the metrics.</span></h2>
+      <div class="login-stat"><b>LOCAL-FIRST</b><span>Your pasted operational data stays in this browser.</span></div>
+      <div class="login-stat"><b>4K REPORTS</b><span>Tables and analytical surfaces can be rendered for clipboard sharing.</span></div>
+    </aside>
   </div>
 </div>
-<div id="intro"<div id="intro" class="intro hidden"><div class="introbox"><div class="mog villain-mini" aria-hidden="true">😈</div><div class="eyebrow">MOGAMBO ONLINE</div><h2 id="welcomeTitle">Welcome to the page</h2><div class="quote">“Mogambo khushh huaa, Ajaao andharr”</div><div id="tip" class="tips">Initializing your performance command centre…</div><div class="progress"><i></i></div><button class="btn skip" id="skipIntro">Skip introduction ↗</button></div></div>
+<div id="intro" class="intro hidden"><div class="intro-stars"></div><div class="introbox intro-v5"><div class="intro-character"><img src="assets/mogambo-face.png" alt="" class="intro-mog-img"><span class="blink blink-a"></span><span class="blink blink-b"></span><span class="smile-glow"></span></div><div class="eyebrow">MOGAMBO ONLINE // WELCOME SEQUENCE</div><h2 id="welcomeTitle">Welcome to the page</h2><div class="quote">“Mogambo khushh huaa, Ajaao andharr”</div><div id="tip" class="tips">Initializing your performance command centre…</div><div class="progress"><i></i></div><button class="btn skip" id="skipIntro">Skip introduction ↗</button></div></div>
 <div id="app" class="app hidden">
 <aside class="rail"><div class="logo">MM</div><nav class="nav"><button class="active" data-view="command"><i>◈</i><span>Command</span></button><button data-view="agents"><i>◎</i><span>Agents</span></button><button data-view="compare"><i>⇄</i><span>Compare</span></button><button data-view="wave"><i>∿</i><span>Wave</span></button><button data-view="stock"><i>▦</i><span>Stock</span></button><button data-view="data"><i>⌘</i><span>Data</span></button><button data-view="admin" id="adminNav" class="hidden"><i>⚙</i><span>Admin</span></button></nav><div class="rail-foot">MOGAMBO // INTELLIGENCE</div></aside>
 <main class="main">
@@ -136,6 +161,13 @@ function intro(){
 function loadUsers(){return JSON.parse(localStorage.getItem('mog_users')||'[]')}
 function saveUsers(u){localStorage.setItem('mog_users',JSON.stringify(u))}
 function enter(id,pass){let users=loadUsers();let u=users.find(x=>x.id===id&&x.pass===pass&&x.approved);if(id==='admin'&&pass==='Abhijith@123')u={id:'admin',name:'Abhijith',admin:true,approved:true};if(!u){$('loginMsg').textContent='Access denied. Request access or check your local credentials.';return}currentUser=u;$('brandName').textContent=u.name;$('adminNav').classList.toggle('hidden',!u.admin);$('adminPanel').classList.toggle('hidden',!u.admin);intro()}
+// V5 login hardening: inputs live in an isolated, high-z login surface.
+(function(){
+  const id=$('loginId'), pass=$('loginPass'), toggle=$('passToggle');
+  [id,pass].forEach(el=>{ if(!el)return; el.disabled=false; el.readOnly=false; el.tabIndex=0; el.style.pointerEvents='auto'; el.addEventListener('mousedown',e=>e.stopPropagation()); el.addEventListener('pointerdown',e=>e.stopPropagation()); });
+  toggle?.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const show=pass.type==='password';pass.type=show?'text':'password';toggle.textContent=show?'◉':'○';pass.focus()});
+  window.addEventListener('load',()=>{try{id.focus({preventScroll:true})}catch(e){id.focus()}});
+})();
 // Login V4: explicitly restore focus/caret and prevent animation layers from intercepting input.
 ['loginId','loginPass'].forEach(id=>{const el=$(id); el.addEventListener('pointerdown',e=>{e.stopPropagation(); setTimeout(()=>el.focus(),0)}); el.addEventListener('click',e=>e.stopPropagation()); el.addEventListener('keydown',e=>e.stopPropagation());});
 $('loginId').addEventListener('input',()=>{$('loginMsg').textContent=''});$('loginPass').addEventListener('input',()=>{$('loginMsg').textContent=''});$('loginBtn').onclick=()=>enter($('loginId').value.trim(),$('loginPass').value);
