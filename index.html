@@ -75,6 +75,18 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}.h
 #login .mogambo-badge-wrap{animation:mogEntrance 2.2s cubic-bezier(.2,.8,.2,1) both, badgeFloat 5.4s ease-in-out 2.2s infinite!important;}
 @keyframes mogEntrance{from{opacity:0;transform:translate3d(80px,35px,0) scale(.75) rotate(8deg)}to{opacity:1;transform:none}}
 @media(max-width:900px){#login .login-layout{justify-content:center!important;padding:20px!important}#login .loginbox-v5{margin:0!important}#login .mogambo-login-stage{opacity:.34!important} }
+
+/* V7 LOGIN / CHARACTER FIX */
+#login .mogambo-login-stage{right:0!important;left:44%!important;inset-inline-start:44%!important;width:56%!important;height:100%!important;opacity:1!important;z-index:1!important;display:flex!important;align-items:center!important;justify-content:center!important}
+#login .mogambo-badge-wrap{width:min(48vw,700px)!important;max-width:700px!important;min-width:380px!important;aspect-ratio:1!important;opacity:1!important}
+#login .mogambo-badge{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important}
+#login .login-layout{grid-template-columns:minmax(390px,470px) minmax(420px,1fr)!important;gap:55px!important;padding:36px 55px!important}
+#login .loginbox-v5{z-index:5000!important}
+#login .login-sidecopy{z-index:40!important}
+#login .login-help{margin-top:10px;padding:9px 11px;border-radius:10px;border:1px dashed rgba(92,236,255,.18);background:rgba(92,236,255,.035);font-size:10px;color:#8493ac}
+#login .admin-fill{margin-top:9px;width:100%;background:rgba(156,124,255,.08);border:1px solid rgba(156,124,255,.2);border-radius:10px;padding:8px 10px;color:#c8bfff;cursor:pointer}
+#login .admin-fill:hover{border-color:rgba(156,124,255,.45);transform:translateY(-1px)}
+@media(max-width:900px){#login .mogambo-login-stage{left:0!important;width:100%!important;opacity:.24!important}#login .mogambo-badge-wrap{min-width:300px!important;width:min(80vw,560px)!important}#login .login-layout{grid-template-columns:1fr!important;padding:20px!important;gap:10px!important}}
 </style></head>
 <body>
 <div id="login" class="login">
@@ -98,7 +110,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}.h
           <label for="loginPass">PASSCODE</label>
           <div class="pass-wrap"><input id="loginPass" name="password" type="password" inputmode="text" spellcheck="false" autocapitalize="none" autocomplete="current-password" placeholder="Enter passcode" tabindex="2"><button type="button" class="pass-toggle" id="passToggle" aria-label="Show passcode" tabindex="3">◉</button></div>
         </div>
-        <div class="loginrow"><button type="submit" class="btn primary login-submit" id="loginBtn" tabindex="4">Enter Command ↗</button><button type="button" class="btn" id="requestBtn" tabindex="5">Request Access</button></div>
+        <div class="loginrow"><button type="submit" class="btn primary login-submit" id="loginBtn" tabindex="4">Enter Command ↗</button><button type="button" class="btn" id="requestBtn" tabindex="5">Request Access</button></div><button type="button" class="admin-fill" id="adminFill">Use local Admin credentials (prototype)</button>
       </form>
       <div id="loginMsg" class="access">Admin: use the configured local admin credentials.</div>
     </section>
@@ -181,15 +193,31 @@ function intro(){
 }
 function loadUsers(){return JSON.parse(localStorage.getItem('mog_users')||'[]')}
 function saveUsers(u){localStorage.setItem('mog_users',JSON.stringify(u))}
-function enter(id,pass){let users=loadUsers();let u=users.find(x=>x.id===id&&x.pass===pass&&x.approved);if(id==='admin'&&pass==='Abhijith@123')u={id:'admin',name:'Abhijith',admin:true,approved:true};if(!u){$('loginMsg').textContent='Access denied. Request access or check your local credentials.';return}currentUser=u;$('brandName').textContent=u.name;$('adminNav').classList.toggle('hidden',!u.admin);$('adminPanel').classList.toggle('hidden',!u.admin);intro()}
+function enter(id,pass){
+  id=(id||'').trim(); pass=pass||'';
+  if(!id){$('loginMsg').textContent='Enter your Profile ID first.'; $('loginId').focus(); return;}
+  if(!pass){$('loginMsg').textContent='Enter your passcode first.'; $('loginPass').focus(); return;}
+  let users=loadUsers();
+  let normalized=id.toLowerCase();
+  let u=users.find(x=>String(x.id||'').toLowerCase()===normalized&&String(x.pass||'')===pass&&x.approved);
+  if(['admin','abhijith'].includes(normalized)&&pass==='Abhijith@123') u={id:'admin',name:'Abhijith',admin:true,approved:true};
+  if(!u){
+    let pending=users.find(x=>String(x.id||'').toLowerCase()===normalized&&!x.approved);
+    $('loginMsg').textContent=pending?'Access request found, but it is still awaiting local admin approval.':'Access denied. For the prototype use Profile ID “admin” and the configured admin passcode, or request access.';
+    return;
+  }
+  currentUser=u;$('brandName').textContent=u.name;$('adminNav').classList.toggle('hidden',!u.admin);$('adminPanel').classList.toggle('hidden',!u.admin);intro();
+}
 // V6 login wiring: simple form semantics + no event interception on fields.
 (function(){
-  const form=$('loginForm'), id=$('loginId'), pass=$('loginPass'), toggle=$('passToggle');
+  const form=$('loginForm'), id=$('loginId'), pass=$('loginPass'), toggle=$('passToggle'), fill=$('adminFill');
   if(!form||!id||!pass) return;
-  id.disabled=false; id.readOnly=false; pass.disabled=false; pass.readOnly=false;
+  [id,pass].forEach(el=>{el.disabled=false;el.readOnly=false;el.removeAttribute('disabled');el.removeAttribute('readonly');el.tabIndex=el===id?1:2;});
+  toggle?.addEventListener('mousedown',e=>e.preventDefault());
   toggle?.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();pass.type=pass.type==='password'?'text':'password';toggle.textContent=pass.type==='password'?'◉':'○';pass.focus();});
-  form.addEventListener('submit',function(e){e.preventDefault();enter(id.value.trim(),pass.value);});
-  window.addEventListener('load',function(){setTimeout(()=>id.focus(),80);});
+  form.addEventListener('submit',function(e){e.preventDefault();e.stopPropagation();enter(id.value,pass.value);});
+  fill?.addEventListener('click',function(){id.value='admin';pass.value='Abhijith@123';$('loginMsg').textContent='Admin credentials filled. Press Enter Command.';pass.focus();});
+  setTimeout(()=>{if(document.activeElement!==id && !id.value) id.focus();},250);
 })();
 $('requestBtn').onclick=()=>{let name=prompt('Your name');if(!name)return;let id=prompt('Choose a Profile ID');if(!id)return;let pass=prompt('Choose a local passcode');if(!pass)return;let u=loadUsers();u.push({id,name,pass,approved:false,requestedAt:new Date().toISOString()});saveUsers(u);$('loginMsg').textContent='Access request saved locally. Ask the admin on this browser to approve it.'};
 $('parseBtn').onclick=()=>{let parsed=parsePaste($('pasteArea').value);if(!parsed.length){toast('Could not find a complete agent record. Paste the copied agent table.');return}data=parsed;render();toast(`Mapped ${data.length} agent records`)};$('clearPaste').onclick=()=>{$('pasteArea').value='';data=[];render()};$('ahtTarget').oninput=()=>{data.forEach(r=>r.target=+$('ahtTarget').value||360);render()};$('grandToggle').onchange=render;$('watermark').onchange=()=>toast('Watermark saved for next 4K render');$('search').oninput=renderTable;$('waveMetric').onchange=drawWave;$('waveSend').onclick=()=>chat('waveInput','waveChat','wave');$('stockSend').onclick=()=>chat('stockInput','stockChat','stock');$('waveInput').onkeydown=e=>e.key==='Enter'&&chat('waveInput','waveChat','wave');$('stockInput').onkeydown=e=>e.key==='Enter'&&chat('stockInput','stockChat','stock');$('drawerClose').onclick=()=>$('drawer').classList.remove('open');$('logoutBtn').onclick=()=>location.reload();
