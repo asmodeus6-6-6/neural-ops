@@ -977,7 +977,7 @@ html.light .switch-track{background:#d7ad4a}.light .switch-knob{transform:transl
           <label for="loginPass">PASSCODE</label>
           <div class="pass-wrap"><input id="loginPass" name="password" type="password" inputmode="text" spellcheck="false" autocapitalize="none" autocomplete="current-password" placeholder="Enter passcode" tabindex="2"><button type="button" class="pass-toggle" id="passToggle" aria-label="Show passcode" tabindex="3">◉</button></div>
         </div>
-        <div class="loginrow"><button type="submit" class="btn primary login-submit" id="loginBtn" tabindex="4" onclick="return window.mogamboDoLogin(event)">Enter Command ↗</button><button type="button" class="btn" id="requestBtn" tabindex="5">Request Access</button></div><button type="button" class="admin-fill" id="adminFill">Use local Admin credentials (prototype)</button>
+        <div class="loginrow"><button type="submit" class="btn primary login-submit" id="loginBtn" tabindex="4">Enter Command ↗</button><button type="button" class="btn" id="requestBtn" tabindex="5">Request Access</button></div><button type="button" class="admin-fill" id="adminFill">Use local Admin credentials (prototype)</button>
       </form>
       <div id="loginMsg" class="access">Admin: use the configured local admin credentials.</div>
     </section>
@@ -1135,9 +1135,8 @@ html.light .switch-track{background:#d7ad4a}.light .switch-knob{transform:transl
     return window.enter ? window.enter(id,pass) : false;
   };
   function bind(){
-    var f=el('loginForm'), b=el('loginBtn');
+    var f=el('loginForm');
     if(f) f.addEventListener('submit',window.mogamboDoLogin,true);
-    if(b) b.addEventListener('click',window.mogamboDoLogin,true);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind); else bind();
 })();
@@ -1680,8 +1679,12 @@ async function cloudVisitorLogin(email,password){
  const user=data.user;
  // Check the shared Admin allow-list first. This prevents an Admin's Supabase
  // email from being incorrectly treated as a visitor who needs an access request.
- const adminCheck=await supabaseClient.from('app_admins').select('user_id').eq('user_id',user.id).maybeSingle();
- if(!adminCheck.error && adminCheck.data){
+ let isAdmin=false;
+ try{
+   const {data:adminFlag,error:adminRpcError}=await supabaseClient.rpc('is_mogambo_admin');
+   if(!adminRpcError) isAdmin=adminFlag===true;
+ }catch(e){console.warn('Admin RPC check failed',e)}
+ if(isAdmin){
    cloudSession=data.session;
    currentUser={id:user.id,name:user.user_metadata?.full_name||'Abhijith',email:user.email,team:'Administrator',approved:true,admin:true,cloud:true,avatar:user.user_metadata?.avatar_url||''};
    $('brandName').textContent=currentUser.name;setProfileTrigger();$('adminNav').classList.remove('hidden');updateWm();intro();
