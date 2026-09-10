@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mogambo Neural Ops // Performance Intelligence // V9</title>
+<title>Mogambo Neural Ops // Performance Intelligence // V12</title>
 <style>
 :root{
   --bg:#05080c;--bg2:#09111a;--navy:#08121d;--panel:rgba(10,18,28,.88);--panel2:#0d1824;
@@ -34,6 +34,46 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}.h
 @media(max-width:1180px){.app{grid-template-columns:205px 1fr}.login-layout{grid-template-columns:minmax(350px,450px) 1fr;gap:35px}.kpis{grid-template-columns:repeat(3,1fr)}.grid,.analysis{grid-template-columns:1fr}}
 @media(max-width:820px){.login-layout{grid-template-columns:1fr;padding:20px}.login-sidecopy{display:none}.mogambo-login-stage .character-render{right:-26vw;height:78vh;opacity:.52}.loginbox-v5{margin:auto}.app{grid-template-columns:1fr}.rail{position:fixed;bottom:0;left:0;right:0;top:auto;height:64px;flex-direction:row;justify-content:center;padding:6px;z-index:100;border-top:1px solid rgba(215,173,74,.2);border-right:0}.logo,.rail-foot{display:none}.nav{flex-direction:row;margin:0;gap:3px;width:auto}.nav button{width:61px;height:50px;justify-content:center;padding:0}.nav span{display:none}.main{padding:10px 10px 75px}.hero{grid-template-columns:1fr}.hero-art{min-height:220px}.hero-character{height:280px}.kpis{grid-template-columns:1fr 1fr}.introbox{min-height:0;padding:20px}.intro-character{height:300px;width:280px}.concepts{grid-template-columns:1fr 1fr}.module-list{grid-template-columns:1fr}.loginrow{grid-template-columns:1fr}.mogambo-login-stage:after{left:20px;font-size:14px}.mogambo-caption{left:20px}}
 @media(max-width:480px){.kpis{grid-template-columns:1fr}.loginbox-v5{padding:28px 22px}.loginbox-v5 h1{font-size:28px}.hero h1{font-size:35px}.concepts{grid-template-columns:1fr}.module-list{display:none}}
+
+/* V12 LIGHT THEME: full-system contrast pass */
+html.light{background:#eef2f6;color:#17233a}
+html.light body{background:linear-gradient(135deg,#f4f7fa,#e7edf3);color:#17233a}
+html.light .app{background:linear-gradient(120deg,#edf2f6,#f9fbfd,#e5ebf1);color:#17233a}
+html.light .top{background:rgba(247,250,252,.94);border-color:#cbd5df;color:#17233a}
+html.light .top .eyebrow,html.light .sub,html.light .mini{color:#5d6b7b}
+html.light .brandline,html.light .paneltitle,html.light .hero h1,html.light .kpi strong{color:#17345a}
+html.light .hero,html.light .panel,html.light .kpi{background:linear-gradient(145deg,#ffffff,#edf2f7);border-color:#c5d0db;color:#17233a;box-shadow:0 15px 45px rgba(31,52,72,.10)}
+html.light .hero p,html.light .hero-copy:before{color:#526174}
+html.light .pastebox{background:#f7f9fb;border-color:#c4ced8}
+html.light .pastebox textarea{color:#17233a}
+html.light .pastebox textarea::placeholder{color:#718096}
+html.light .panelhead{border-color:#d4dce4}
+html.light .table th{background:#e3eaf1;color:#24476f;border-color:#cbd5df}
+html.light .table td{color:#17233a;border-color:#d7dfe7}
+html.light .table tbody tr:hover td{background:#edf3f8}
+html.light .filters input,html.light .filters select,html.light .settings input,html.light .settings select,html.light .chatbar input{background:#fff;color:#17233a;border-color:#bcc9d6}
+html.light .msg{background:#f0f4f8;color:#26384d;border-color:#d0d9e2}
+html.light .msg.user{background:#fff5d8;color:#493b1d;border-color:#e1c77a}
+html.light .settingcard{background:#f7f9fb;color:#17233a;border-color:#ccd6df}
+html.light .settingcard label{color:#536579}
+html.light .nav{background:#e6edf3;border-color:#c6d1dc}
+html.light .nav button{color:#24384e}
+html.light .nav button span{color:#24384e}
+html.light .nav button.active{color:#17233a;background:linear-gradient(90deg,#f2d27b,#e4bc50)}
+html.light .nav button.active span{color:#17233a}
+html.light .rail{background:linear-gradient(180deg,#edf2f6,#dfe7ee);border-color:#c6d1dc}
+html.light .drawer{background:#f8fafc;color:#17233a;border-color:#c5d0db;box-shadow:0 25px 80px rgba(30,48,66,.22)}
+html.light .drawerhead{border-color:#d4dce4;color:#17233a}
+html.light .close{color:#40546a}
+html.light .toast{background:#ffffff;color:#17233a;border-color:#c5d0db;box-shadow:0 15px 40px rgba(30,48,66,.16)}
+html.light .kpi small{color:#536579}
+html.light .kpi span.good{color:#167346}.light .kpi span.bad{color:#b4232e}.light .kpi span.warn{color:#8a5a00}
+html.light .table .good{color:#16804b!important}.light .table .bad{color:#bd2632!important}
+html.light .hero-art{background:#dfe6ed}
+html.light .coretxt small{color:#526174}
+html.light .coretxt strong{color:#7a5711}
+html.light .copyline{color:#17233a}
+
 </style>
 <style>
 /* V10 cinematic command refinements */
@@ -174,23 +214,8 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}.h
   function el(id){return document.getElementById(id)}
   window.mogamboDoLogin=function(ev){
     if(ev){ev.preventDefault();ev.stopPropagation();}
-    var id=(el('loginId')?.value||'').trim(), pass=el('loginPass')?.value||'', msg=el('loginMsg');
-    if(!id){if(msg)msg.textContent='Enter your Profile ID first.'; el('loginId')?.focus(); return false;}
-    if(!pass){if(msg)msg.textContent='Enter your passcode first.'; el('loginPass')?.focus(); return false;}
-    /* Primary prototype administrator — intentionally independent of localStorage. */
-    if((id.toLowerCase()==='admin'||id.toLowerCase()==='abhijith') && pass==='Abhijith@123'){
-      window.__MOGAMBO_AUTH__={id:'admin',name:'Abhijith',admin:true,approved:true};
-      if(typeof window.enter==='function'){ try { window.enter(id,pass); return false; } catch(e) {} }
-      var login=el('login'), intro=el('intro'), app=el('app');
-      if(login) login.classList.add('hidden');
-      if(intro){intro.classList.remove('hidden'); var title=el('introName'); if(title)title.textContent='Abhijith';}
-      if(app) app.classList.add('hidden');
-      setTimeout(function(){if(intro)intro.classList.add('hidden');if(app){app.classList.remove('hidden');try{if(typeof window.render==='function')window.render()}catch(e){}}},5000);
-      return false;
-    }
-    if(typeof window.enter==='function'){try{window.enter(id,pass);return false}catch(e){}}
-    if(msg)msg.textContent='Access denied. Use admin / Abhijith@123 or request access.';
-    return false;
+    const id=(el('loginId')?.value||'').trim(), pass=el('loginPass')?.value||'';
+    return window.enter ? window.enter(id,pass) : false;
   };
   function bind(){
     var f=el('loginForm'), b=el('loginBtn');
@@ -345,22 +370,54 @@ function chat(input,box,type){
   else reply=`I mapped <b>${c.active.length}</b> active agents and calculated the AHT/FRT metrics from the pasted table.`;
   boxEl.insertAdjacentHTML('beforeend',`<div class="msg ai">${reply}</div>`); boxEl.scrollTop=boxEl.scrollHeight; $(input).value='';
 }
+function intro(){
+  const login=$('login'), introEl=$('intro'), app=$('app');
+  if(login) login.classList.add('hidden');
+  if(introEl){
+    introEl.classList.remove('hidden');
+    const nm=$('introName'); if(nm) nm.textContent=currentUser?.name||'Abhijith';
+    const welcome=$('#introWelcome'); const init=$('#introInit');
+    if(welcome) welcome.classList.add('active'); if(init) init.classList.remove('active');
+    clearTimeout(window.__mogIntroTimer);
+    window.__mogIntroTimer=setTimeout(()=>{
+      if(welcome) welcome.classList.remove('active'); if(init) init.classList.add('active');
+      setTimeout(()=>{ if(introEl) introEl.classList.add('hidden'); if(app) app.classList.remove('hidden'); render(); },1900);
+    },3100);
+  } else if(app){ app.classList.remove('hidden'); render(); }
+}
+function openAgent(agentName){
+  const r=data.find(x=>x.agent===agentName); if(!r){toast('Agent data not found');return;}
+  const d=$('drawer'), title=$('drawerTitle'), body=$('drawerBody');
+  title.textContent=`${r.agent} // AHT Profile`;
+  const delta=r.aht-(+$('ahtTarget').value||195), cls=delta>0?'bad':delta<0?'good':'cyan';
+  body.innerHTML=`<div class="settings">
+    <div class="settingcard"><label>Agent</label><strong>${escapeHtml(r.agent)}</strong><div class="mini">${escapeHtml(r.email||'No email captured')}</div></div>
+    <div class="settingcard"><label>AHT</label><strong class="${cls}">${fmt(r.aht)} s ${delta>0?'▲':delta<0?'▼':'—'}</strong><div class="mini">Target ${fmt(+$('ahtTarget').value||195)} s</div></div>
+    <div class="settingcard"><label>Avg. HT</label><strong>${humanTime(r.avg)}</strong><div class="mini">Source average handle time</div></div>
+    <div class="settingcard"><label>Avg. FRT</label><strong>${fmt(r.frt)} s</strong><div class="mini">First response time</div></div>
+    <div class="settingcard"><label>Received / Resolved</label><strong>${fmt(r.received)} / ${fmt(r.resolved)}</strong><div class="mini">Operational volume</div></div>
+    <div class="settingcard"><label>Target Delta</label><strong class="${cls}">${delta>0?'+':''}${fmt(delta)} s</strong><div class="mini">${delta>0?'Reduction required':delta<0?'Below target':'Exactly on target'}</div></div>
+  </div>`;
+  d.classList.add('open');
+}
 function loadUsers(){return JSON.parse(localStorage.getItem('mog_users')||'[]')}
 function saveUsers(u){localStorage.setItem('mog_users',JSON.stringify(u))}
 function enter(id,pass){
   id=(id||'').trim(); pass=pass||'';
-  if(!id){$('loginMsg').textContent='Enter your Profile ID first.';$('loginId').focus();return}
-  if(!pass){$('loginMsg').textContent='Enter your passcode first.';$('loginPass').focus();return}
+  if(!id){$('loginMsg').textContent='Enter your Profile ID first.';$('loginId').focus();return false}
+  if(!pass){$('loginMsg').textContent='Enter your passcode first.';$('loginPass').focus();return false}
   let users=loadUsers(), normalized=id.toLowerCase();
   let u=users.find(x=>String(x.id||'').toLowerCase()===normalized&&String(x.pass||'')===pass&&x.approved);
   if(['admin','abhijith'].includes(normalized)&&pass==='Abhijith@123')u={id:'admin',name:'Abhijith',admin:true,approved:true};
-  if(!u){$('loginMsg').textContent='Access denied. Use admin / Abhijith@123 or request access.';return}
+  if(!u){$('loginMsg').textContent='Access denied. Use admin / Abhijith@123 or request access.';return false}
   currentUser=u;
-  $('login').classList.add('hidden'); $('brandName').textContent=u.name||'Abhijith';
-  $('adminNav').classList.toggle('hidden',!u.admin); $('adminPanel').classList.toggle('hidden',!u.admin);
-  syncWatermarkAccess(); intro();
+  $('brandName').textContent=u.name||'Abhijith';
+  $('adminNav').classList.toggle('hidden',!u.admin);
+  syncWatermarkAccess();
+  intro();
+  return true;
 }
-// V6 login wiring: simple form semantics + no event interception on fields.
+// V12 login wiring: simple form semantics + no event interception on fields.
 (function(){
   const form=$('loginForm'), id=$('loginId'), pass=$('loginPass'), toggle=$('passToggle'), fill=$('adminFill');
   if(!form||!id||!pass) return;
@@ -371,15 +428,22 @@ function enter(id,pass){
   fill?.addEventListener('click',function(){id.value='admin';pass.value='Abhijith@123';$('loginMsg').textContent='Admin credentials filled. Press Enter Command.';pass.focus();});
   setTimeout(()=>{if(document.activeElement!==id && !id.value) id.focus();},250);
 })();
-$('profileBtn').onclick=(e)=>{e.preventDefault();openProfile()};
+$('profileBtn').onclick=(e)=>{e.preventDefault();e.stopPropagation();openProfile()};
 $('requestBtn').onclick=()=>{let name=prompt('Your name');if(!name)return;let id=prompt('Choose a Profile ID');if(!id)return;let pass=prompt('Choose a local passcode');if(!pass)return;let u=loadUsers();u.push({id,name,pass,approved:false,requestedAt:new Date().toISOString()});saveUsers(u);$('loginMsg').textContent='Access request saved locally. Ask the administrator on this browser to approve it.'};
 
 function autoAnalyze(showToast=true){
-  const parsed=parsePaste($('pasteArea').value);
-  if(parsed.length){ data=parsed; render(); if(showToast) toast(`Analysis ready — ${data.length} agents mapped`); }
+  const raw=$('pasteArea').value||'';
+  const parsed=parsePaste(raw);
+  if(parsed.length){
+    data=parsed.map(r=>({...r,target:+$('ahtTarget').value||195}));
+    render();
+    if(showToast) toast(`Analysis ready — ${data.length} agents mapped`);
+  } else if(raw.trim()) {
+    data=[]; render(); toast('No complete AHT records found. Paste the full copied agent table.');
+  }
 }
 $('parseBtn').onclick=()=>autoAnalyze(true);
-$('pasteArea').addEventListener('paste',()=>setTimeout(()=>autoAnalyze(true),50));
+$('pasteArea').addEventListener('paste',()=>setTimeout(()=>autoAnalyze(true),120));
 $('pasteArea').addEventListener('input',()=>{clearTimeout(window.__ahtAuto);window.__ahtAuto=setTimeout(()=>autoAnalyze(false),350)});
 $('clearPaste').onclick=()=>{$('pasteArea').value='';data=[];render();};
 $('ahtTarget').oninput=()=>{const t=+$('ahtTarget').value||195;data.forEach(r=>r.target=t);render()};
@@ -390,7 +454,7 @@ $('waveSend').onclick=()=>chat('waveInput','waveChat','wave');
 $('waveInput').onkeydown=e=>e.key==='Enter'&&chat('waveInput','waveChat','wave');
 $('drawerClose').onclick=()=>$('drawer').classList.remove('open');
 $('logoutBtn').onclick=()=>location.reload();
-$('themeBtn').textContent=document.documentElement.classList.contains('light')?'Dark theme':'Light theme';$('themeBtn').onclick=()=>{document.documentElement.classList.toggle('light');localStorage.setItem('mog_theme',document.documentElement.classList.contains('light')?'light':'dark');$('themeBtn').textContent=document.documentElement.classList.contains('light')?'Dark theme':'Light theme';toast(document.documentElement.classList.contains('light')?'Light command theme':'Dark command theme')};
+$('themeBtn').textContent=document.documentElement.classList.contains('light')?'Dark theme':'Light theme';$('themeBtn').onclick=()=>{const on=document.documentElement.classList.toggle('light');localStorage.setItem('mog_theme',on?'light':'dark');$('themeBtn').textContent=on?'Dark theme':'Light theme';render();toast(on?'Light command theme':'Dark command theme')};
 document.querySelectorAll('.nav button').forEach(b=>{
   b.onmousemove=e=>{let r=b.getBoundingClientRect();b.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');b.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%')};
   b.onclick=()=>{
@@ -398,7 +462,7 @@ document.querySelectorAll('.nav button').forEach(b=>{
     let v=b.dataset.view;
     if(v==='admin'){
       if(!currentUser?.admin){toast('Admin access only');return}
-      $('adminPanel').classList.remove('hidden'); renderAdmin(); $('adminPanel').scrollIntoView({behavior:'smooth',block:'start'}); return;
+      renderAdmin(); return;
     }
     $('adminPanel').classList.add('hidden');
     let el=v==='command'?document.querySelector('.hero'):v==='agents'?$('matrixPanel'):v==='wave'?$('wavePanel'):v==='data'?$('dataPanel'):v==='settings'?$('dataPanel'):null;
@@ -407,6 +471,9 @@ document.querySelectorAll('.nav button').forEach(b=>{
     if(v==='wave')drawWave();
   }
 });
+$('adminNav').addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();if(currentUser?.admin)renderAdmin();else toast('Admin access only')},true);
+$('profileBtn').addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();openProfile()},true);
+
 function openProfile(){
   if(!currentUser){toast('No signed-in profile found');return}
   const d=$('drawer'), title=$('drawerTitle'), body=$('drawerBody');
