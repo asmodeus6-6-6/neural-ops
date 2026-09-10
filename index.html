@@ -1129,11 +1129,7 @@ html.light .switch-track{background:#d7ad4a}.light .switch-knob{transform:transl
 /* MOGAMBO V9 LOGIN FAILSAFE — deliberately isolated from the application runtime. */
 (function(){
   function el(id){return document.getElementById(id)}
-  window.mogamboDoLogin=function(ev){
-    if(ev){ev.preventDefault();ev.stopPropagation();}
-    const id=(el('loginId')?.value||'').trim(), pass=el('loginPass')?.value||'';
-    return window.enter ? window.enter(id,pass) : false;
-  };
+  window.mogamboDoLogin=function(ev){ return window.mogamboV47Login ? window.mogamboV47Login(ev) : false; };
   function bind(){
     var f=el('loginForm');
     if(f) f.addEventListener('submit',window.mogamboDoLogin,true);
@@ -1822,7 +1818,6 @@ document.addEventListener('click',async e=>{
  if(e.target.closest('#logoutBtn')){e.preventDefault();(async()=>{try{if(supabaseClient&&cloudSession)await supabaseClient.auth.signOut()}catch(err){console.warn(err)}finally{cloudSession=null;currentUser=null;data=[];rosterData=[];location.reload()}})();return}
  if(e.target.closest('#themeBtn')){const on=document.documentElement.classList.toggle('light');localStorage.setItem('mog_theme',on?'light':'dark');syncThemeSwitch();render();return}
 });
-document.addEventListener('submit',e=>{if(e.target.id==='loginForm'){e.preventDefault();enter($('loginId').value,$('loginPass').value)}});
 document.addEventListener('submit',e=>{if(e.target.id==='requestForm')submitRequestPage(e)});
 $('requestBack')?.addEventListener('click',closeRequestPage);
 $('passToggle')?.addEventListener('click',()=>{const p=$('loginPass');p.type=p.type==='password'?'text':'password';});$('introAudioFallback')?.addEventListener('click',()=>{const a=$('introAudio'),b=$('introAudioFallback');if(!a)return;a.currentTime=0;a.play().then(()=>b?.classList.add('hidden')).catch(()=>{});});
@@ -1850,138 +1845,44 @@ const savedResult=localStorage.getItem('mog_result_theme')||(document.documentEl
 })();
 
 
-/* ===== MOGAMBO V26 — SHARED SUPABASE ACCESS REQUESTS =====
-   Cross-device workflow:
-   Visitor laptop -> Supabase access_requests -> Admin laptop -> approve/reject.
-*/
-const MOGAMBO_SHARED_ACCESS = {
-  enabled: true,
-  requestTable: 'access_requests',
-  profileTable: 'profiles',
-  adminTable: 'app_admins'
-};
 
-async function cloudSubmitAccessRequest({name, email, password, meta={}}){
-  if(!window.supabaseClient) throw new Error('Supabase is not connected.');
-  const cleanEmail = String(email || '').trim().toLowerCase();
-  const cleanName = String(name || '').trim();
-  if(!cleanName || !cleanEmail || !password) throw new Error('Name, email and password are required.');
-
-  // Create the Auth identity first. Supabase signUp is the browser-safe Auth flow.
-  const {data: authData, error: authError} = await window.supabaseClient.auth.signUp({
-    email: cleanEmail,
-    password,
-    options: { data: { full_name: cleanName, ...meta } }
-  });
-  if(authError) throw authError;
-
-  const userId = authData?.user?.id || null;
-  const {data, error} = await window.supabaseClient
-    .from('access_requests')
-    .insert([{
-      user_id: userId,
-      name: cleanName,
-      email: cleanEmail,
-      status: 'pending',
-      requested_at: new Date().toISOString(),
-      metadata: meta
-    }])
-    .select()
-    .single();
-
-  if(error) throw error;
-  return {request:data, user:authData?.user || null};
-}
-
-async function cloudLoadAdminRequests(){
-  if(!window.supabaseClient) throw new Error('Supabase is not connected.');
-  const {data:{user}, error:userError} = await window.supabaseClient.auth.getUser();
-  if(userError || !user) throw new Error('Admin Supabase session is not active.');
-
-  const {data:isAdmin, error:adminError} = await window.supabaseClient
-    .rpc('is_mogambo_admin');
-  if(adminError) throw adminError;
-  if(!isAdmin) throw new Error('This Supabase account is not a MOGAMBO Admin.');
-
-  const {data, error} = await window.supabaseClient
-    .from('access_requests')
-    .select('*')
-    .order('requested_at', {ascending:false});
-  if(error) throw error;
-  return data || [];
-}
-
-async function cloudSetAccessStatus(requestId, status){
-  if(!window.supabaseClient) throw new Error('Supabase is not connected.');
-  const {data:{user}, error:userError} = await window.supabaseClient.auth.getUser();
-  if(userError || !user) throw new Error('Admin Supabase session is not active.');
-
-  const {data:isAdmin, error:adminError} = await window.supabaseClient
-    .rpc('is_mogambo_admin');
-  if(adminError) throw adminError;
-  if(!isAdmin) throw new Error('Only a MOGAMBO Admin can approve or reject requests.');
-
-  const payload = {
-    status,
-    approved_at: status === 'approved' ? new Date().toISOString() : null,
-    approved_by: status === 'approved' ? user.id : null
-  };
-
-  const {data, error} = await window.supabaseClient
-    .from('access_requests')
-    .update(payload)
-    .eq('id', requestId)
-    .select()
-    .single();
-
-  if(error) throw error;
-
-  // Keep an approved profile in the shared table when the table exists.
-  if(status === 'approved' && data?.user_id){
-    await window.supabaseClient.from('profiles').upsert([{
-      id: data.user_id,
-      name: data.name,
-      email: data.email,
-      role: 'visitor',
-      status: 'approved'
-    }], {onConflict:'id'});
-  }
-  return data;
-}
-
-async function cloudGetMyApproval(email){
-  if(!window.supabaseClient) return null;
-  const cleanEmail = String(email || '').trim().toLowerCase();
-  const {data, error} = await window.supabaseClient
-    .from('access_requests')
-    .select('id,status,name,email,user_id')
-    .eq('email', cleanEmail)
-    .order('requested_at', {ascending:false})
-    .limit(1)
-    .maybeSingle();
-  if(error) throw error;
-  return data;
-}
-
-// Admin-side realtime refresh. Supabase Realtime must be enabled for access_requests.
-function enableMogamboRequestRealtime(onChange){
-  if(!window.supabaseClient || !onChange) return null;
-  return window.supabaseClient
-    .channel('mogambo-access-requests')
-    .on('postgres_changes',
-      {event:'*', schema:'public', table:'access_requests'},
-      payload => onChange(payload)
-    )
-    .subscribe();
-}
-
-</script>
 <script>
 (function(){
   function syncHero(){var a=document.getElementById('coreCount'),b=document.getElementById('heroLiveAgents');if(a&&b)b.textContent=a.textContent||'0';}
   setInterval(syncHero,1000); syncHero();
   var statuses=['MOGAMBO NEURAL CORE // ONLINE','SIGNAL ACQUIRED // ANALYSING','CITY INTELLIGENCE // ACTIVE','ORDER ENGINE // SYNCHRONIZED','COMMAND READY // OBSERVATION ACTIVE'];
   var i=0;setInterval(function(){i=(i+1)%statuses.length;var e=document.getElementById('heroCommandStatus');if(e){e.style.opacity='.25';setTimeout(function(){e.textContent=statuses[i];e.style.opacity='1'},220)}},4200);
+})();
+</script>
+<script>
+/* MOGAMBO V47 — single login bridge / diagnostics */
+(function(){
+  'use strict';
+  function byId(id){return document.getElementById(id)}
+  function setMsg(msg){var e=byId('loginMsg'); if(e)e.textContent=msg||'';}
+  function setBusy(b){var btn=byId('loginBtn')||document.querySelector('#loginForm button[type="submit"]'); if(btn){btn.disabled=b;btn.dataset.originalText=btn.dataset.originalText||btn.textContent;btn.textContent=b?'AUTHENTICATING…':btn.dataset.originalText}}
+  async function run(e){
+    if(e){e.preventDefault();e.stopImmediatePropagation();}
+    var id=(byId('loginId')?.value||'').trim(), pass=byId('loginPass')?.value||'';
+    if(!id||!pass){setMsg('Enter your Login ID / email and passcode.');return false}
+    setBusy(true); setMsg('Authenticating securely…');
+    try{
+      if(typeof window.enter!=='function') throw new Error('Login controller did not initialise. Please hard-refresh the page.');
+      var ok=await window.enter(id,pass);
+      if(!ok && !String(byId('loginMsg')?.textContent||'').trim()) setMsg('Authentication failed.');
+      return ok;
+    }catch(err){
+      console.error('MOGAMBO V47 login:',err);
+      setMsg('Login error: '+(err?.message||String(err)));
+      return false;
+    }finally{setBusy(false)}
+  }
+  function bind(){
+    var f=byId('loginForm'); if(!f||f.dataset.v47bound)return;
+    f.dataset.v47bound='1'; f.addEventListener('submit',run,true);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
+  window.mogamboV47Login=run;
 })();
 </script>
 </body></html>
