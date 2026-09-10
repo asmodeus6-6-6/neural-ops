@@ -1677,7 +1677,17 @@ async function cloudVisitorLogin(email,password){
  if(!(await initSupabase()))return {handled:false};
  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
  if(error){$('loginMsg').textContent=error.message||'Cloud sign-in failed.';return {handled:true,ok:false}}
- const user=data.user;let req=await getOwnCloudRequest(user.id).catch(err=>{console.error(err);return null});
+ const user=data.user;
+ // Check the shared Admin allow-list first. This prevents an Admin's Supabase
+ // email from being incorrectly treated as a visitor who needs an access request.
+ const adminCheck=await supabaseClient.from('app_admins').select('user_id').eq('user_id',user.id).maybeSingle();
+ if(!adminCheck.error && adminCheck.data){
+   cloudSession=data.session;
+   currentUser={id:user.id,name:user.user_metadata?.full_name||'Abhijith',email:user.email,team:'Administrator',approved:true,admin:true,cloud:true,avatar:user.user_metadata?.avatar_url||''};
+   $('brandName').textContent=currentUser.name;setProfileTrigger();$('adminNav').classList.remove('hidden');updateWm();intro();
+   return {handled:true,ok:true};
+ }
+ let req=await getOwnCloudRequest(user.id).catch(err=>{console.error(err);return null});
  if(!req){const fallback=await supabaseClient.rpc('get_my_access_request',{p_email:user.email});req=fallback.data||null;if(fallback.error)console.error(fallback.error)}
  if(!req){await supabaseClient.auth.signOut();$('loginMsg').textContent='No access request is linked to this account. Use Request Access first.';return {handled:true,ok:false}}
  if(req.status!=='approved'){await supabaseClient.auth.signOut();$('loginMsg').textContent=req.status==='rejected'?'This access request was rejected.':'Access is still pending Admin approval.';return {handled:true,ok:false}}
@@ -1797,6 +1807,7 @@ document.addEventListener('click',async e=>{
  if(e.target.closest('#clearPaste')){$('pasteArea').value='';data=[];render();return}
  if(e.target.closest('#parseBtn')){autoAnalyze();return}
  const ex=e.target.closest('[data-export]');if(ex){copyImage(ex.dataset.export);return}
+ if(e.target.closest('#logoutBtn')){e.preventDefault();(async()=>{try{if(supabaseClient&&cloudSession)await supabaseClient.auth.signOut()}catch(err){console.warn(err)}finally{cloudSession=null;currentUser=null;data=[];rosterData=[];location.reload()}})();return}
  if(e.target.closest('#themeBtn')){const on=document.documentElement.classList.toggle('light');localStorage.setItem('mog_theme',on?'light':'dark');syncThemeSwitch();render();return}
 });
 document.addEventListener('submit',e=>{if(e.target.id==='loginForm'){e.preventDefault();enter($('loginId').value,$('loginPass').value)}});
