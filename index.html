@@ -607,7 +607,7 @@ html.light .cond-forest .aht-cell.cyan{background:#f5ebc9!important;color:#75570
           <div class="request-field"><label for="requestPassword">PASSWORD</label><input id="requestPassword" name="password" type="password" autocomplete="new-password" placeholder="Minimum 8 characters" required minlength="8"><div class="request-hint">Used for your future login.</div></div>
           <div class="request-field"><label for="requestPassword2">CONFIRM PASSWORD</label><input id="requestPassword2" name="passwordConfirm" type="password" autocomplete="new-password" placeholder="Re-enter password" required minlength="8"></div>
         </div>
-        <div id="requestStatus" class="request-status">Your request will appear in the Admin's cloud queue after submission.</div>
+        <div id="requestStatus" class="request-status">Use any email you want as your login ID. No verification email is required; Admin approval controls access.</div>
         <div class="request-actions"><button type="button" class="btn request-back" id="requestBack">← Back to Login</button><button type="submit" class="btn primary" id="requestSubmit">Submit Access Request ↗</button></div>
       </form>
     </div>
@@ -1136,10 +1136,22 @@ async function requestAccessCloud(name,email,password){
  if(!cleanEmail||!cleanEmail.includes('@'))throw new Error('Enter a valid work / login email.');
  if(String(password||'').length<8)throw new Error('Password must be at least 8 characters.');
  if(!(await initSupabase()))throw new Error('Supabase is not connected.');
+
+ // Create the approval request first. The visitor's email is only used as
+ // their login ID; this workflow does not require email delivery or verification.
  const {data:reqData,error:reqError}=await supabaseClient.rpc('submit_access_request',{p_name:cleanName,p_email:cleanEmail});
  if(reqError)throw reqError;
+
+ // Create the Supabase Auth identity for password login. IMPORTANT: in the
+ // Supabase dashboard, Authentication -> Providers -> Email -> Confirm Email
+ // must be OFF. With confirmation disabled, Supabase does not require the
+ // visitor to receive or click an email.
  const {data,error}=await supabaseClient.auth.signUp({email:cleanEmail,password,options:{data:{full_name:cleanName}}});
- if(error && !/already registered/i.test(error.message||''))throw error;
+ if(error && !/already registered/i.test(error.message||'')){
+   // The request itself has already been saved. Do not erase it because an
+   // Auth/email transport issue should not lose the Admin approval request.
+   throw new Error('Request was saved, but login account setup failed: '+(error.message||'Please try again later.'));
+ }
  if(data?.user?.id){
    const attach=await supabaseClient.rpc('attach_access_request_user',{p_request_id:reqData?.id||null,p_user_id:data.user.id});
    if(attach.error)console.warn('Request created but UID attach failed:',attach.error);
@@ -1151,7 +1163,7 @@ function openRequestPage(){
  $('requestPage')?.classList.remove('hidden');
  $('loginLayout')?.classList.add('hidden');
  $('requestStatus')?.classList.remove('error','ok');
- $('requestStatus').textContent="Your request will appear in the Admin's cloud queue after submission.";
+ $('requestStatus').textContent="Use any email you want as your login ID. No verification email is required; Admin approval controls access.";
  setTimeout(()=>$('requestName')?.focus(),50);
 }
 function closeRequestPage(){
@@ -1167,7 +1179,7 @@ async function submitRequestPage(e){
  try{
    if(cloudConfigured()){
      await requestAccessCloud(name,email,password);
-     status.textContent='Access request submitted successfully. Admin approval is required before login.';
+     status.textContent='Access request submitted. No email verification is required; Admin approval is required before login.';
      status.className='request-status ok';
      $('loginMsg').textContent='Access request submitted. Admin approval is required before login.';
    }else{
