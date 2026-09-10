@@ -1356,7 +1356,8 @@ async function importRoster(file){
  }catch(err){
    console.error('MOGAMBO roster import error:',err);
    const msg=err?.message||String(err);
-   setPreview(`<strong>Upload failed</strong><br>${esc(msg)}<br><span class="mini">Use the downloaded sample template, keep the headers in row 1 or any of the first 30 rows, and make sure Agent ID / Login ID or Agent Name is populated.</span>`,'error');
+   const friendly=/WHERE clause/i.test(msg)?'Supabase roster replacement function needs the V33 SQL update. Run supabase_v33_roster_fix.sql once in Supabase SQL Editor, then retry the same Excel file.':msg;
+   setPreview(`<strong>Upload failed</strong><br>${esc(friendly)}<br><span class="mini">Your Excel was read successfully if the error appeared after validation. No existing published roster was intentionally replaced.</span>`,'error');
    toast(`Roster upload failed: ${msg}`);
  }
 }
@@ -1367,7 +1368,7 @@ async function removeRosterCloud(){
  applyRoster([],new Date().toISOString());
  return data;
 }
-function rosterAdminBlock(){return `<div class="roster-admin-grid"><div class="settingcard upload-zone"><label>Weekly Agent Details — Admin Only</label><div class="mini">Upload XLSX/XLS/CSV and publish. Agent ID / Login ID is the protected unique key. The roster is validated, deduplicated and immediately remapped into AHT profiles.</div><input id="rosterFile" type="file" accept=".xlsx,.xls,.csv" style="margin-top:10px"><div class="publish-state">${rosterData.length?`${rosterData.length} published records`:'No roster published yet.'}</div><div class="template-note"><b>Required / recommended columns</b><div class="mini">Agent ID / Login ID · Agent Name · Email · TL · AM · Bucket · OJT/Non-OJT · Shift Status · Process</div><button class="btn sample-btn" id="downloadRosterTemplate">Download Excel Sample Template</button></div></div><div class="settingcard"><label>Published Roster Controls</label><div class="mini">Admin-only upload/remove. Visitors are read-only. The AHT table dynamically matches roster data by Agent ID/Login ID, email prefix or Agent Name.</div><button class="btn sample-btn" id="removeRoster">Remove Published Roster</button></div></div>`}
+function rosterAdminBlock(){return `<div class="roster-admin-grid"><div class="settingcard upload-zone"><label>Weekly Agent Details — Admin Only</label><div class="mini">Upload XLSX/XLS/CSV and publish. Agent ID / Login ID is the protected unique key. V33 uses a safe WHERE-based cloud replacement so Supabase accepts the publish operation. V33 uses a safe WHERE-based cloud replacement so Supabase accepts the publish operation. The roster is validated, deduplicated and immediately remapped into AHT profiles.</div><input id="rosterFile" type="file" accept=".xlsx,.xls,.csv" style="margin-top:10px"><div class="publish-state">${rosterData.length?`${rosterData.length} published records`:'No roster published yet.'}</div><div class="template-note"><b>Required / recommended columns</b><div class="mini">Agent ID / Login ID · Agent Name · Email · TL · AM · Bucket · OJT/Non-OJT · Shift Status · Process</div><button class="btn sample-btn" id="downloadRosterTemplate">Download Excel Sample Template</button></div></div><div class="settingcard"><label>Published Roster Controls</label><div class="mini">Admin-only upload/remove. Visitors are read-only. The AHT table dynamically matches roster data by Agent ID/Login ID, email prefix or Agent Name.</div><button class="btn sample-btn" id="removeRoster">Remove Published Roster</button></div></div>`}
 async function copyImage(kind){
  let target=null;
  if(kind==='table')target=$('tableStage');
