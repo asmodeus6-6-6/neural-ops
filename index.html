@@ -74,6 +74,35 @@ html.light .coretxt small{color:#526174}
 html.light .coretxt strong{color:#7a5711}
 html.light .copyline{color:#17233a}
 
+
+/* V13 hardening */
+.hidden{display:none!important}
+.drawer{z-index:99999;pointer-events:none;opacity:0;transform:translateX(110%);transition:.28s ease}
+.drawer.open{pointer-events:auto;opacity:1;transform:translateX(0)}
+#profileBtn,#adminNav,.nav button{position:relative;z-index:50}
+.profile-avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:rgba(215,173,74,.12);display:block}
+.profile-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.profile-grid .settingcard{margin:0}
+.profile-edit{display:grid;gap:9px;margin-top:12px}
+.profile-edit input,.profile-edit textarea{width:100%}
+.statusline{font-size:12px;color:var(--muted);margin-top:8px}
+.aht-empty{padding:42px!important;text-align:center;color:var(--muted)!important}
+.light .table td,.light .table th,.light .paneltitle,.light .brandline,.light .hero h1,.light .sub,.light .mini,.light label,.light .settingcard strong,.light .settingcard,.light .rail-foot,.light .top,.light .hero p{color:#18263a!important}
+.light .table th{color:#1769b0!important;background:#eef4fa!important}
+.light .table td{background:#f7f9fc!important;border-color:#d6e0eb!important}
+.light .table tbody tr:hover td{background:#eaf2fb!important}
+.light .panel,.light .settingcard,.light .drawer{background:#f7f9fc!important;color:#18263a!important;border-color:#c8d5e3!important}
+.light .drawerhead{background:#edf3f8!important;color:#18263a!important;border-color:#c8d5e3!important}
+.light input,.light textarea,.light select{background:#fff!important;color:#17263a!important;border-color:#b8c8d8!important}
+.light input::placeholder,.light textarea::placeholder{color:#66778b!important}
+.light .btn:not(.primary){background:#edf3f8!important;color:#18263a!important;border-color:#b8c8d8!important}
+.light .nav button{color:#1c2b3e!important}
+.light .nav button.active{color:#111b28!important}
+.light .kpi{background:#fff!important;border-color:#c8d5e3!important;color:#18263a!important}
+.light .kpi small,.light .kpi span{color:#53667b!important}
+.light .hero{background:linear-gradient(135deg,#f3f6fa,#e7eef5)!important}
+.light .wm{color:rgba(39,104,161,.14)!important}
 </style>
 <style>
 /* V10 cinematic command refinements */
@@ -226,335 +255,145 @@ html.light .copyline{color:#17233a}
 })();
 </script>
 <script>
-const $=id=>document.getElementById(id); let data=[],missedOnly=false,currentUser=null;
-const tips=['Mapping names and session fields…','Removing SVG noise and interface labels…','Converting human time into calculation-ready seconds…','Checking whether AHT, FRT and target details are sufficient…','Building the agent intelligence matrix…','Preparing your command centre…'];
-function fmt(n){return Number.isFinite(n)?Math.round(n).toLocaleString('en-IN'):'0'}
-function humanTime(secValue){
-  let n=Math.max(0,Math.round(Number(secValue)||0));
-  let h=Math.floor(n/3600), m=Math.floor((n%3600)/60), s=n%60;
-  if(h) return `${h} h ${m} m ${s} s`;
-  return `${m} m ${s} s`;
-}
-function sec(s){if(s==null)return 0;s=String(s).trim().toLowerCase();if(!s)return 0;let h=(s.match(/(\d+)\s*h/)||[])[1]||0,m=(s.match(/(\d+)\s*m/)||[])[1]||0,z=(s.match(/(\d+)\s*s/)||[])[1]||0;if(!h&&!m&&!z&&/^\d+(\.\d+)?$/.test(s))return +s;return +h*3600 + +m*60 + +z}
-function clean(v){return String(v??'').replace(/\*+/g,'').replace(/\\@/g,'@').replace(/^\s+|\s+$/g,'')}
-function looksName(v){
-  v=clean(v);
-  if(!v || /@/.test(v) || /^svg$/i.test(v) || /^view$/i.test(v)) return false;
-  if(/^(name|agent(?: name)?|online time|break time|received|resolved|avg\.?\s*ht|avg\.?\s*frt)$/i.test(v)) return false;
-  if(/^agent data to be pasted/i.test(v)) return false;
-  return /[A-Za-z]/.test(v) && !/^\d/.test(v);
-}
-function isTime(v){
-  v=clean(v);
-  return /^\d+\s*(?:h(?:ours?)?|m(?:in(?:utes?)?)?|s(?:ec(?:onds?)?)?)(?:\s+\d+\s*(?:h(?:ours?)?|m(?:in(?:utes?)?)?|s(?:ec(?:onds?)?)?))*$/i.test(v)
-      || /^(?:0\s*)?s(?:ec(?:onds?)?)?$/i.test(v)
-      || /^\d+\s*(?:h|m|s)$/i.test(v);
-}
-function isInt(v){ return /^\d+$/.test(clean(v)); }
-function parsePaste(text){
-  const lines=String(text||'').replace(/\r/g,'').split('\n')
-    .map(clean)
-    .filter(x=>x && !/^svg$/i.test(x) && !/^view$/i.test(x));
-  const out=[];
-  for(let i=0;i<lines.length;i++){
-    if(!looksName(lines[i])) continue;
-    const name=lines[i];
-    let j=i+1, email='';
-    if(j<lines.length && /@/.test(lines[j])){ email=lines[j]; j++; }
-    // Ignore any copied UI/header noise until the first time value.
-    while(j<lines.length && !isTime(lines[j]) && !isInt(lines[j]) && !looksName(lines[j])) j++;
-    if(j>=lines.length || !isTime(lines[j])) continue;
-    const online=lines[j++];
-    if(j>=lines.length || !isTime(lines[j])) continue;
-    const br=lines[j++];
-    if(j>=lines.length || !isInt(lines[j])) continue;
-    const received=lines[j++];
-    if(j>=lines.length || !isInt(lines[j])) continue;
-    const resolved=lines[j++];
-    if(j>=lines.length || !isTime(lines[j])) continue;
-    const avg=lines[j++];
-    let frt='0 s';
-    if(j<lines.length && isTime(lines[j])) frt=lines[j++];
-    const target=+$('ahtTarget').value||195;
-    out.push({
-      agent:name,email,online:sec(online),break:sec(br),
-      received:+received||0,resolved:+resolved||0,
-      avg:sec(avg),aht:sec(avg),target,prev:sec(avg),
-      frt:sec(frt),prevF:sec(frt)
-    });
-    i=j-1;
-  }
-  // Tabular / single-line fallback
-  if(!out.length){
-    const rows=String(text||'').split(/\r?\n/).filter(x=>x.trim())
-      .map(r=>r.split(/\t|\s{2,}|\|/).map(clean).filter(Boolean));
-    if(rows.length>1){
-      const h=rows[0].map(x=>x.toLowerCase());
-      const ix=a=>h.findIndex(x=>a.some(n=>x===n||x.includes(n)));
-      const ia=ix(['agent name','name','agent']),ir=ix(['received']),ires=ix(['resolved']),
-            iav=ix(['avg. ht','avg ht']),ifrt=ix(['avg. frt','avg frt','frt']);
-      if(ia>=0 && iav>=0){
-        out.push(...rows.slice(1).map(r=>{
-          const agent=r[ia], aht=sec(r[iav]), frt=ifrt>=0?sec(r[ifrt]):0;
-          return {agent,received:+(r[ir]||0)||0,resolved:+(r[ires]||0)||0,avg:aht,aht,target:+$('ahtTarget').value||195,prev:aht,frt,prevF:frt};
-        }).filter(x=>looksName(x.agent)&&x.aht>0));
-      }
-    }
-  }
-  // Deduplicate names from repeated clipboard fragments.
-  const seen=new Set();
-  return out.filter(r=>{
-    const k=r.agent.trim().toLowerCase();
-    if(seen.has(k)) return false;
-    seen.add(k); return true;
-  });
-}
-function calc(){let active=data.filter(r=>r.aht>0);let rec=active.reduce((s,r)=>s+r.received,0),res=active.reduce((s,r)=>s+r.resolved,0);let weight=rec||active.length||1;let aht=active.reduce((s,r)=>s+r.aht,0)/(active.length||1);let prev=active.reduce((s,r)=>s+r.prev,0)/(active.length||1);let frt=active.reduce((s,r)=>s+r.frt,0)/(active.length||1);let prevF=active.reduce((s,r)=>s+r.prevF,0)/(active.length||1);let target=+$('ahtTarget').value||195;let met=active.filter(r=>r.aht<=r.target).length;return{active,rec,res,aht,prev,frt,prevF,target,delta:aht-target,change:aht-prev,frtChange:frt-prevF,met}}
-function status(r){let d=r.aht-r.target;return d<=0?'met':d<=Math.max(10,r.target*.08)?'near':'miss'}
-function renderKpis(){let c=calc();let active=c.active.length;let perf=c.delta<=0?'TARGET ACHIEVED':'REDUCE '+fmt(c.delta)+'s';$('kpis').innerHTML=[['ACTIVE AGENTS',fmt(active),active?'AHT > 0 only':'Awaiting paste','cyan'],['AVG AHT',fmt(c.aht)+'s',`${c.change<=0?'↓':'↑'} ${fmt(Math.abs(c.change))}s baseline`,c.change<=0?'good':'bad'],['AHT TARGET',fmt(c.target)+'s',c.delta<=0?'Target achieved':'Reduction required',c.delta<=0?'good':'warn'],['TARGET DELTA',`${c.delta>0?'+':''}${fmt(c.delta)}s`,perf,c.delta<=0?'good':'bad'],['AVG FRT',fmt(c.frt)+'s',`${c.frtChange<=0?'↓':'↑'} ${fmt(Math.abs(c.frtChange))}s baseline`,c.frtChange<=0?'good':'bad'],['GRAND TOTAL', $('grandToggle').checked?fmt(c.aht)+'s':'OFF','arithmetic average', $('grandToggle').checked?'cyan':'warn']].map(x=>`<div class="kpi"><small>${x[0]}</small><strong>${x[1]}</strong><span class="${x[3]}">${x[2]}</span></div>`).join('');$('coreCount').textContent=active}
-function renderTable(){
-  let q=($('search')?.value||'').toLowerCase();
-  let rows=data.filter(r=>r.aht>0 && r.agent.toLowerCase().includes(q));
-  $('agentRows').innerHTML=rows.map(r=>{
-    let over=r.aht-(+$('ahtTarget').value||195);
-    let arrow=over>0?'▲':over<0?'▼':'—';
-    let cls=over>0?'bad':over<0?'good':'cyan';
-    return `<tr data-agent="${escapeHtml(r.agent)}">
-      <td><div class="agent"><div class="avatar">${r.agent.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()}</div><div><b>${escapeHtml(r.agent)}</b><div class="mini">${escapeHtml(r.email||'')}</div></div></div></td>
-      <td>${fmt(r.received)}</td><td>${fmt(r.resolved)}</td><td>${humanTime(r.avg)}</td>
-      <td class="${cls}"><b>${fmt(r.aht)} ${arrow}</b></td><td>${fmt(r.frt)}s</td>
-    </tr>`;
-  }).join('')||'<tr><td colspan="6" style="padding:35px;text-align:center;color:#72819a">No active AHT records.</td></tr>';
-  let c=calc();
-  $('agentTotal').innerHTML=$('grandToggle')?.checked?`<tr class="grand-total">
-    <td>GRAND TOTAL / AVG</td><td>${fmt(c.rec)}</td><td>${fmt(c.res)}</td><td>${humanTime(c.aht)}</td>
-    <td>${fmt(c.aht)} —</td><td>${fmt(c.frt)}s</td>
-  </tr>`:'';
-  document.querySelectorAll('#agentRows tr[data-agent]').forEach(tr=>tr.onclick=()=>openAgent(tr.dataset.agent));
-  updateWatermarks();
-}
-function drawLineChart(canvasId, values, labels, target, title){
-  const cv=$(canvasId); if(!cv)return;
-  const box=cv.getBoundingClientRect(); const dpr=window.devicePixelRatio||1;
-  const w=Math.max(420,box.width||700), h=Math.max(220,box.height||255);
-  cv.width=w*dpr; cv.height=h*dpr;
-  const c=cv.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,w,h);
-  const pad={l:48,r:20,t:24,b:48}, pw=w-pad.l-pad.r, ph=h-pad.t-pad.b;
-  const max=Math.max(...values,target||0,1)*1.12, min=0;
-  c.font='10px Inter,Arial'; c.fillStyle='#8d8779'; c.strokeStyle='rgba(215,173,74,.12)'; c.lineWidth=1;
-  for(let i=0;i<5;i++){let y=pad.t+ph*i/4;c.beginPath();c.moveTo(pad.l,y);c.lineTo(w-pad.r,y);c.stroke();c.fillText(Math.round(max-(max*i/4))+'s',8,y+3)}
-  if(!values.length){c.fillStyle='#8d8779';c.fillText('Paste agent data to activate chart.',pad.l,pad.t+30);return}
-  const pts=values.map((v,i)=>({x:pad.l+(values.length===1?pw/2:i/(values.length-1)*pw),y:pad.t+ph-(v-min)/(max-min)*ph}));
-  c.beginPath();pts.forEach((q,i)=>i?c.lineTo(q.x,q.y):c.moveTo(q.x,q.y));c.lineTo(pts[pts.length-1].x,pad.t+ph);c.lineTo(pts[0].x,pad.t+ph);c.closePath();c.fillStyle='rgba(215,173,74,.08)';c.fill();
-  c.beginPath();pts.forEach((q,i)=>i?c.lineTo(q.x,q.y):c.moveTo(q.x,q.y));c.strokeStyle='#e0b94f';c.lineWidth=2.8;c.stroke();
-  if(target!=null){let y=pad.t+ph-(target-min)/(max-min)*ph;c.setLineDash([7,6]);c.strokeStyle='#c34a52';c.beginPath();c.moveTo(pad.l,y);c.lineTo(w-pad.r,y);c.stroke();c.setLineDash([]);c.fillStyle='#d9787e';c.fillText('TARGET '+Math.round(target)+'s',w-pad.r-78,Math.max(14,y-6))}
-  c.fillStyle='#d8cba9';c.font='9px Inter,Arial';labels.forEach((lab,i)=>{if(i<8||i===labels.length-1){let x=pts[i].x;c.save();c.translate(x,h-14);c.rotate(-.18);c.textAlign='center';c.fillText(lab.length>12?lab.slice(0,11)+'…':lab,0,0);c.restore()}});
-  c.fillStyle='#e8ca73';c.font='700 11px Inter,Arial';c.textAlign='left';c.fillText(title,pad.l,13);
-}
-function drawWave(){
-  let active=data.filter(r=>r.aht>0), labels=active.map(r=>r.agent);
-  drawLineChart('waveCanvas',active.map(r=>r.aht),labels,+($('ahtTarget')?.value||195),'AHT (seconds)');
-  drawLineChart('frtCanvas',active.map(r=>r.frt),labels,null,'FRT (seconds)');
-}
-function render(){
-  renderKpis(); renderTable(); drawWave(); updateWatermarks();
-}
-function chat(input,box,type){
-  let t=($(input)?.value||'').trim(); if(!t)return;
-  let boxEl=$(box); boxEl.insertAdjacentHTML('beforeend',`<div class="msg user">${escapeHtml(t)}</div>`);
-  let c=calc(), reply='', top=[...data].filter(r=>r.aht>0).sort((a,b)=>(b.aht-b.target)-(a.aht-a.target))[0];
-  if(/most|highest|reduction|worst/i.test(t)&&top) reply=`<b>${escapeHtml(top.agent)}</b> has the largest AHT gap at <b class="bad">+${fmt(top.aht-top.target)}s</b>. Current AHT: ${fmt(top.aht)}s vs target ${fmt(top.target)}s.`;
-  else if(/average|overall|grand/i.test(t)) reply=`Grand Total / Average AHT is <b>${fmt(c.aht)}s</b> across <b>${c.active.length}</b> active agents.`;
-  else if(/frt/i.test(t)) reply=`Average FRT is <b>${fmt(c.frt)}s</b> across the active AHT roster.`;
-  else if(/target|met/i.test(t)) reply=`Overall target is <b>${fmt(c.target)}s</b>; current average is <b>${fmt(c.aht)}s</b>, a delta of <b class="${c.delta>0?'bad':'good'}">${c.delta>0?'+':''}${fmt(c.delta)}s</b>.`;
-  else reply=`I mapped <b>${c.active.length}</b> active agents and calculated the AHT/FRT metrics from the pasted table.`;
-  boxEl.insertAdjacentHTML('beforeend',`<div class="msg ai">${reply}</div>`); boxEl.scrollTop=boxEl.scrollHeight; $(input).value='';
-}
-function intro(){
-  const login=$('login'), introEl=$('intro'), app=$('app');
-  if(login) login.classList.add('hidden');
-  if(introEl){
-    introEl.classList.remove('hidden');
-    const nm=$('introName'); if(nm) nm.textContent=currentUser?.name||'Abhijith';
-    const welcome=$('#introWelcome'); const init=$('#introInit');
-    if(welcome) welcome.classList.add('active'); if(init) init.classList.remove('active');
-    clearTimeout(window.__mogIntroTimer);
-    window.__mogIntroTimer=setTimeout(()=>{
-      if(welcome) welcome.classList.remove('active'); if(init) init.classList.add('active');
-      setTimeout(()=>{ if(introEl) introEl.classList.add('hidden'); if(app) app.classList.remove('hidden'); render(); },1900);
-    },3100);
-  } else if(app){ app.classList.remove('hidden'); render(); }
-}
-function openAgent(agentName){
-  const r=data.find(x=>x.agent===agentName); if(!r){toast('Agent data not found');return;}
-  const d=$('drawer'), title=$('drawerTitle'), body=$('drawerBody');
-  title.textContent=`${r.agent} // AHT Profile`;
-  const delta=r.aht-(+$('ahtTarget').value||195), cls=delta>0?'bad':delta<0?'good':'cyan';
-  body.innerHTML=`<div class="settings">
-    <div class="settingcard"><label>Agent</label><strong>${escapeHtml(r.agent)}</strong><div class="mini">${escapeHtml(r.email||'No email captured')}</div></div>
-    <div class="settingcard"><label>AHT</label><strong class="${cls}">${fmt(r.aht)} s ${delta>0?'▲':delta<0?'▼':'—'}</strong><div class="mini">Target ${fmt(+$('ahtTarget').value||195)} s</div></div>
-    <div class="settingcard"><label>Avg. HT</label><strong>${humanTime(r.avg)}</strong><div class="mini">Source average handle time</div></div>
-    <div class="settingcard"><label>Avg. FRT</label><strong>${fmt(r.frt)} s</strong><div class="mini">First response time</div></div>
-    <div class="settingcard"><label>Received / Resolved</label><strong>${fmt(r.received)} / ${fmt(r.resolved)}</strong><div class="mini">Operational volume</div></div>
-    <div class="settingcard"><label>Target Delta</label><strong class="${cls}">${delta>0?'+':''}${fmt(delta)} s</strong><div class="mini">${delta>0?'Reduction required':delta<0?'Below target':'Exactly on target'}</div></div>
-  </div>`;
-  d.classList.add('open');
-}
-function loadUsers(){return JSON.parse(localStorage.getItem('mog_users')||'[]')}
-function saveUsers(u){localStorage.setItem('mog_users',JSON.stringify(u))}
-function enter(id,pass){
-  id=(id||'').trim(); pass=pass||'';
-  if(!id){$('loginMsg').textContent='Enter your Profile ID first.';$('loginId').focus();return false}
-  if(!pass){$('loginMsg').textContent='Enter your passcode first.';$('loginPass').focus();return false}
-  let users=loadUsers(), normalized=id.toLowerCase();
-  let u=users.find(x=>String(x.id||'').toLowerCase()===normalized&&String(x.pass||'')===pass&&x.approved);
-  if(['admin','abhijith'].includes(normalized)&&pass==='Abhijith@123')u={id:'admin',name:'Abhijith',admin:true,approved:true};
-  if(!u){$('loginMsg').textContent='Access denied. Use admin / Abhijith@123 or request access.';return false}
-  currentUser=u;
-  $('brandName').textContent=u.name||'Abhijith';
-  $('adminNav').classList.toggle('hidden',!u.admin);
-  syncWatermarkAccess();
-  intro();
-  return true;
-}
-// V12 login wiring: simple form semantics + no event interception on fields.
+/* MOGAMBO NEURAL OPS V13 — clean AHT/application controller */
 (function(){
-  const form=$('loginForm'), id=$('loginId'), pass=$('loginPass'), toggle=$('passToggle'), fill=$('adminFill');
-  if(!form||!id||!pass) return;
-  [id,pass].forEach(el=>{el.disabled=false;el.readOnly=false;el.removeAttribute('disabled');el.removeAttribute('readonly');el.tabIndex=el===id?1:2;});
-  toggle?.addEventListener('mousedown',e=>e.preventDefault());
-  toggle?.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();pass.type=pass.type==='password'?'text':'password';toggle.textContent=pass.type==='password'?'◉':'○';pass.focus();});
-  form.addEventListener('submit',function(e){e.preventDefault();e.stopPropagation();enter(id.value,pass.value);});
-  fill?.addEventListener('click',function(){id.value='admin';pass.value='Abhijith@123';$('loginMsg').textContent='Admin credentials filled. Press Enter Command.';pass.focus();});
-  setTimeout(()=>{if(document.activeElement!==id && !id.value) id.focus();},250);
-})();
-$('profileBtn').onclick=(e)=>{e.preventDefault();e.stopPropagation();openProfile()};
-$('requestBtn').onclick=()=>{let name=prompt('Your name');if(!name)return;let id=prompt('Choose a Profile ID');if(!id)return;let pass=prompt('Choose a local passcode');if(!pass)return;let u=loadUsers();u.push({id,name,pass,approved:false,requestedAt:new Date().toISOString()});saveUsers(u);$('loginMsg').textContent='Access request saved locally. Ask the administrator on this browser to approve it.'};
+'use strict';
+const $=id=>document.getElementById(id);
+let data=[];
+let currentUser=null;
+const TARGET_DEFAULT=195;
 
-function autoAnalyze(showToast=true){
-  const raw=$('pasteArea').value||'';
-  const parsed=parsePaste(raw);
-  if(parsed.length){
-    data=parsed.map(r=>({...r,target:+$('ahtTarget').value||195}));
-    render();
-    if(showToast) toast(`Analysis ready — ${data.length} agents mapped`);
-  } else if(raw.trim()) {
-    data=[]; render(); toast('No complete AHT records found. Paste the full copied agent table.');
-  }
+function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function fmt(v){return Number.isFinite(Number(v))?Math.round(Number(v)).toLocaleString('en-IN'):'0'}
+function humanTime(v){let n=Math.max(0,Math.round(Number(v)||0));let h=Math.floor(n/3600),m=Math.floor((n%3600)/60),s=n%60;return h?`${h} h ${m} m ${s} s`:`${m} m ${s} s`}
+function sec(v){
+ v=String(v??'').trim().toLowerCase(); if(!v)return 0;
+ let h=+(v.match(/(\d+(?:\.\d+)?)\s*h/)||[])[1]||0;
+ let m=+(v.match(/(\d+(?:\.\d+)?)\s*m/)||[])[1]||0;
+ let s=+(v.match(/(\d+(?:\.\d+)?)\s*s/)||[])[1]||0;
+ if(h||m||s)return h*3600+m*60+s;
+ return /^\d+(?:\.\d+)?$/.test(v)?+v:0;
 }
-$('parseBtn').onclick=()=>autoAnalyze(true);
-$('pasteArea').addEventListener('paste',()=>setTimeout(()=>autoAnalyze(true),120));
-$('pasteArea').addEventListener('input',()=>{clearTimeout(window.__ahtAuto);window.__ahtAuto=setTimeout(()=>autoAnalyze(false),350)});
-$('clearPaste').onclick=()=>{$('pasteArea').value='';data=[];render();};
-$('ahtTarget').oninput=()=>{const t=+$('ahtTarget').value||195;data.forEach(r=>r.target=t);render()};
-$('grandToggle').onchange=render;
-$('watermark').onchange=()=>{if(!currentUser?.admin){syncWatermarkAccess();return}let v=$('watermark').value.trim()||'Abhijith';localStorage.setItem('mog_watermark',v);updateWatermarks();toast('Admin watermark updated')};
-$('search').oninput=renderTable;
-$('waveSend').onclick=()=>chat('waveInput','waveChat','wave');
-$('waveInput').onkeydown=e=>e.key==='Enter'&&chat('waveInput','waveChat','wave');
-$('drawerClose').onclick=()=>$('drawer').classList.remove('open');
-$('logoutBtn').onclick=()=>location.reload();
-$('themeBtn').textContent=document.documentElement.classList.contains('light')?'Dark theme':'Light theme';$('themeBtn').onclick=()=>{const on=document.documentElement.classList.toggle('light');localStorage.setItem('mog_theme',on?'light':'dark');$('themeBtn').textContent=on?'Dark theme':'Light theme';render();toast(on?'Light command theme':'Dark command theme')};
-document.querySelectorAll('.nav button').forEach(b=>{
-  b.onmousemove=e=>{let r=b.getBoundingClientRect();b.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');b.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%')};
-  b.onclick=()=>{
-    document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
-    let v=b.dataset.view;
-    if(v==='admin'){
-      if(!currentUser?.admin){toast('Admin access only');return}
-      renderAdmin(); return;
-    }
-    $('adminPanel').classList.add('hidden');
-    let el=v==='command'?document.querySelector('.hero'):v==='agents'?$('matrixPanel'):v==='wave'?$('wavePanel'):v==='data'?$('dataPanel'):v==='settings'?$('dataPanel'):null;
-    el?.scrollIntoView({behavior:'smooth',block:'start'});
-    if(v==='agents')renderTable();
-    if(v==='wave')drawWave();
-  }
-});
-$('adminNav').addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();if(currentUser?.admin)renderAdmin();else toast('Admin access only')},true);
-$('profileBtn').addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();openProfile()},true);
+function clean(v){return String(v??'').replace(/\u00a0/g,' ').trim()}
+function isTime(v){v=clean(v).toLowerCase();return /^(?:(?:\d+(?:\.\d+)?\s*(?:h|hr|hrs|hour|hours)\s*)?(?:\d+(?:\.\d+)?\s*(?:m|min|mins|minute|minutes)\s*)?(?:\d+(?:\.\d+)?\s*(?:s|sec|secs|second|seconds))?)$/.test(v)&&/\d/.test(v)}
+function isInt(v){return /^\d+$/.test(clean(v))}
+function looksName(v){v=clean(v);if(!v||/@/.test(v)||/^svg$/i.test(v)||/^view$/i.test(v))return false;if(/^agent data to be pasted\b/i.test(v))return false;if(/^(name|agent name|online time|break time|received|resolved|avg\.?\s*ht|avg\.?\s*frt|avg\.?\s*handle time)$/i.test(v))return false;if(/^\d/.test(v))return false;return /[A-Za-z]/.test(v)}
 
-function openProfile(){
-  if(!currentUser){toast('No signed-in profile found');return}
-  const d=$('drawer'), title=$('drawerTitle'), body=$('drawerBody');
-  title.textContent='Profile Command';
-  body.innerHTML=`<div class="settings">
-    <div class="settingcard"><label>Profile</label><strong>${escapeHtml(currentUser.name||'Abhijith')}</strong><div class="mini">${escapeHtml(currentUser.id||'admin')}</div></div>
-    <div class="settingcard"><label>Access</label><strong>${currentUser.admin?'ADMIN':'VISITOR'}</strong><div class="mini">${currentUser.admin?'Full local controls':'AHT analytics access'}</div></div>
-    <div class="settingcard"><label>Watermark</label><strong>${escapeHtml(localStorage.getItem('mog_watermark')||'Abhijith')}</strong><div class="mini">${currentUser.admin?'Editable by admin':'Locked by administrator'}</div></div>
-  </div>`;
-  d.classList.add('open');
-}
-function updateWatermarks(){
-  let wm=localStorage.getItem('mog_watermark')||'Abhijith';
-  document.querySelectorAll('.wm').forEach(x=>x.textContent=wm);
-}
-function syncWatermarkAccess(){
-  let input=$('watermark'); if(!input)return;
-  let admin=!!currentUser?.admin; input.disabled=!admin; input.value=localStorage.getItem('mog_watermark')||'Abhijith';
-  document.querySelectorAll('.admin-only').forEach(x=>x.style.opacity=admin?'1':'.58');
-  updateWatermarks();
-}
-function renderAdmin(){
-  if(!currentUser?.admin){toast('Admin access only');return}
-  const d=$('drawer'), title=$('drawerTitle'), body=$('drawerBody');
-  title.textContent='Admin Command';
-  const users=loadUsers();
-  body.innerHTML=`<div class="settings">
-    <div class="settingcard"><label>Access Requests</label>
-      ${users.filter(u=>!u.approved).map(u=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)">
-        <span><b>${escapeHtml(u.name)}</b><div class="mini">${escapeHtml(u.id)}</div></span>
-        <span><button class="btn" onclick="approve('${escapeHtml(u.id)}')">Approve</button> <button class="btn" onclick="reject('${escapeHtml(u.id)}')">Reject</button></span>
-      </div>`).join('')||'<div class="mini">No pending requests.</div>'}
-    </div>
-    <div class="settingcard"><label>Approved Profiles</label>
-      ${users.filter(u=>u.approved).map(u=>`<div style="padding:7px 0;border-bottom:1px solid var(--line)"><b>${escapeHtml(u.name)}</b> <span class="mini">${escapeHtml(u.id)}</span></div>`).join('')||'<div class="mini">No visitor profiles yet.</div>'}
-    </div>
-    <div class="settingcard"><label>Watermark</label>
-      <div class="mini">Only the administrator can change the watermark.</div>
-      <div style="display:flex;gap:8px;margin-top:8px"><input id="adminWatermark" value="${escapeHtml(localStorage.getItem('mog_watermark')||'Abhijith')}" maxlength="32" style="flex:1"><button class="btn primary" id="saveAdminWatermark">Save</button></div>
-    </div>
-  </div>`;
-  d.classList.add('open');
-  setTimeout(()=>{
-    $('saveAdminWatermark')?.addEventListener('click',()=>{
-      const v=($('adminWatermark').value||'').trim()||'Abhijith';
-      localStorage.setItem('mog_watermark',v); updateWatermarks(); syncWatermarkAccess(); toast('Watermark updated by admin');
-    });
-  },0);
-}
-window.approve=id=>{let u=loadUsers();let x=u.find(a=>a.id===id);if(x)x.approved=true;saveUsers(u);renderAdmin();toast('Access approved locally')};window.reject=id=>{saveUsers(loadUsers().filter(a=>a.id!==id));renderAdmin();toast('Access request removed')};$('adminNav').onclick=(e)=>{e.preventDefault();e.stopPropagation();renderAdmin()};
-function export4k(kind){
- let wm=localStorage.getItem('mog_watermark')||'Abhijith',W=2400,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;
- let x=cv.getContext('2d');x.fillStyle=document.documentElement.classList.contains('light')?'#edf2f8':'#070b14';x.fillRect(0,0,W,H);
- x.fillStyle=document.documentElement.classList.contains('light')?'#17233a':'#eef3ff';x.font='800 48px Arial';x.fillText('REAL TIME AHT',70,90);
- x.font='700 26px Arial';x.fillStyle='#b68a2c';x.fillText('MOGAMBO NEURAL OPS // AHT PERFORMANCE',70,132);
- let c=calc();
- if(kind==='table'){
-   x.fillStyle=document.documentElement.classList.contains('light')?'#f5f8fb':'#0e151e';x.fillRect(55,185,2290,990);
-   let cols=['Agent Name','Received','Resolved','Avg. HT','AHT (Sec)','Avg. FRT'],xx=[85,760,960,1160,1450,1780];
-   x.fillStyle=document.documentElement.classList.contains('light')?'#1769b0':'#e3c36a';x.font='700 22px Arial';cols.forEach((q,i)=>x.fillText(q,xx[i],235));
-   [...data].filter(r=>r.aht>0).slice(0,28).forEach((r,i)=>{
-     let y=292+i*31; x.fillStyle=i%2?'rgba(255,255,255,.025)':'rgba(215,173,74,.035)';x.fillRect(55,y-22,2290,29);
-     x.fillStyle=document.documentElement.classList.contains('light')?'#1b2b40':'#e7dfcf';x.font='17px Arial';
-     x.fillText(r.agent,85,y);x.fillText(fmt(r.received),760,y);x.fillText(fmt(r.resolved),960,y);
-     x.fillText(fmt(r.avg)+'s',1160,y);
-     x.fillStyle=r.aht>(c.target)?'#c83d4d':r.aht<c.target?'#247c5a':'#b68a2c';x.fillText(fmt(r.aht)+' '+(r.aht>c.target?'▲':r.aht<c.target?'▼':'—'),1450,y);
-     x.fillStyle=document.documentElement.classList.contains('light')?'#1b2b40':'#e7dfcf';x.fillText(fmt(r.frt)+'s',1780,y);
-   });
-   let gy=292+Math.min(28,data.filter(r=>r.aht>0).length)*31+10;
-   x.font='800 19px Arial';x.fillText('GRAND TOTAL / AVG',85,gy);x.fillText(fmt(c.rec),760,gy);x.fillText(fmt(c.res),960,gy);x.fillText(Math.floor(c.aht/60)+' m '+Math.round(c.aht%60)+' s',1160,gy);x.fillText(fmt(c.aht)+' —',1450,gy);x.fillText(fmt(c.frt)+'s',1780,gy);
- }else if(kind==='wave'||kind==='frt'){
-   let vals=data.filter(r=>r.aht>0).map(r=>kind==='frt'?r.frt:r.aht),labels=data.filter(r=>r.aht>0).map(r=>r.agent),max=Math.max(...vals,c.target,1),min=0;
-   x.strokeStyle='#b68a2c';x.lineWidth=5;x.beginPath();vals.forEach((v,i)=>{let xx=100+i/(vals.length-1||1)*2200,yy=1060-(v-min)/(max-min)*700;i?x.lineTo(xx,yy):x.moveTo(xx,yy)});x.stroke();
-   if(kind==='wave'){x.strokeStyle='#c34a52';x.setLineDash([12,12]);let yy=1060-(c.target/max)*700;x.beginPath();x.moveTo(100,yy);x.lineTo(2300,yy);x.stroke();x.setLineDash([])}
- }else{
-   x.fillStyle='#e6ddca';x.font='800 34px Arial';x.fillText(kind.toUpperCase()+' // AHT COMMAND',90,245);x.font='22px Arial';x.fillStyle='#9a927f';
-   let lines=[`AHT target: ${fmt(c.target)}s`,`Average AHT: ${fmt(c.aht)}s`,`Target delta: ${c.delta>0?'+':''}${fmt(c.delta)}s`,`Average FRT: ${fmt(c.frt)}s`,`Active agents: ${c.active.length}`];lines.forEach((s,i)=>x.fillText(s,100,310+i*55));
+function parsePaste(raw){
+ const original=String(raw||'').replace(/\r/g,'');
+ let lines=original.split('\n').map(clean).filter(Boolean);
+ lines=lines.filter(x=>!/^svg$/i.test(x)&&!/^view$/i.test(x));
+ const out=[];
+ for(let i=0;i<lines.length;i++){
+   if(!looksName(lines[i]))continue;
+   const name=lines[i]; let j=i+1,email='';
+   if(j<lines.length&&/@/.test(lines[j])){email=lines[j];j++;}
+   // Find the first complete metric sequence after this name.
+   let found=-1;
+   for(let k=j;k<Math.min(lines.length,j+10);k++){
+     if(!isTime(lines[k]))continue;
+     if(isTime(lines[k+1])&&isInt(lines[k+2])&&isInt(lines[k+3])&&isTime(lines[k+4])){found=k;break;}
+   }
+   if(found<0)continue;
+   const online=lines[found], br=lines[found+1], received=+lines[found+2]||0, resolved=+lines[found+3]||0, avg=lines[found+4];
+   let frt=isTime(lines[found+5])?lines[found+5]:'0 s';
+   out.push({agent:name,email,online:sec(online),break:sec(br),received,resolved,avg:sec(avg),aht:sec(avg),frt:sec(frt),target:getTarget()});
+   i=found+5;
  }
- x.globalAlpha=.13;x.fillStyle='#6e91b9';x.font='800 38px Arial';[350,850,1400,1900].forEach((q,i)=>x.fillText(wm,q,1230-(i%2)*120));x.globalAlpha=1;
- cv.toBlob(blob=>{navigator.clipboard?.write([new ClipboardItem({'image/png':blob})]).then(()=>toast('4K image copied to clipboard')).catch(()=>{let a=document.createElement('a');a.download='mogambo-aht-4k.png';a.href=URL.createObjectURL(blob);a.click();toast('Clipboard blocked — 4K PNG downloaded')})})
+ // Header/tabular fallback
+ if(!out.length){
+   const rows=original.split('\n').map(r=>r.split(/\t|\||\s{2,}/).map(clean).filter(Boolean)).filter(r=>r.length>=4);
+   if(rows.length>1){
+     const h=rows[0].map(x=>x.toLowerCase());
+     const ix=(...names)=>h.findIndex(x=>names.some(n=>x===n||x.includes(n)));
+     const ia=ix('agent name','agent','name'), ir=ix('received'), iz=ix('resolved'), ih=ix('avg. ht','avg ht','average handle time'), iff=ix('avg. frt','avg frt','frt');
+     if(ia>=0&&ih>=0){for(const r of rows.slice(1)){const a=r[ia];const ah=sec(r[ih]);if(looksName(a)&&ah>0)out.push({agent:a,email:'',online:0,break:0,received:+(r[ir]||0)||0,resolved:+(r[iz]||0)||0,avg:ah,aht:ah,frt:iff>=0?sec(r[iff]):0,target:getTarget()})}}
+   }
+ }
+ const seen=new Set();return out.filter(r=>{const k=r.agent.toLowerCase();if(seen.has(k))return false;seen.add(k);return true});
 }
-if(localStorage.getItem('mog_theme')==='light')document.documentElement.classList.add('light');
-document.querySelectorAll('[data-export]').forEach(b=>b.onclick=()=>export4k(b.dataset.export));window.addEventListener('resize',()=>{clearTimeout(window.rr);window.rr=setTimeout(drawWave,150)});syncWatermarkAccess();render();
+function getTarget(){return Math.max(1,Number($('ahtTarget')?.value)||TARGET_DEFAULT)}
+function calc(){const active=data.filter(r=>r.aht>0),target=getTarget();const aht=active.length?active.reduce((s,r)=>s+r.aht,0)/active.length:0,frt=active.length?active.reduce((s,r)=>s+r.frt,0)/active.length:0;return{active,target,aht,frt,delta:aht-target,rec:active.reduce((s,r)=>s+r.received,0),res:active.reduce((s,r)=>s+r.resolved,0)}}
+function toast(msg){const t=$('toast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove('show'),2200)}
+function updateWm(){const wm=localStorage.getItem('mog_watermark')||'Abhijith';document.querySelectorAll('.wm').forEach(x=>x.textContent=wm);const inp=$('watermark');if(inp){inp.value=wm;inp.disabled=!currentUser?.admin}}
+function render(){renderKpis();renderTable();drawCharts();updateWm()}
+function renderKpis(){const c=calc();const k=$('kpis');if(!k)return;k.innerHTML=[['ACTIVE AGENTS',fmt(c.active.length),'AHT > 0 only','cyan'],['AVG AHT',fmt(c.aht)+' s',c.delta>0?'ABOVE TARGET':'BELOW TARGET',c.delta>0?'bad':'good'],['AHT TARGET',fmt(c.target)+' s','STANDARD TARGET','cyan'],['TARGET DELTA',(c.delta>0?'+':'')+fmt(c.delta)+' s',c.delta>0?'REDUCE AHT':'TARGET MET',c.delta>0?'bad':'good'],['AVG FRT',fmt(c.frt)+' s','ACTIVE ROSTER','cyan']].map(x=>`<div class="kpi"><small>${x[0]}</small><strong>${x[1]}</strong><span class="${x[3]}">${x[2]}</span></div>`).join('')}
+function renderTable(){const q=($('search')?.value||'').toLowerCase();const rows=data.filter(r=>r.aht>0&&r.agent.toLowerCase().includes(q));const tbody=$('agentRows');if(!tbody)return;tbody.innerHTML=rows.length?rows.map(r=>{const d=r.aht-getTarget(),cls=d>0?'bad':d<0?'good':'cyan',arrow=d>0?'▲':d<0?'▼':'—';return `<tr data-agent="${esc(r.agent)}"><td><div class="agent"><div class="avatar">${esc(r.agent.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase())}</div><div><b>${esc(r.agent)}</b><div class="mini">${esc(r.email||'')}</div></div></div></td><td>${fmt(r.received)}</td><td>${fmt(r.resolved)}</td><td>${humanTime(r.avg)}</td><td class="${cls}"><b>${fmt(r.aht)} ${arrow}</b></td><td>${fmt(r.frt)} s</td></tr>`}).join(''):`<tr><td colspan="6" class="aht-empty">Paste the copied agent table above. AHT results will appear here automatically.</td></tr>`;
+ document.querySelectorAll('#agentRows tr[data-agent]').forEach(tr=>tr.addEventListener('click',()=>openAgent(tr.dataset.agent)));
+ const c=calc();if($('grandToggle')?.checked&&$('agentTotal'))$('agentTotal').innerHTML=`<tr class="grand-total"><td>GRAND TOTAL / AVG</td><td>${fmt(c.rec)}</td><td>${fmt(c.res)}</td><td>${humanTime(c.aht)}</td><td>${fmt(c.aht)} ${c.delta>0?'▲':c.delta<0?'▼':'—'}</td><td>${fmt(c.frt)} s</td></tr>`;else if($('agentTotal'))$('agentTotal').innerHTML='';
+}
+function drawOne(id,vals,labels,target,title){const cv=$(id);if(!cv)return;const box=cv.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1,w=Math.max(420,box.width||700),h=Math.max(240,box.height||260);cv.width=w*dpr;cv.height=h*dpr;const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);const pad={l:48,r:20,t:28,b:50},pw=w-pad.l-pad.r,ph=h-pad.t-pad.b,max=Math.max(...vals,target||0,1)*1.15;c.font='10px Arial';c.fillStyle=document.documentElement.classList.contains('light')?'#53667b':'#9c9688';c.strokeStyle=document.documentElement.classList.contains('light')?'#d9e2eb':'rgba(215,173,74,.12)';for(let i=0;i<5;i++){const y=pad.t+ph*i/4;c.beginPath();c.moveTo(pad.l,y);c.lineTo(w-pad.r,y);c.stroke();c.fillText(Math.round(max-(max*i/4))+'s',8,y+3)}if(!vals.length){c.fillText('Paste agent data to activate this chart.',pad.l,pad.t+28);return}const pts=vals.map((v,i)=>({x:vals.length===1?pad.l+pw/2:pad.l+i/(vals.length-1)*pw,y:pad.t+ph-v/max*ph}));c.beginPath();pts.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.strokeStyle='#d9ad3f';c.lineWidth=3;c.stroke();pts.forEach((p,i)=>{c.beginPath();c.arc(p.x,p.y,4,0,Math.PI*2);c.fillStyle=vals[i]>target&&target!=null?'#c83d4d':'#3b9b70';c.fill()});if(target!=null){const y=pad.t+ph-target/max*ph;c.setLineDash([7,6]);c.strokeStyle='#c83d4d';c.beginPath();c.moveTo(pad.l,y);c.lineTo(w-pad.r,y);c.stroke();c.setLineDash([]);c.fillStyle='#c83d4d';c.fillText('TARGET '+Math.round(target)+'s',w-pad.r-80,Math.max(15,y-5))}c.fillStyle=document.documentElement.classList.contains('light')?'#18263a':'#e8ca73';c.font='700 11px Arial';c.fillText(title,pad.l,15);c.font='9px Arial';labels.forEach((x,i)=>{if(i<8||i===labels.length-1){c.save();c.translate(pts[i].x,h-15);c.rotate(-.18);c.textAlign='center';c.fillText(x.length>12?x.slice(0,11)+'…':x,0,0);c.restore()}})}
+function drawCharts(){const a=data.filter(r=>r.aht>0);drawOne('waveCanvas',a.map(r=>r.aht),a.map(r=>r.agent),getTarget(),'AHT (seconds)');drawOne('frtCanvas',a.map(r=>r.frt),a.map(r=>r.agent),null,'FRT (seconds)')}
+function openDrawer(title,html){const d=$('drawer');if(!d)return;$('drawerTitle').textContent=title;$('drawerBody').innerHTML=html;d.classList.add('open')}
+function closeDrawer(){$('drawer')?.classList.remove('open')}
+function openAgent(name){const r=data.find(x=>x.agent===name);if(!r)return;const d=r.aht-getTarget(),cls=d>0?'bad':d<0?'good':'cyan';openDrawer(`${r.agent} // AHT Profile`,`<div class="profile-head"><div class="avatar" style="width:64px;height:64px">${esc(r.agent.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase())}</div><div><strong>${esc(r.agent)}</strong><div class="mini">${esc(r.email||'No email captured')}</div></div></div><div class="profile-grid"><div class="settingcard"><label>AHT</label><strong class="${cls}">${fmt(r.aht)} s</strong></div><div class="settingcard"><label>Target delta</label><strong class="${cls}">${d>0?'+':''}${fmt(d)} s</strong></div><div class="settingcard"><label>Avg. HT</label><strong>${humanTime(r.avg)}</strong></div><div class="settingcard"><label>Avg. FRT</label><strong>${fmt(r.frt)} s</strong></div><div class="settingcard"><label>Received</label><strong>${fmt(r.received)}</strong></div><div class="settingcard"><label>Resolved</label><strong>${fmt(r.resolved)}</strong></div></div>`)}
+function loadUsers(){try{return JSON.parse(localStorage.getItem('mog_users')||'[]')}catch(e){return[]}}
+function saveUsers(u){localStorage.setItem('mog_users',JSON.stringify(u))}
+function enter(id,pass){id=clean(id);pass=String(pass||'');const norm=id.toLowerCase();let u=null;if(['admin','abhijith'].includes(norm)&&pass==='Abhijith@123')u={id:'admin',name:'Abhijith',admin:true,approved:true};else u=loadUsers().find(x=>String(x.id||'').toLowerCase()===norm&&String(x.pass||'')===pass&&x.approved);if(!u){$('loginMsg').textContent='Access denied. Admin: admin / Abhijith@123';return false}currentUser=u;$('brandName').textContent=u.name||u.id;$('profileBtn').textContent=(u.name||u.id)+' · Profile';$('adminNav').classList.toggle('hidden',!u.admin);updateWm();intro();return true}
+function intro(){const login=$('login'),introEl=$('intro'),app=$('app');login?.classList.add('hidden');introEl?.classList.remove('hidden');if($('introName'))$('introName').textContent=currentUser?.name||'Abhijith';$('introWelcome')?.classList.add('active');$('introInit')?.classList.remove('active');clearTimeout(window.__intro);window.__intro=setTimeout(()=>{$('introWelcome')?.classList.remove('active');$('introInit')?.classList.add('active');setTimeout(()=>{introEl?.classList.add('hidden');app?.classList.remove('hidden');render()},1900)},3100)}
+function profile(){
+ if(!currentUser){toast('Please sign in first');return}
+ const isAdmin=!!currentUser.admin, stored=currentUser.avatar||'';
+ const avatarHtml=stored?`<img class="profile-avatar" id="profileAvatar" src="${esc(stored)}">`:`<div class="profile-avatar" id="profileAvatar" style="display:grid;place-items:center;font-size:28px;color:var(--gold)">${esc((currentUser.name||currentUser.id||'U').charAt(0).toUpperCase())}</div>`;
+ openDrawer(`${esc(currentUser.name||currentUser.id)} // PROFILE`,
+   `<div class="profile-head">${avatarHtml}<div><strong>${esc(currentUser.name||currentUser.id)}</strong><div class="mini">${isAdmin?'ADMIN':'VISITOR'} · ${esc(currentUser.id)}</div></div></div>
+    <div class="profile-edit">
+      <label>Display name</label><input id="editName" value="${esc(currentUser.name||'')}" maxlength="50">
+      <label>Profile picture</label><input id="editAvatar" type="file" accept="image/*">
+      <label>Team / designation</label><input id="editTeam" value="${esc(currentUser.team||'')}" maxlength="80">
+      <button class="btn primary" id="saveProfile">Save profile</button>
+      <div class="statusline">${isAdmin?'Administrator profile — Admin Command is enabled.':'Visitor profile — you can edit your own name, picture and details.'}</div>
+    </div>`);
+ $('editAvatar')?.addEventListener('change',e=>{
+   const f=e.target.files?.[0]; if(!f)return;
+   const rd=new FileReader(); rd.onload=()=>{
+     const img=$('profileAvatar');
+     if(img.tagName==='IMG') img.src=rd.result;
+     else {img.textContent='';img.style.backgroundImage=`url(${rd.result})`;img.style.backgroundSize='cover';img.dataset.data=rd.result}
+     img.dataset.data=rd.result;
+   }; rd.readAsDataURL(f);
+ });
+ $('saveProfile')?.addEventListener('click',()=>{
+   const name=clean($('editName')?.value)||currentUser.id, team=clean($('editTeam')?.value);
+   const avatar=$('profileAvatar')?.dataset.data||currentUser.avatar||'';
+   currentUser={...currentUser,name,team,avatar};
+   $('brandName').textContent=name; $('profileBtn').textContent=name+' · Profile';
+   if(!currentUser.admin){const us=loadUsers(),idx=us.findIndex(x=>String(x.id).toLowerCase()===String(currentUser.id).toLowerCase());if(idx>=0){us[idx]={...us[idx],name,team,avatar};saveUsers(us)}}
+   closeDrawer(); toast('Profile updated');
+ });
+}
+function admin(){if(!currentUser?.admin){toast('Admin access only');return}const users=loadUsers();openDrawer('ADMIN COMMAND // ACCESS CONTROL',`<div class="settings"><div class="settingcard"><label>Access Requests</label>${users.filter(u=>!u.approved).map(u=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)"><span><b>${esc(u.name||u.id)}</b><div class="mini">${esc(u.id)}</div></span><span><button class="btn" data-approve="${esc(u.id)}">Approve</button> <button class="btn" data-reject="${esc(u.id)}">Reject</button></span></div>`).join('')||'<div class="mini">No pending requests.</div>'}</div><div class="settingcard"><label>Approved Profiles</label>${users.filter(u=>u.approved).map(u=>`<div style="padding:7px 0;border-bottom:1px solid var(--line)"><b>${esc(u.name||u.id)}</b> <span class="mini">${esc(u.id)}</span></div>`).join('')||'<div class="mini">No visitor profiles yet.</div>'}</div><div class="settingcard"><label>Watermark</label><div class="mini">Only Admin can change this watermark.</div><div style="display:flex;gap:8px;margin-top:8px"><input id="adminWatermark" value="${esc(localStorage.getItem('mog_watermark')||'Abhijith')}" maxlength="32"><button class="btn primary" id="saveAdminWatermark">Save</button></div></div></div>`)}
+function autoAnalyze(){const parsed=parsePaste($('pasteArea')?.value||'');if(parsed.length){data=parsed;data.forEach(r=>r.target=getTarget());render();toast(`AHT analysis ready — ${data.length} agents`)}else if(($('pasteArea')?.value||'').trim()){data=[];render();toast('No complete agent records found — paste the full copied table')}}
+function requestAccess(){const name=prompt('Your name');if(!name)return;const id=prompt('Choose a Profile ID / email');if(!id)return;const pass=prompt('Choose a local passcode');if(!pass)return;const u=loadUsers();if(u.some(x=>String(x.id).toLowerCase()===id.toLowerCase())){toast('Profile ID already exists');return}u.push({id,name,pass,approved:false,requestedAt:new Date().toISOString()});saveUsers(u);$('loginMsg').textContent='Access request saved. Admin can approve it on this browser.'}
+
+// Single delegated event layer: prevents overlapping/duplicate listeners from breaking controls.
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-view]');
+ if(t){const v=t.dataset.view;if(v==='admin'){if(currentUser?.admin)admin();else toast('Admin access only');return}document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b===t));const target=v==='command'?document.querySelector('.hero'):v==='agents'?$('matrixPanel'):v==='wave'?$('wavePanel'):v==='data'||v==='settings'?$('dataPanel'):null;target?.scrollIntoView({behavior:'smooth',block:'start'});if(v==='agents')renderTable();if(v==='wave')drawCharts();return}
+ if(e.target.closest('#profileBtn')){e.preventDefault();profile();return}
+ if(e.target.closest('#adminNav')){e.preventDefault();if(currentUser?.admin)admin();else toast('Admin access only');return}
+ if(e.target.closest('#drawerClose')){closeDrawer();return}
+ const ap=e.target.closest('[data-approve]');if(ap){const id=ap.dataset.approve;const u=loadUsers();const x=u.find(a=>a.id===id);if(x)x.approved=true;saveUsers(u);admin();toast('Access approved');return}
+ const rj=e.target.closest('[data-reject]');if(rj){saveUsers(loadUsers().filter(a=>a.id!==rj.dataset.reject));admin();toast('Access request removed');return}
+ if(e.target.closest('#saveAdminWatermark')){if(!currentUser?.admin){toast('Admin only');return}localStorage.setItem('mog_watermark',clean($('adminWatermark')?.value)||'Abhijith');updateWm();toast('Watermark updated by Admin');return}
+ if(e.target.closest('#saveProfile'))return;
+ if(e.target.closest('#requestBtn')){requestAccess();return}
+ if(e.target.closest('#clearPaste')){$('pasteArea').value='';data=[];render();return}
+ if(e.target.closest('#parseBtn')){autoAnalyze();return}
+ if(e.target.closest('#themeBtn')){const on=document.documentElement.classList.toggle('light');localStorage.setItem('mog_theme',on?'light':'dark');e.target.textContent=on?'Dark theme':'Light theme';render();return}
+});
+document.addEventListener('submit',e=>{if(e.target.id==='loginForm'){e.preventDefault();enter($('loginId').value,$('loginPass').value)}});
+$('passToggle')?.addEventListener('click',()=>{const p=$('loginPass');p.type=p.type==='password'?'text':'password';});
+$('adminFill')?.addEventListener('click',()=>{$('loginId').value='admin';$('loginPass').value='Abhijith@123'});
+$('pasteArea')?.addEventListener('input',()=>{clearTimeout(window.__auto);window.__auto=setTimeout(autoAnalyze,180)});
+$('pasteArea')?.addEventListener('paste',()=>setTimeout(autoAnalyze,100));
+$('search')?.addEventListener('input',renderTable);
+$('ahtTarget')?.addEventListener('input',()=>{data.forEach(r=>r.target=getTarget());render()});
+$('grandToggle')?.addEventListener('change',renderTable);
+$('watermark')?.addEventListener('change',()=>{if(!currentUser?.admin){updateWm();return}localStorage.setItem('mog_watermark',clean($('watermark').value)||'Abhijith');updateWm()});
+$('waveSend')?.addEventListener('click',()=>{const i=$('waveInput');const b=$('waveChat');if(!i||!b)return;const q=i.value.trim();if(!q)return;const c=calc();b.insertAdjacentHTML('beforeend',`<div class="msg user">${esc(q)}</div><div class="msg ai">Average AHT is <b>${fmt(c.aht)}s</b> vs the <b>${fmt(c.target)}s</b> standard. ${c.delta>0?`Reduction required: <b class="bad">+${fmt(c.delta)}s</b>.`:`Target is met.`}</div>`);i.value='';b.scrollTop=b.scrollHeight});
+if(localStorage.getItem('mog_theme')==='light')document.documentElement.classList.add('light');if($('themeBtn'))$('themeBtn').textContent=document.documentElement.classList.contains('light')?'Dark theme':'Light theme';
+window.openProfile=profile;window.renderAdmin=admin;window.enter=enter;window.autoAnalyze=autoAnalyze;
+updateWm();
+})();
 </script></body></html>
