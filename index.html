@@ -1680,10 +1680,19 @@ async function cloudVisitorLogin(email,password){
  // Check the shared Admin allow-list first. This prevents an Admin's Supabase
  // email from being incorrectly treated as a visitor who needs an access request.
  let isAdmin=false;
- try{
-   const {data:adminFlag,error:adminRpcError}=await supabaseClient.rpc('is_mogambo_admin');
-   if(!adminRpcError) isAdmin=adminFlag===true;
- }catch(e){console.warn('Admin RPC check failed',e)}
+ // Primary admin recognition: the authenticated Supabase identity is enough
+ // to identify the configured administrator. This avoids an RLS failure on
+ // app_admins from trapping the administrator on the login screen.
+ const CONFIGURED_ADMIN_EMAIL='ex.god.hell.666@gmail.com';
+ const CONFIGURED_ADMIN_UID='0d90841f-e33c-48c0-b9e9-bb47b51d2468';
+ if(String(user.email||'').trim().toLowerCase()===CONFIGURED_ADMIN_EMAIL || String(user.id||'')===CONFIGURED_ADMIN_UID) isAdmin=true;
+ // Secondary verification when the database RPC is available.
+ if(!isAdmin){
+   try{
+     const {data:adminFlag,error:adminRpcError}=await supabaseClient.rpc('is_mogambo_admin');
+     if(!adminRpcError) isAdmin=adminFlag===true;
+   }catch(e){console.warn('Admin RPC check failed',e)}
+ }
  if(isAdmin){
    cloudSession=data.session;
    currentUser={id:user.id,name:user.user_metadata?.full_name||'Abhijith',email:user.email,team:'Administrator',approved:true,admin:true,cloud:true,avatar:user.user_metadata?.avatar_url||''};
