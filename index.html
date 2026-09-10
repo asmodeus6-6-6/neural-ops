@@ -222,6 +222,56 @@ html.light .agent-roster-meta{color:#52677d!important}
 html.light .agent-roster-missing{color:#8a6200!important}
 
 
+
+/* V20 HIERARCHY PERFORMANCE DASHBOARD */
+.hierarchy-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}.hierarchy-stat{border:1px solid var(--line);border-radius:9px;background:var(--panel2);padding:12px 14px}.hierarchy-stat small{display:block;font-size:8px;letter-spacing:1.5px;color:var(--muted);font-weight:800}.hierarchy-stat strong{display:block;font-family:Georgia,serif;font-size:23px;margin-top:5px;color:var(--text)}.hierarchy-stat span{display:block;font-size:9px;margin-top:3px;color:var(--muted)}.hierarchy-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:9px}.hierarchy-table{min-width:980px}.hierarchy-table th{font-size:10px!important;letter-spacing:1px!important}.hierarchy-table td{font-size:11px}.hierarchy-group{font-weight:900;color:var(--text)}.hierarchy-sub{display:block;color:var(--muted);font-size:8px;margin-top:3px}.hierarchy-status{font-weight:900;font-size:9px;letter-spacing:.7px}.hierarchy-status.bad{color:#d34b5c}.hierarchy-status.good{color:#39936e}.hierarchy-status.cyan{color:#b38a2c}.hierarchy-gap.bad{color:#d34b5c;font-weight:900}.hierarchy-gap.good{color:#39936e;font-weight:900}.hierarchy-gap.cyan{color:#b38a2c;font-weight:900}.hierarchy-drill{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);display:none}.hierarchy-drill.show{display:block}.hierarchy-drill-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px}.hierarchy-drill-title{font-family:Georgia,serif;font-size:17px;color:var(--text)}.hierarchy-member-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}.hierarchy-member{border:1px solid var(--line);border-radius:8px;padding:9px;background:var(--panel)}.hierarchy-member b{font-size:11px}.hierarchy-member .mini{margin-top:3px}.hierarchy-chart-grid{grid-template-columns:1.5fr 1fr}.hierarchy-chart-card canvas{height:290px}.hierarchy-note{margin-top:8px;color:var(--muted);font-size:9px}.light .hierarchy-stat,.light .hierarchy-drill,.light .hierarchy-member{background:#fff!important;border-color:#c8d5e1!important;color:#17283d!important}.light .hierarchy-stat strong,.light .hierarchy-group,.light .hierarchy-drill-title{color:#17283d!important}.light .hierarchy-table th{background:#e8eef4!important;color:#17283d!important}.light .hierarchy-table td{color:#263b52!important}.light .hierarchy-sub,.light .hierarchy-note{color:#607187!important}.light .hierarchy-status.bad,.light .hierarchy-gap.bad{color:#b42335!important}.light .hierarchy-status.good,.light .hierarchy-gap.good{color:#19704e!important}.light .hierarchy-status.cyan,.light .hierarchy-gap.cyan{color:#8a5c00!important}
+@media(max-width:900px){.hierarchy-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.hierarchy-chart-grid{grid-template-columns:1fr}}
+
+/* V21 ADMIN COMMAND — full page, no slide-over drawer */
+.admin-page{display:none;margin-top:14px}
+.admin-page.active{display:block}
+.admin-hero{display:grid;grid-template-columns:1.4fr .6fr;gap:12px;margin-bottom:12px}
+.admin-command-title{font-family:Georgia,serif;color:#e8ca73;font-size:22px;letter-spacing:.4px}
+.admin-command-kicker{font-size:9px;letter-spacing:2px;color:var(--gold2);font-weight:800;text-transform:uppercase;margin-bottom:5px}
+.admin-status{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.admin-live-dot{width:8px;height:8px;border-radius:50%;background:#48c98a;box-shadow:0 0 12px rgba(72,201,138,.55)}
+.admin-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.admin-stat{border:1px solid rgba(215,173,74,.18);border-radius:9px;background:rgba(5,11,16,.7);padding:13px}
+.admin-stat small{display:block;font-size:8px;letter-spacing:1.4px;color:#8d877b;text-transform:uppercase;margin-bottom:6px}
+.admin-stat strong{font-family:Georgia,serif;font-size:24px;color:#e8ca73}
+.admin-stat span{display:block;font-size:9px;color:#8c8a82;margin-top:3px}
+.admin-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:12px;margin-bottom:12px}
+.admin-section{border:1px solid rgba(215,173,74,.18);border-radius:9px;background:linear-gradient(145deg,rgba(13,20,27,.96),rgba(7,12,17,.96));overflow:hidden}
+.admin-section-head{padding:13px 15px;border-bottom:1px solid rgba(215,173,74,.13);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.admin-section-head h3{font-family:Georgia,serif;color:#e8ca73;font-size:15px;margin:0}
+.admin-section-head .mini{margin-top:2px}
+.admin-section-body{padding:13px}
+.admin-request{display:grid;grid-template-columns:1.2fr 1fr .7fr auto;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.admin-request:last-child{border-bottom:0}
+.admin-request-name b{display:block;color:#e6ddce;font-size:12px}
+.admin-request-name span{display:block;color:#8e8a80;font-size:9px;margin-top:3px}
+.admin-request-meta{font-size:9px;color:#9c968a}
+.admin-actions{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.admin-empty{padding:22px 8px;text-align:center;color:#8c877d;border:1px dashed rgba(215,173,74,.16);border-radius:8px}
+.admin-roster-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.admin-control-card{border:1px solid rgba(215,173,74,.13);border-radius:8px;padding:12px;background:rgba(4,9,13,.42)}
+.admin-control-card label{display:block;color:#8f887c;font-size:8px;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px}
+.admin-control-card input[type=text],.admin-control-card input:not([type]){width:100%;box-sizing:border-box;background:#070e14;color:#eee2cb;border:1px solid rgba(215,173,74,.18);border-radius:7px;padding:9px;outline:0}
+.admin-toolbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.admin-toolbar .btn{white-space:nowrap}
+.admin-danger{border-color:rgba(190,62,73,.45)!important;color:#e7838b!important}
+.admin-pending-badge{display:inline-flex;min-width:20px;height:20px;padding:0 6px;border-radius:999px;align-items:center;justify-content:center;background:#a82335;color:#fff;font-size:9px;font-weight:900;margin-left:5px}
+html.light .admin-command-title,html.light .admin-section-head h3{color:#17273a!important}
+html.light .admin-stat,html.light .admin-section,html.light .admin-control-card{background:#fff!important;border-color:#c9d5df!important}
+html.light .admin-stat small,html.light .admin-control-card label{color:#52667b!important}
+html.light .admin-stat strong{color:#18304a!important}
+html.light .admin-stat span,html.light .admin-request-meta,html.light .admin-request-name span{color:#53677c!important}
+html.light .admin-request-name b{color:#17283c!important}
+html.light .admin-section-head{border-color:#d6e0e8!important}
+html.light .admin-request{border-color:#dbe3ea!important}
+html.light .admin-control-card input[type=text],html.light .admin-control-card input:not([type]){background:#fff!important;color:#18263a!important;border-color:#b9c7d5!important}
+@media(max-width:900px){.admin-hero,.admin-grid{grid-template-columns:1fr}.admin-stats{grid-template-columns:1fr 1fr}.admin-request{grid-template-columns:1fr 1fr}.admin-roster-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.admin-stats{grid-template-columns:1fr}.admin-request{grid-template-columns:1fr}.admin-actions{justify-content:flex-start}}
 </style>
 <style>
 /* V10 cinematic command refinements */
@@ -413,16 +463,29 @@ html.light #tableStage{background:#fff}
 </section>
 
 <section class="panel" id="rosterPanel" style="margin-top:14px;display:none">
-<div class="panelhead"><div><div class="paneltitle">TL / AM / Process View</div><div class="sub">Filter published agent details and switch between table, chart and visual command views.</div></div><div class="actions"><button class="btn copy4k" data-export="roster">Copy Current 4K</button></div></div>
+<div class="panelhead"><div><div class="paneltitle">PERFORMANCE HIERARCHY // COMMAND VIEW</div><div class="sub">See performance at Agent, TL, AM, Bucket, OJT, Shift Status and Process level. Every group is calculated from the live AHT dataset matched to the published roster.</div></div><div class="actions"><button class="btn copy4k" data-export="roster">Copy Current 4K</button></div></div>
 <div class="panelbody">
-<div class="filters roster-filters"><select id="rosterDimension"><option value="agent">Agent Wise</option><option value="tl">TL Wise</option><option value="am">AM Wise</option><option value="bucket">Bucket Wise</option><option value="ojt">OJT / Non-OJT</option><option value="shiftStatus">Shift Status</option><option value="process">Process Wise</option></select><select id="rosterValue"><option value="__all__">All</option></select><input id="rosterSearch" placeholder="Search published roster…"><span id="rosterCount" class="pill">0 records</span></div>
-<div class="view-tabs" role="tablist"><button class="view-tab active" data-roster-view="table">Table View</button><button class="view-tab" data-roster-view="chart">Chart View</button><button class="view-tab" data-roster-view="visual">Visual View</button></div>
-<div id="rosterTableView" class="roster-view active-view"><div class="tablewrap" id="rosterStage"><table class="table roster-table"><thead><tr><th>Agent ID / Login ID</th><th>Agent Name</th><th>TL</th><th>AM</th><th>Bucket</th><th>OJT / Non-OJT</th><th>Shift Status</th><th>Process</th></tr></thead><tbody id="rosterRows"><tr><td colspan="8" class="aht-empty">No published agent details yet.</td></tr></tbody></table></div></div>
-<div id="rosterChartView" class="roster-view"><div class="hierarchy-chart-grid"><div class="hierarchy-chart-card"><div class="mini">GROUP DISTRIBUTION</div><canvas id="rosterChartCanvas"></canvas></div><div class="hierarchy-chart-card"><div class="mini">WORKLOAD BY GROUP</div><canvas id="rosterWorkloadCanvas"></canvas></div></div></div>
+<div class="filters roster-filters"><select id="rosterDimension"><option value="agent">Agent Wise Performance</option><option value="tl">TL Wise Performance</option><option value="am">AM Wise Performance</option><option value="bucket">Bucket Wise Performance</option><option value="ojt">OJT / Non-OJT Performance</option><option value="shiftStatus">Shift Status Performance</option><option value="process">Process Wise Performance</option></select><select id="rosterValue"><option value="__all__">All Groups</option></select><input id="rosterSearch" placeholder="Search agent / TL / AM / group…"><span id="rosterCount" class="pill">0 groups</span></div>
+<div id="hierarchySummary" class="hierarchy-summary"></div>
+<div class="view-tabs" role="tablist"><button class="view-tab active" data-roster-view="table">Performance Table</button><button class="view-tab" data-roster-view="chart">Performance Chart</button><button class="view-tab" data-roster-view="visual">Command Cards</button></div>
+<div id="rosterTableView" class="roster-view active-view"><div class="hierarchy-table-wrap" id="rosterStage"><table class="table hierarchy-table"><thead><tr><th>GROUP / OWNER</th><th>AGENTS</th><th>RECEIVED</th><th>RESOLVED</th><th>AVG AHT</th><th>AVG FRT</th><th>VS TARGET</th><th>PERFORMANCE</th><th>ACTION</th></tr></thead><tbody id="rosterRows"><tr><td colspan="9" class="aht-empty">Paste AHT data and publish agent details to activate hierarchy performance.</td></tr></tbody></table></div><div class="hierarchy-note">AHT and FRT are arithmetic averages of active matched agents. Received and Resolved are summed. Target is the fixed 195-second standard.</div></div>
+<div id="rosterChartView" class="roster-view"><div class="hierarchy-chart-grid"><div class="hierarchy-chart-card"><div class="mini">AVERAGE AHT BY GROUP</div><canvas id="rosterChartCanvas"></canvas></div><div class="hierarchy-chart-card"><div class="mini">ACTIVE AGENTS BY GROUP</div><canvas id="rosterWorkloadCanvas"></canvas></div></div></div>
 <div id="rosterVisualView" class="roster-view"><div id="rosterVisualCards" class="visual-cards"></div></div>
+<div id="hierarchyDrill" class="hierarchy-drill"><div class="hierarchy-drill-head"><div><div id="hierarchyDrillTitle" class="hierarchy-drill-title">Group members</div><div class="mini">Agent-level performance inside the selected TL / AM / group.</div></div><button class="btn" id="closeHierarchyDrill">Close</button></div><div id="hierarchyMembers" class="hierarchy-member-grid"></div></div>
 <div class="copyline"><span class="mini" id="rosterPublishedAt">Published data is read-only for visitors.</span><button class="btn copy4k" data-export="roster">Copy Current 4K</button></div>
 </div></section>
-<section class="panel hidden" id="adminPanel" style="margin-top:14px"><div class="panelhead"><div><div class="paneltitle">Admin Command</div><div class="sub">Access control, watermark, and weekly agent roster publishing</div></div></div><div class="panelbody"><div id="adminContent"></div></div></section>
+<section class="panel admin-page" id="adminPanel">
+<div class="panelhead"><div><div class="admin-command-kicker">SECURE ADMIN CONSOLE</div><div class="admin-command-title">Admin Command // Control Center</div><div class="sub">Manage access requests, visitor profiles, weekly roster publishing, watermark and system controls.</div></div><div class="admin-status"><span class="admin-live-dot"></span><span class="mini">ADMIN SESSION ACTIVE</span></div></div>
+<div class="panelbody">
+<div class="admin-hero"><div class="admin-control-card"><label>Administrator</label><strong id="adminIdentity">Abhijith</strong><div class="mini" style="margin-top:4px">Full control over local access, published roster and reporting presentation.</div></div><div class="admin-control-card"><label>Request Queue</label><strong id="adminQueueStatus">Checking…</strong><div class="mini" style="margin-top:4px">Requests refresh instantly after approval or rejection.</div></div></div>
+<div class="admin-stats" id="adminStats"></div>
+<div class="admin-grid">
+<section class="admin-section"><div class="admin-section-head"><div><h3>Access Requests</h3><div class="mini">Review and approve visitor registration requests.</div></div><div class="admin-toolbar"><button class="btn" id="refreshAdminRequests">Refresh</button></div></div><div class="admin-section-body"><div id="adminRequests"></div></div></section>
+<section class="admin-section"><div class="admin-section-head"><div><h3>Approved Profiles</h3><div class="mini">Active visitor accounts on this browser.</div></div></div><div class="admin-section-body"><div id="adminApproved"></div></div></section>
+</div>
+<section class="admin-section"><div class="admin-section-head"><div><h3>Agent Details / Weekly Roster</h3><div class="mini">Agent ID / Login ID is the protected unique identifier. Uploading replaces the currently published roster on this browser.</div></div><div class="admin-toolbar"><button class="btn" id="downloadRosterTemplateAdmin">Download Sample</button><button class="btn admin-danger" id="removeRosterAdmin">Remove Roster</button></div></div><div class="admin-section-body"><div class="admin-roster-grid"><div class="admin-control-card"><label>Upload Excel / CSV</label><input id="rosterFileAdmin" type="file" accept=".xlsx,.xls,.csv"><div class="mini" style="margin-top:8px">Required: Agent ID / Login ID. Recommended: Agent Name, TL, AM, Bucket, OJT/Non-OJT, Shift Status, Process.</div></div><div class="admin-control-card"><label>Published Roster Status</label><div id="adminRosterStatus">No roster published.</div><div class="mini" id="adminRosterTime" style="margin-top:5px"></div></div></div></div></section>
+<section class="admin-section" style="margin-top:12px"><div class="admin-section-head"><div><h3>Presentation Controls</h3><div class="mini">Admin-only watermark control.</div></div></div><div class="admin-section-body"><div class="admin-control-card"><label>Watermark</label><div class="admin-toolbar"><input type="text" id="adminWatermarkPage" maxlength="32"><button class="btn primary" id="saveAdminWatermarkPage">Save Watermark</button></div></div></div></section>
+</div></section>
 </main></div>
 <div id="drawer" class="drawer"><div class="drawerhead"><b id="drawerTitle">Agent profile</b><button class="close" id="drawerClose">✕</button></div><div class="drawerbody" id="drawerBody"></div></div><div id="toast" class="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -597,7 +660,36 @@ function profile(){
    closeDrawer(); toast('Profile updated');
  });
 }
-function admin(){if(!currentUser?.admin){toast('Admin access only');return}const users=loadUsers();openDrawer('ADMIN COMMAND // ACCESS CONTROL',`<div class="settings"><div class="settingcard"><label>Access Requests</label>${users.filter(u=>!u.approved).map(u=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)"><span><b>${esc(u.name||u.id)}</b><div class="mini">${esc(u.id)}</div></span><span><button class="btn" data-approve="${esc(u.id)}">Approve</button> <button class="btn" data-reject="${esc(u.id)}">Reject</button></span></div>`).join('')||'<div class="mini">No pending requests.</div>'}</div><div class="settingcard"><label>Approved Profiles</label>${users.filter(u=>u.approved).map(u=>`<div style="padding:7px 0;border-bottom:1px solid var(--line)"><b>${esc(u.name||u.id)}</b> <span class="mini">${esc(u.id)}</span></div>`).join('')||'<div class="mini">No visitor profiles yet.</div>'}</div>${rosterAdminBlock()}<div class="settingcard"><label>Watermark</label><div class="mini">Only Admin can change this watermark.</div><div style="display:flex;gap:8px;margin-top:8px"><input id="adminWatermark" value="${esc(localStorage.getItem('mog_watermark')||'Abhijith')}" maxlength="32"><button class="btn primary" id="saveAdminWatermark">Save</button></div></div></div>`)}
+function admin(){
+ if(!currentUser?.admin){toast('Admin access only');return}
+ const p=$('adminPanel');if(!p)return;
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view==='admin'));
+ p.style.display='block';p.classList.add('active');p.classList.remove('hidden');
+ renderAdminPage();
+ p.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function renderAdminPage(){
+ if(!currentUser?.admin)return;
+ const users=loadUsers(),pending=users.filter(u=>!u.approved),approved=users.filter(u=>u.approved);
+ const stats=$('adminStats');
+ if(stats)stats.innerHTML=[
+  ['PENDING REQUESTS',pending.length,pending.length?'Action required':'Queue clear'],
+  ['APPROVED PROFILES',Math.max(0,approved.length-1),'Visitor accounts'],
+  ['ROSTER RECORDS',rosterData.length,rosterData.length?'Published':'Awaiting upload'],
+  ['WATERMARK',localStorage.getItem('mog_watermark')||'Abhijith','Admin controlled']
+ ].map(x=>`<div class="admin-stat"><small>${x[0]}</small><strong>${esc(String(x[1]))}</strong><span>${esc(String(x[2]))}</span></div>`).join('');
+ if($('adminIdentity'))$('adminIdentity').textContent=currentUser.name||'Abhijith';
+ if($('adminQueueStatus'))$('adminQueueStatus').innerHTML=pending.length?`<b style="color:#e7838b">${pending.length} pending</b>`:'<b style="color:#58c58c">No pending requests</b>';
+ const req=$('adminRequests');
+ if(req)req.innerHTML=pending.length?pending.map(u=>`<div class="admin-request"><div class="admin-request-name"><b>${esc(u.name||u.id)}</b><span>${esc(u.id)}</span></div><div class="admin-request-meta">Requested ${esc(formatRequestDate(u.requestedAt))}</div><div class="admin-request-meta">${esc(u.team||'Visitor access')}</div><div class="admin-actions"><button class="btn primary" data-approve="${esc(u.id)}">Approve</button><button class="btn admin-danger" data-reject="${esc(u.id)}">Reject</button></div></div>`).join(''):'<div class="admin-empty">No pending access requests. New requests will appear here immediately when created on this browser.</div>';
+ const ap=$('adminApproved');
+ if(ap)ap.innerHTML=approved.length?approved.map(u=>`<div class="admin-request"><div class="admin-request-name"><b>${esc(u.name||u.id)}</b><span>${esc(u.id)}</span></div><div class="admin-request-meta">${u.admin?'Administrator':'Visitor'}</div><div class="admin-request-meta">${esc(u.team||'—')}</div><div class="admin-actions"><span class="pill">APPROVED</span></div></div>`).join(''):'<div class="admin-empty">No approved visitor profiles yet.</div>';
+ if($('adminRosterStatus'))$('adminRosterStatus').innerHTML=rosterData.length?`<strong>${fmt(rosterData.length)} records published</strong>`:'<span class="mini">No roster published.</span>';
+ if($('adminRosterTime')){const t=localStorage.getItem('mog_roster_published_at');$('adminRosterTime').textContent=t?`Last published: ${new Date(t).toLocaleString()}`:'Upload a roster to activate agent detail mapping.'}
+ if($('adminWatermarkPage'))$('adminWatermarkPage').value=localStorage.getItem('mog_watermark')||'Abhijith';
+}
+function formatRequestDate(v){if(!v)return 'unknown time';try{return new Date(v).toLocaleString()}catch(e){return 'unknown time'}}
+
 function setProfileTrigger(){const n=currentUser?.name||currentUser?.id||'Profile',av=currentUser?.avatar||'',eln=$('profileBtnName'),avEl=$('profileAvatarMini');if(eln)eln.textContent=n;if(avEl){if(av){avEl.innerHTML=`<img src="${esc(av)}" alt="">`}else avEl.textContent=String(n).charAt(0).toUpperCase()}}
 function normalizeHeader(k){return String(k??'').toLowerCase().replace(/[^a-z0-9]+/g,'').trim()}
 function mapRosterRow(row){
@@ -649,29 +741,58 @@ function drawRosterBar(id,labels,values,title){
  const max=Math.max(...values,1),base=h-36,left=18,gap=(w-left-12)/values.length;
  values.forEach((v,i)=>{const bh=(v/max)*(h-78),x=left+i*gap+3,y=base-bh;c.fillStyle=document.documentElement.classList.contains('light')?'#315d84':'#d7ad4a';c.fillRect(x,y,Math.max(18,gap-8),bh);c.fillStyle=document.documentElement.classList.contains('light')?'#344d66':'#c7bdab';c.font='9px Arial';c.textAlign='center';c.fillText(String(v),x+Math.max(18,gap-8)/2,y-5);c.save();c.translate(x+Math.max(18,gap-8)/2,base+10);c.rotate(-.35);c.fillText(String(labels[i]).slice(0,13),0,0);c.restore();});c.textAlign='left';
 }
+function hierarchyField(){return $('rosterDimension')?.value||'agent'}
+function hierarchyLabel(dim){return ({agent:'Agent',tl:'TL',am:'AM',bucket:'Bucket',ojt:'OJT / Non-OJT',shiftStatus:'Shift Status',process:'Process'})[dim]||dim}
+function matchedPerformanceRows(){
+ const target=getTarget(), q=clean($('rosterSearch')?.value).toLowerCase();
+ return data.filter(r=>r.aht>0).map(r=>({perf:r,roster:rosterMatchForAgent(r)})).filter(x=>{
+   if(!x.roster)return false;
+   const text=[x.perf.agent,x.perf.email,x.roster.agentId,x.roster.agent,x.roster.tl,x.roster.am,x.roster.bucket,x.roster.ojt,x.roster.shiftStatus,x.roster.process].join(' ').toLowerCase();
+   return !q||text.includes(q);
+ });
+}
+function buildHierarchyRows(){
+ const dim=hierarchyField(), selected=$('rosterValue')?.value||'__all__', target=getTarget();
+ const pairs=matchedPerformanceRows();
+ const groups=new Map();
+ for(const x of pairs){
+   const r=x.roster,p=x.perf;
+   const key=dim==='agent'?(r.agentId||r.agent||p.agent):clean(r[dim])||'Unspecified';
+   if(selected!=='__all__'&&key!==selected)continue;
+   if(!groups.has(key))groups.set(key,{key,agents:[],received:0,resolved:0,aht:0,frt:0});
+   const g=groups.get(key);g.agents.push({perf:p,roster:r});g.received+=Number(p.received)||0;g.resolved+=Number(p.resolved)||0;g.aht+=Number(p.aht)||0;g.frt+=Number(p.frt)||0;
+ }
+ return [...groups.values()].map(g=>{const n=g.agents.length;g.avgAht=n?g.aht/n:0;g.avgFrt=n?g.frt/n:0;g.delta=g.avgAht-target;g.status=g.delta>0?'ABOVE TARGET':g.delta<0?'ON TARGET':'AT TARGET';return g}).sort((a,b)=>b.avgAht-a.avgAht);
+}
+function hierarchySummary(rows){
+ const el=$('hierarchySummary');if(!el)return;
+ const agents=rows.reduce((n,g)=>n+g.agents.length,0),rec=rows.reduce((n,g)=>n+g.received,0),res=rows.reduce((n,g)=>n+g.resolved,0),aht=agents?rows.reduce((n,g)=>n+g.aht,0)/agents:0,above=rows.filter(g=>g.delta>0).length;
+ el.innerHTML=[['GROUPS',rows.length,'Current hierarchy'],['ACTIVE AGENTS',agents,'Matched to roster'],['AVG AHT',fmt(aht)+' s',aht>getTarget()?'Above 195s target':'Within target'],['GROUPS ABOVE TARGET',above,above?'Action required':'Target maintained']].map(x=>`<div class="hierarchy-stat"><small>${x[0]}</small><strong>${x[1]}</strong><span>${x[2]}</span></div>`).join('');
+}
+function drawHierarchyBar(id,rows,metric,title){
+ const cv=$(id);if(!cv)return;const box=cv.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1,w=Math.max(520,box.width||620),h=Math.max(270,box.height||290);cv.width=w*dpr;cv.height=h*dpr;const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);
+ const light=document.documentElement.classList.contains('light');c.fillStyle=light?'#17304a':'#e8ca73';c.font='700 12px Arial';c.fillText(title,12,18);
+ const use=rows.slice(0,12),vals=use.map(g=>metric==='aht'?g.avgAht:g.agents.length),max=Math.max(...vals,getTarget(),1),base=h-48,left=34,avail=w-left-18,gap=use.length?avail/use.length:avail;
+ c.strokeStyle=light?'#d7e0e8':'rgba(215,173,74,.12)';c.fillStyle=light?'#607187':'#9b927f';c.font='9px Arial';for(let i=0;i<5;i++){const y=35+(base-35)*i/4;c.beginPath();c.moveTo(left,y);c.lineTo(w-18,y);c.stroke();c.fillText(Math.round(max-(max*i/4)),4,y+3)}
+ use.forEach((g,i)=>{const v=vals[i],bh=(v/max)*(base-45),bw=Math.max(20,gap-8),x=left+i*gap+4,y=base-bh;c.fillStyle=metric==='aht'?(g.delta>0?'#b42335':'#3b916e'):(light?'#315d84':'#d7ad4a');c.fillRect(x,y,bw,bh);c.fillStyle=light?'#344d66':'#c7bdab';c.font='9px Arial';c.textAlign='center';c.fillText(String(Math.round(v)),x+bw/2,y-5);c.save();c.translate(x+bw/2,base+13);c.rotate(-.32);c.fillText(String(g.key).slice(0,16),0,0);c.restore()});c.textAlign='left';
+}
 function renderRosterVisuals(rows){
- const groups=['tl','am','bucket','ojt','shiftStatus','process'];
- const counts=key=>Object.entries(rows.reduce((m,r)=>{const k=clean(r[key])||'Unspecified';m[k]=(m[k]||0)+1;return m},{})).sort((a,b)=>b[1]-a[1]).slice(0,8);
- const g=counts($('rosterDimension')?.value==='agent'?'tl':$('rosterDimension')?.value||'tl');
- drawRosterBar('rosterChartCanvas',g.map(x=>x[0]),g.map(x=>x[1]),'GROUP DISTRIBUTION');
- const active=rows.filter(r=>String(r.shiftStatus||'').toLowerCase().includes('active')).length;
- drawRosterBar('rosterWorkloadCanvas',['Active','Other'],[active,Math.max(0,rows.length-active)],'SHIFT STATUS');
- const cards=$('rosterVisualCards');
- if(cards)cards.innerHTML=rows.length?rows.slice(0,60).map(r=>`<div class="visual-card"><div class="visual-icon">${esc((r.agent||r.agentId||'?').split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase())}</div><div><b>${esc(r.agent||r.agentId)}</b><div class="mini">${esc(r.tl||'')} ${r.am?'· '+esc(r.am):''}</div><div class="mini">${esc(r.bucket||'')} ${r.process?'· '+esc(r.process):''}</div></div><div class="visual-metric">${esc(r.shiftStatus||'—')}<small>${esc(r.ojt||'')}</small></div></div>`).join(''):'<div class="mini">No records.</div>';
+ drawHierarchyBar('rosterChartCanvas',rows,'aht','AVERAGE AHT BY GROUP');drawHierarchyBar('rosterWorkloadCanvas',rows,'agents','ACTIVE AGENTS BY GROUP');
+ const cards=$('rosterVisualCards');if(!cards)return;
+ cards.innerHTML=rows.length?rows.slice(0,60).map(g=>{const cls=g.delta>0?'bad':g.delta<0?'good':'cyan';return `<div class="visual-card"><div class="visual-icon">${esc(String(g.key).split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase())}</div><div><b>${esc(g.key)}</b><div class="mini">${g.agents.length} active agent${g.agents.length===1?'':'s'} · ${fmt(g.received)} received · ${fmt(g.resolved)} resolved</div><div class="mini">Avg FRT ${fmt(g.avgFrt)} s</div></div><div class="visual-metric ${cls}">${fmt(g.avgAht)}s<small>${g.delta>0?'+'+fmt(g.delta)+'s above':g.delta<0?fmt(Math.abs(g.delta))+'s below':'at target'}</small></div></div>`}).join(''):'<div class="mini">No matched performance records. Paste AHT data and ensure Agent ID/Login ID or email/name matches the published roster.</div>';
 }
 function setRosterView(view){
- document.querySelectorAll('[data-roster-view]').forEach(b=>b.classList.toggle('active',b.dataset.rosterView===view));
- document.querySelectorAll('.roster-view').forEach(v=>v.classList.remove('active-view'));
- const map={table:'rosterTableView',chart:'rosterChartView',visual:'rosterVisualView'};$(map[view]||map.table)?.classList.add('active-view');
- if(view!=='table')renderRosterVisuals(currentRosterRows());
+ document.querySelectorAll('[data-roster-view]').forEach(b=>b.classList.toggle('active',b.dataset.rosterView===view));document.querySelectorAll('.roster-view').forEach(v=>v.classList.remove('active-view'));const map={table:'rosterTableView',chart:'rosterChartView',visual:'rosterVisualView'};$(map[view]||map.table)?.classList.add('active-view');if(view!=='table')renderRosterVisuals(buildHierarchyRows());
+}
+function drillHierarchy(key){
+ const rows=buildHierarchyRows(),g=rows.find(x=>x.key===key);if(!g)return;const box=$('hierarchyDrill'),title=$('hierarchyDrillTitle'),members=$('hierarchyMembers');if(!box||!members)return;title.textContent=`${hierarchyLabel(hierarchyField())}: ${key} // ${g.agents.length} agents`;members.innerHTML=g.agents.map(x=>{const p=x.perf,d=p.aht-getTarget(),cls=d>0?'bad':d<0?'good':'cyan';return `<div class="hierarchy-member"><b>${esc(p.agent)}</b><div class="mini">${esc(x.roster.agentId||p.email||'No ID')}</div><div class="mini">Received ${fmt(p.received)} · Resolved ${fmt(p.resolved)} · FRT ${fmt(p.frt)}s</div><div class="hierarchy-status ${cls}" style="margin-top:5px">AHT ${fmt(p.aht)}s · ${d>0?'+'+fmt(d)+'s above':d<0?fmt(Math.abs(d))+'s below':'at target'}</div></div>`}).join('');box.classList.add('show');box.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function renderRoster(){
- const dim=$('rosterDimension')?.value||'agent',val=$('rosterValue')?.value||'__all__',q=clean($('rosterSearch')?.value).toLowerCase();
- const vals=[...new Set(rosterData.map(r=>r[dim]).filter(Boolean))].sort((a,b)=>a.localeCompare(b)),vs=$('rosterValue');
- if(vs){const old=val;vs.innerHTML='<option value="__all__">All</option>'+vals.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');vs.value=vals.includes(old)?old:'__all__'}
- const rows=currentRosterRows(),body=$('rosterRows');
- if(body)body.innerHTML=rows.length?rows.map(r=>`<tr><td><b>${esc(r.agentId||r.agent)}</b></td><td>${esc(r.agent)}</td><td>${esc(r.tl)}</td><td>${esc(r.am)}</td><td>${esc(r.bucket)}</td><td>${esc(r.ojt)}</td><td>${esc(r.shiftStatus)}</td><td>${esc(r.process)}</td></tr>`).join(''):'<tr><td colspan="8" class="aht-empty">No records match this filter.</td></tr>';
- if($('rosterCount'))$('rosterCount').textContent=`${rows.length} records`;
+ const dim=hierarchyField(), selected=$('rosterValue')?.value||'__all__', vals=[...new Set(rosterData.map(r=>dim==='agent'?(r.agentId||r.agent):r[dim]).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b))),vs=$('rosterValue');
+ if(vs){const old=selected;vs.innerHTML='<option value="__all__">All Groups</option>'+vals.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');vs.value=vals.some(v=>String(v)===String(old))?old:'__all__'}
+ const rows=buildHierarchyRows();hierarchySummary(rows);const body=$('rosterRows');
+ if(body)body.innerHTML=rows.length?rows.map(g=>{const cls=g.delta>0?'bad':g.delta<0?'good':'cyan';return `<tr><td><div class="hierarchy-group">${esc(g.key)}</div><span class="hierarchy-sub">${hierarchyLabel(dim)} performance</span></td><td>${g.agents.length}</td><td>${fmt(g.received)}</td><td>${fmt(g.resolved)}</td><td><b>${fmt(g.avgAht)} s</b></td><td>${fmt(g.avgFrt)} s</td><td class="hierarchy-gap ${cls}">${g.delta>0?'+'+fmt(g.delta)+'s':g.delta<0?'-'+fmt(Math.abs(g.delta))+'s':'—'}</td><td class="hierarchy-status ${cls}">${g.status}</td><td><button class="btn" data-drill="${esc(g.key)}">View agents</button></td></tr>`}).join(''):'<tr><td colspan="9" class="aht-empty">No matched AHT performance for this hierarchy. Paste the live AHT data and verify roster identifiers.</td></tr>';
+ if($('rosterCount'))$('rosterCount').textContent=`${rows.length} ${dim==='agent'?'agents':'groups'}`;
  const at=localStorage.getItem('mog_roster_published_at');if($('rosterPublishedAt'))$('rosterPublishedAt').textContent=at?`Published ${new Date(at).toLocaleString()} · Visitors are read-only.`:'No published roster yet.';
  const active=document.querySelector('.view-tab.active')?.dataset.rosterView||'table';if(active!=='table')renderRosterVisuals(rows);
 }
@@ -724,9 +845,9 @@ document.addEventListener('click',e=>{
  if(e.target.closest('#profileBtn')){e.preventDefault();profile();return}
  if(e.target.closest('#adminNav')){e.preventDefault();if(currentUser?.admin)admin();else toast('Admin access only');return}
  if(e.target.closest('#drawerClose')){closeDrawer();return}
- const ap=e.target.closest('[data-approve]');if(ap){const id=ap.dataset.approve;const u=loadUsers();const x=u.find(a=>a.id===id);if(x)x.approved=true;saveUsers(u);admin();toast('Access approved');return}
- const rj=e.target.closest('[data-reject]');if(rj){saveUsers(loadUsers().filter(a=>a.id!==rj.dataset.reject));admin();toast('Access request removed');return}
- if(e.target.closest('#saveAdminWatermark')){if(!currentUser?.admin){toast('Admin only');return}localStorage.setItem('mog_watermark',clean($('adminWatermark')?.value)||'Abhijith');updateWm();toast('Watermark updated by Admin');return}
+ const ap=e.target.closest('[data-approve]');if(ap){const id=ap.dataset.approve;const u=loadUsers();const x=u.find(a=>a.id===id);if(x)x.approved=true;saveUsers(u);renderAdminPage();toast('Access approved');return}
+ const rj=e.target.closest('[data-reject]');if(rj){saveUsers(loadUsers().filter(a=>a.id!==rj.dataset.reject));renderAdminPage();toast('Access request removed');return}
+ if(e.target.closest('#saveAdminWatermark')){if(!currentUser?.admin){toast('Admin only');return}localStorage.setItem('mog_watermark',clean($('adminWatermark')?.value)||'Abhijith');updateWm();renderAdminPage();toast('Watermark updated by Admin');return}
  if(e.target.closest('#saveProfile'))return;
  if(e.target.closest('#requestBtn')){requestAccess();return}
  if(e.target.closest('#clearPaste')){$('pasteArea').value='';data=[];render();return}
@@ -737,16 +858,21 @@ document.addEventListener('click',e=>{
 document.addEventListener('submit',e=>{if(e.target.id==='loginForm'){e.preventDefault();enter($('loginId').value,$('loginPass').value)}});
 $('passToggle')?.addEventListener('click',()=>{const p=$('loginPass');p.type=p.type==='password'?'text':'password';});$('introAudioFallback')?.addEventListener('click',()=>{const a=$('introAudio'),b=$('introAudioFallback');if(!a)return;a.currentTime=0;a.play().then(()=>b?.classList.add('hidden')).catch(()=>{});});
 
+$('refreshAdminRequests')?.addEventListener('click',()=>{renderAdminPage();toast('Access request queue refreshed')});
+$('saveAdminWatermarkPage')?.addEventListener('click',()=>{if(!currentUser?.admin){toast('Admin only');return}localStorage.setItem('mog_watermark',clean($('adminWatermarkPage')?.value)||'Abhijith');updateWm();renderAdminPage();toast('Watermark updated by Admin')});
+$('downloadRosterTemplateAdmin')?.addEventListener('click',()=>{if(typeof XLSX==='undefined'){toast('Excel engine unavailable');return}const ws=XLSX.utils.json_to_sheet([{"Agent ID / Login ID":"agent001","Agent Name":"Sample Agent","TL":"TL Name","AM":"AM Name","Bucket":"General","OJT / Non-OJT":"Non-OJT","Shift Status":"Active","Process":"Voice"}]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Agent Details');XLSX.writeFile(wb,'Mogambo_Agent_Details_Sample.xlsx');toast('Sample template downloaded')});
+$('removeRosterAdmin')?.addEventListener('click',()=>{if(!currentUser?.admin){toast('Admin only');return}if(confirm('Remove the published roster for this browser?')){localStorage.removeItem('mog_published_roster');localStorage.removeItem('mog_roster_published_at');rosterData=[];renderRoster();renderTable();renderAdminPage();toast('Published roster removed')}});
+$('rosterFileAdmin')?.addEventListener('change',e=>{importRoster(e.target.files?.[0]);setTimeout(renderAdminPage,250)});
 $('adminFill')?.addEventListener('click',()=>{$('loginId').value='admin';$('loginPass').value='Abhijith@123'});
 $('pasteArea')?.addEventListener('input',()=>{clearTimeout(window.__auto);window.__auto=setTimeout(autoAnalyze,180)});
 $('pasteArea')?.addEventListener('paste',()=>setTimeout(autoAnalyze,100));
-$('search')?.addEventListener('input',renderTable);document.addEventListener('change',e=>{if(e.target.id==='rosterFile'){importRoster(e.target.files?.[0]);return}if(e.target.id==='rosterDimension'||e.target.id==='rosterValue')renderRoster()});$('rosterSearch')?.addEventListener('input',renderRoster);
+$('search')?.addEventListener('input',renderTable);document.addEventListener('change',e=>{if(e.target.id==='rosterFile'){importRoster(e.target.files?.[0]);return}if(e.target.id==='rosterFileAdmin'){return}if(e.target.id==='rosterDimension'||e.target.id==='rosterValue')renderRoster()});$('rosterSearch')?.addEventListener('input',renderRoster);document.addEventListener('click',e=>{const d=e.target.closest('[data-drill]');if(d){drillHierarchy(d.dataset.drill);return}if(e.target.closest('#closeHierarchyDrill')){$('hierarchyDrill')?.classList.remove('show');return}});
 $('resultTheme')?.addEventListener('change',e=>{const el=$('tableStage');if(!el)return;el.classList.remove('result-command','result-executive','result-navy','result-paper');el.classList.add(e.target.value);localStorage.setItem('mog_result_theme',e.target.value)});
 $('conditionTheme')?.addEventListener('change',e=>{const el=$('tableStage');if(!el)return;el.classList.remove('cond-classic','cond-soft','cond-strong','cond-mono');el.classList.add(e.target.value);localStorage.setItem('mog_condition_theme',e.target.value)});
 document.addEventListener('click',e=>{if(e.target.closest('#downloadRosterTemplate')){if(typeof XLSX==='undefined'){toast('Excel engine unavailable');return}const ws=XLSX.utils.json_to_sheet([{"Agent ID / Login ID":"agent001","Agent Name":"Sample Agent","TL":"TL Name","AM":"AM Name","Bucket":"General","OJT / Non-OJT":"Non-OJT","Shift Status":"Active","Process":"Voice"}]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Agent Details');XLSX.writeFile(wb,'Mogambo_Agent_Details_Sample.xlsx');toast('Sample template downloaded');return}if(e.target.closest('#removeRoster')){if(!currentUser?.admin){toast('Admin only');return}if(confirm('Remove the published roster for this browser?')){localStorage.removeItem('mog_published_roster');localStorage.removeItem('mog_roster_published_at');rosterData=[];renderRoster();admin();toast('Published roster removed')}}});
 
 if(localStorage.getItem('mog_theme')==='light')document.documentElement.classList.add('light');if($('themeBtn'))$('themeBtn').textContent=document.documentElement.classList.contains('light')?'Dark theme':'Light theme';
 window.openProfile=profile;window.renderAdmin=admin;window.enter=enter;window.autoAnalyze=autoAnalyze;
-const savedResult=localStorage.getItem('mog_result_theme')||(document.documentElement.classList.contains('light')?'result-executive':'result-command'),savedCond=localStorage.getItem('mog_condition_theme')||'cond-classic';const ts=$('tableStage');if(ts){ts.classList.remove('result-command','result-executive','result-navy','result-paper','cond-classic','cond-soft','cond-strong','cond-mono');ts.classList.add(savedResult,savedCond)}if($('resultTheme'))$('resultTheme').value=savedResult;if($('conditionTheme'))$('conditionTheme').value=savedCond;updateWm();setProfileTrigger();loadRoster();
+const savedResult=localStorage.getItem('mog_result_theme')||(document.documentElement.classList.contains('light')?'result-executive':'result-command'),savedCond=localStorage.getItem('mog_condition_theme')||'cond-classic';const ts=$('tableStage');if(ts){ts.classList.remove('result-command','result-executive','result-navy','result-paper','cond-classic','cond-soft','cond-strong','cond-mono');ts.classList.add(savedResult,savedCond)}if($('resultTheme'))$('resultTheme').value=savedResult;if($('conditionTheme'))$('conditionTheme').value=savedCond;updateWm();setProfileTrigger();loadRoster();if(currentUser?.admin)renderAdminPage();
 })();
 </script></body></html>
