@@ -152,7 +152,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}.h
 <section class="panel" id="dataPanel" style="margin-top:14px">
 <div class="panelhead"><div><div class="paneltitle">AHT Control Deck</div><div class="sub">Target and export controls</div></div></div>
 <div class="panelbody"><div class="settings">
-<div class="settingcard"><label>AHT Target (seconds)</label><input id="ahtTarget" type="number" min="1" value="360"></div>
+<div class="settingcard"><label>AHT Target (seconds)</label><input id="ahtTarget" type="number" min="1" value="195"></div>
 <div class="settingcard"><label>Grand Total</label><div class="switch"><input id="grandToggle" type="checkbox" checked> Show overall arithmetic AHT average</div></div>
 <div class="settingcard"><label>Previous period</label><div class="switch"><input id="prevMode" type="checkbox" checked> Use previous AHT/FRT when supplied</div></div>
 <div class="settingcard admin-only"><label>Watermark — Admin only</label><input id="watermark" value="Abhijith" maxlength="32" disabled></div>
@@ -204,55 +204,105 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}.h
 const $=id=>document.getElementById(id); let data=[],missedOnly=false,currentUser=null;
 const tips=['Mapping names and session fields…','Removing SVG noise and interface labels…','Converting human time into calculation-ready seconds…','Checking whether AHT, FRT and target details are sufficient…','Building the agent intelligence matrix…','Preparing your command centre…'];
 function fmt(n){return Number.isFinite(n)?Math.round(n).toLocaleString('en-IN'):'0'}
+function humanTime(secValue){
+  let n=Math.max(0,Math.round(Number(secValue)||0));
+  let h=Math.floor(n/3600), m=Math.floor((n%3600)/60), s=n%60;
+  if(h) return `${h} h ${m} m ${s} s`;
+  return `${m} m ${s} s`;
+}
 function sec(s){if(s==null)return 0;s=String(s).trim().toLowerCase();if(!s)return 0;let h=(s.match(/(\d+)\s*h/)||[])[1]||0,m=(s.match(/(\d+)\s*m/)||[])[1]||0,z=(s.match(/(\d+)\s*s/)||[])[1]||0;if(!h&&!m&&!z&&/^\d+(\.\d+)?$/.test(s))return +s;return +h*3600 + +m*60 + +z}
 function clean(v){return String(v??'').replace(/\*+/g,'').replace(/\\@/g,'@').replace(/^\s+|\s+$/g,'')}
-function looksName(v){v=clean(v);return v && !/@/.test(v) && !/^svg$/i.test(v) && !/^view$/i.test(v) && !/^(name|online time|break time|received|resolved|avg\.?\s*ht|avg\.?\s*frt)$/i.test(v) && /[A-Za-z]/.test(v) && !/^\d/.test(v)}
-function parsePaste(text){
- let lines=text.replace(/\r/g,'').split('\n').map(clean).filter(x=>x && !/^svg$/i.test(x) && !/^view$/i.test(x));
- // Best path: vertical copied browser table: name, email, time, time, received, resolved, avgHT, noise, avgFRT, noise, View.
- let out=[];
- for(let i=0;i<lines.length;i++){
-   if(!looksName(lines[i])) continue;
-   let name=lines[i], email='', online='', br='', received='', resolved='', avg='', frt='';
-   let j=i+1;
-   if(j<lines.length && /@/.test(lines[j])){email=lines[j];j++}
-   let times=[]; while(j<lines.length && times.length<2 && /^\d+\s*[hm].*(?:\d+\s*s)?$/i.test(lines[j])){times.push(lines[j]);j++}
-   if(times.length<2) continue;
-   online=times[0];br=times[1];
-   if(j<lines.length && /^\d+$/.test(lines[j])){received=lines[j];j++}else continue;
-   if(j<lines.length && /^\d+$/.test(lines[j])){resolved=lines[j];j++}else continue;
-   if(j<lines.length && /\d+\s*[hm]/i.test(lines[j])){avg=lines[j];j++}else continue;
-   while(j<lines.length && /^svg$/i.test(lines[j]))j++;
-   if(j<lines.length && /\d+\s*[hm]/i.test(lines[j])){frt=lines[j];j++}else frt='0 s';
-   out.push({agent:name,email,online:sec(online),break:sec(br),received:+received||0,resolved:+resolved||0,avg:sec(avg),aht:sec(avg),target:+$('ahtTarget').value||360,prev:sec(avg),frt:sec(frt),prevF:sec(frt)});
-   i=j-1;
- }
- // Horizontal/tabular fallback.
- if(!out.length){
-   let rows=text.split(/\r?\n/).filter(x=>x.trim()).map(r=>r.split(/\t|\s{2,}|\|/).map(clean).filter(Boolean));
-   if(rows.length>1){let h=rows[0].map(x=>x.toLowerCase());let ix=(a)=>h.findIndex(x=>a.some(n=>x===n||x.includes(n)));let ia=ix(['name','agent']),ir=ix(['received']),ires=ix(['resolved']),iav=ix(['avg. ht','avg ht']),ifrt=ix(['avg. frt','avg frt','frt']);out=rows.slice(1).map(r=>({agent:r[ia],received:+r[ir]||0,resolved:+r[ires]||0,avg:sec(r[iav]),aht:sec(r[iav]),target:+$('ahtTarget').value||360,prev:sec(r[iav]),frt:sec(r[ifrt]),prevF:sec(r[ifrt])})).filter(x=>looksName(x.agent));}
- }
- return out;
+function looksName(v){
+  v=clean(v);
+  if(!v || /@/.test(v) || /^svg$/i.test(v) || /^view$/i.test(v)) return false;
+  if(/^(name|agent(?: name)?|online time|break time|received|resolved|avg\.?\s*ht|avg\.?\s*frt)$/i.test(v)) return false;
+  if(/^agent data to be pasted/i.test(v)) return false;
+  return /[A-Za-z]/.test(v) && !/^\d/.test(v);
 }
-function calc(){let active=data.filter(r=>r.aht>0);let rec=active.reduce((s,r)=>s+r.received,0),res=active.reduce((s,r)=>s+r.resolved,0);let weight=rec||active.length||1;let aht=active.reduce((s,r)=>s+r.aht,0)/(active.length||1);let prev=active.reduce((s,r)=>s+r.prev,0)/(active.length||1);let frt=active.reduce((s,r)=>s+r.frt,0)/(active.length||1);let prevF=active.reduce((s,r)=>s+r.prevF,0)/(active.length||1);let target=+$('ahtTarget').value||360;let met=active.filter(r=>r.aht<=r.target).length;return{active,rec,res,aht,prev,frt,prevF,target,delta:aht-target,change:aht-prev,frtChange:frt-prevF,met}}
+function isTime(v){
+  v=clean(v);
+  return /^\d+\s*(?:h(?:ours?)?|m(?:in(?:utes?)?)?|s(?:ec(?:onds?)?)?)(?:\s+\d+\s*(?:h(?:ours?)?|m(?:in(?:utes?)?)?|s(?:ec(?:onds?)?)?))*$/i.test(v)
+      || /^(?:0\s*)?s(?:ec(?:onds?)?)?$/i.test(v)
+      || /^\d+\s*(?:h|m|s)$/i.test(v);
+}
+function isInt(v){ return /^\d+$/.test(clean(v)); }
+function parsePaste(text){
+  const lines=String(text||'').replace(/\r/g,'').split('\n')
+    .map(clean)
+    .filter(x=>x && !/^svg$/i.test(x) && !/^view$/i.test(x));
+  const out=[];
+  for(let i=0;i<lines.length;i++){
+    if(!looksName(lines[i])) continue;
+    const name=lines[i];
+    let j=i+1, email='';
+    if(j<lines.length && /@/.test(lines[j])){ email=lines[j]; j++; }
+    // Ignore any copied UI/header noise until the first time value.
+    while(j<lines.length && !isTime(lines[j]) && !isInt(lines[j]) && !looksName(lines[j])) j++;
+    if(j>=lines.length || !isTime(lines[j])) continue;
+    const online=lines[j++];
+    if(j>=lines.length || !isTime(lines[j])) continue;
+    const br=lines[j++];
+    if(j>=lines.length || !isInt(lines[j])) continue;
+    const received=lines[j++];
+    if(j>=lines.length || !isInt(lines[j])) continue;
+    const resolved=lines[j++];
+    if(j>=lines.length || !isTime(lines[j])) continue;
+    const avg=lines[j++];
+    let frt='0 s';
+    if(j<lines.length && isTime(lines[j])) frt=lines[j++];
+    const target=+$('ahtTarget').value||195;
+    out.push({
+      agent:name,email,online:sec(online),break:sec(br),
+      received:+received||0,resolved:+resolved||0,
+      avg:sec(avg),aht:sec(avg),target,prev:sec(avg),
+      frt:sec(frt),prevF:sec(frt)
+    });
+    i=j-1;
+  }
+  // Tabular / single-line fallback
+  if(!out.length){
+    const rows=String(text||'').split(/\r?\n/).filter(x=>x.trim())
+      .map(r=>r.split(/\t|\s{2,}|\|/).map(clean).filter(Boolean));
+    if(rows.length>1){
+      const h=rows[0].map(x=>x.toLowerCase());
+      const ix=a=>h.findIndex(x=>a.some(n=>x===n||x.includes(n)));
+      const ia=ix(['agent name','name','agent']),ir=ix(['received']),ires=ix(['resolved']),
+            iav=ix(['avg. ht','avg ht']),ifrt=ix(['avg. frt','avg frt','frt']);
+      if(ia>=0 && iav>=0){
+        out.push(...rows.slice(1).map(r=>{
+          const agent=r[ia], aht=sec(r[iav]), frt=ifrt>=0?sec(r[ifrt]):0;
+          return {agent,received:+(r[ir]||0)||0,resolved:+(r[ires]||0)||0,avg:aht,aht,target:+$('ahtTarget').value||195,prev:aht,frt,prevF:frt};
+        }).filter(x=>looksName(x.agent)&&x.aht>0));
+      }
+    }
+  }
+  // Deduplicate names from repeated clipboard fragments.
+  const seen=new Set();
+  return out.filter(r=>{
+    const k=r.agent.trim().toLowerCase();
+    if(seen.has(k)) return false;
+    seen.add(k); return true;
+  });
+}
+function calc(){let active=data.filter(r=>r.aht>0);let rec=active.reduce((s,r)=>s+r.received,0),res=active.reduce((s,r)=>s+r.resolved,0);let weight=rec||active.length||1;let aht=active.reduce((s,r)=>s+r.aht,0)/(active.length||1);let prev=active.reduce((s,r)=>s+r.prev,0)/(active.length||1);let frt=active.reduce((s,r)=>s+r.frt,0)/(active.length||1);let prevF=active.reduce((s,r)=>s+r.prevF,0)/(active.length||1);let target=+$('ahtTarget').value||195;let met=active.filter(r=>r.aht<=r.target).length;return{active,rec,res,aht,prev,frt,prevF,target,delta:aht-target,change:aht-prev,frtChange:frt-prevF,met}}
 function status(r){let d=r.aht-r.target;return d<=0?'met':d<=Math.max(10,r.target*.08)?'near':'miss'}
 function renderKpis(){let c=calc();let active=c.active.length;let perf=c.delta<=0?'TARGET ACHIEVED':'REDUCE '+fmt(c.delta)+'s';$('kpis').innerHTML=[['ACTIVE AGENTS',fmt(active),active?'AHT > 0 only':'Awaiting paste','cyan'],['AVG AHT',fmt(c.aht)+'s',`${c.change<=0?'↓':'↑'} ${fmt(Math.abs(c.change))}s baseline`,c.change<=0?'good':'bad'],['AHT TARGET',fmt(c.target)+'s',c.delta<=0?'Target achieved':'Reduction required',c.delta<=0?'good':'warn'],['TARGET DELTA',`${c.delta>0?'+':''}${fmt(c.delta)}s`,perf,c.delta<=0?'good':'bad'],['AVG FRT',fmt(c.frt)+'s',`${c.frtChange<=0?'↓':'↑'} ${fmt(Math.abs(c.frtChange))}s baseline`,c.frtChange<=0?'good':'bad'],['GRAND TOTAL', $('grandToggle').checked?fmt(c.aht)+'s':'OFF','arithmetic average', $('grandToggle').checked?'cyan':'warn']].map(x=>`<div class="kpi"><small>${x[0]}</small><strong>${x[1]}</strong><span class="${x[3]}">${x[2]}</span></div>`).join('');$('coreCount').textContent=active}
 function renderTable(){
   let q=($('search')?.value||'').toLowerCase();
   let rows=data.filter(r=>r.aht>0 && r.agent.toLowerCase().includes(q));
   $('agentRows').innerHTML=rows.map(r=>{
-    let over=r.aht-(+$('ahtTarget').value||360);
+    let over=r.aht-(+$('ahtTarget').value||195);
     let arrow=over>0?'▲':over<0?'▼':'—';
     let cls=over>0?'bad':over<0?'good':'cyan';
     return `<tr data-agent="${escapeHtml(r.agent)}">
       <td><div class="agent"><div class="avatar">${r.agent.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()}</div><div><b>${escapeHtml(r.agent)}</b><div class="mini">${escapeHtml(r.email||'')}</div></div></div></td>
-      <td>${fmt(r.received)}</td><td>${fmt(r.resolved)}</td><td>${fmt(r.avg)}s</td>
+      <td>${fmt(r.received)}</td><td>${fmt(r.resolved)}</td><td>${humanTime(r.avg)}</td>
       <td class="${cls}"><b>${fmt(r.aht)} ${arrow}</b></td><td>${fmt(r.frt)}s</td>
     </tr>`;
   }).join('')||'<tr><td colspan="6" style="padding:35px;text-align:center;color:#72819a">No active AHT records.</td></tr>';
   let c=calc();
   $('agentTotal').innerHTML=$('grandToggle')?.checked?`<tr class="grand-total">
-    <td>GRAND TOTAL / AVG</td><td>${fmt(c.rec)}</td><td>${fmt(c.res)}</td><td>${Math.floor(c.aht/60)+' m '+Math.round(c.aht%60)+' s'}</td>
+    <td>GRAND TOTAL / AVG</td><td>${fmt(c.rec)}</td><td>${fmt(c.res)}</td><td>${humanTime(c.aht)}</td>
     <td>${fmt(c.aht)} —</td><td>${fmt(c.frt)}s</td>
   </tr>`:'';
   document.querySelectorAll('#agentRows tr[data-agent]').forEach(tr=>tr.onclick=()=>openAgent(tr.dataset.agent));
@@ -278,7 +328,7 @@ function drawLineChart(canvasId, values, labels, target, title){
 }
 function drawWave(){
   let active=data.filter(r=>r.aht>0), labels=active.map(r=>r.agent);
-  drawLineChart('waveCanvas',active.map(r=>r.aht),labels,+($('ahtTarget')?.value||360),'AHT (seconds)');
+  drawLineChart('waveCanvas',active.map(r=>r.aht),labels,+($('ahtTarget')?.value||195),'AHT (seconds)');
   drawLineChart('frtCanvas',active.map(r=>r.frt),labels,null,'FRT (seconds)');
 }
 function render(){
@@ -321,8 +371,25 @@ function enter(id,pass){
   fill?.addEventListener('click',function(){id.value='admin';pass.value='Abhijith@123';$('loginMsg').textContent='Admin credentials filled. Press Enter Command.';pass.focus();});
   setTimeout(()=>{if(document.activeElement!==id && !id.value) id.focus();},250);
 })();
-$('profileBtn').onclick=openProfile;$('requestBtn').onclick=()=>{let name=prompt('Your name');if(!name)return;let id=prompt('Choose a Profile ID');if(!id)return;let pass=prompt('Choose a local passcode');if(!pass)return;let u=loadUsers();u.push({id,name,pass,approved:false,requestedAt:new Date().toISOString()});saveUsers(u);$('loginMsg').textContent='Access request saved locally. Ask the admin on this browser to approve it.'};
-$('parseBtn').onclick=()=>{let parsed=parsePaste($('pasteArea').value);if(!parsed.length){toast('Could not find a complete agent record. Paste the copied agent table.');return}data=parsed;render();toast(`Mapped ${data.length} agent records`)};$('clearPaste').onclick=()=>{$('pasteArea').value='';data=[];render()};$('ahtTarget').oninput=()=>{data.forEach(r=>r.target=+$('ahtTarget').value||360);render()};$('grandToggle').onchange=render;$('watermark').onchange=()=>{if(!currentUser?.admin){syncWatermarkAccess();return}let v=$('watermark').value.trim()||'Abhijith';localStorage.setItem('mog_watermark',v);updateWatermarks();toast('Admin watermark updated')};$('search').oninput=renderTable;$('waveSend').onclick=()=>chat('waveInput','waveChat','wave');$('waveInput').onkeydown=e=>e.key==='Enter'&&chat('waveInput','waveChat','wave');$('drawerClose').onclick=()=>$('drawer').classList.remove('open');$('logoutBtn').onclick=()=>location.reload();
+$('profileBtn').onclick=(e)=>{e.preventDefault();openProfile()};
+$('requestBtn').onclick=()=>{let name=prompt('Your name');if(!name)return;let id=prompt('Choose a Profile ID');if(!id)return;let pass=prompt('Choose a local passcode');if(!pass)return;let u=loadUsers();u.push({id,name,pass,approved:false,requestedAt:new Date().toISOString()});saveUsers(u);$('loginMsg').textContent='Access request saved locally. Ask the administrator on this browser to approve it.'};
+
+function autoAnalyze(showToast=true){
+  const parsed=parsePaste($('pasteArea').value);
+  if(parsed.length){ data=parsed; render(); if(showToast) toast(`Analysis ready — ${data.length} agents mapped`); }
+}
+$('parseBtn').onclick=()=>autoAnalyze(true);
+$('pasteArea').addEventListener('paste',()=>setTimeout(()=>autoAnalyze(true),50));
+$('pasteArea').addEventListener('input',()=>{clearTimeout(window.__ahtAuto);window.__ahtAuto=setTimeout(()=>autoAnalyze(false),350)});
+$('clearPaste').onclick=()=>{$('pasteArea').value='';data=[];render();};
+$('ahtTarget').oninput=()=>{const t=+$('ahtTarget').value||195;data.forEach(r=>r.target=t);render()};
+$('grandToggle').onchange=render;
+$('watermark').onchange=()=>{if(!currentUser?.admin){syncWatermarkAccess();return}let v=$('watermark').value.trim()||'Abhijith';localStorage.setItem('mog_watermark',v);updateWatermarks();toast('Admin watermark updated')};
+$('search').oninput=renderTable;
+$('waveSend').onclick=()=>chat('waveInput','waveChat','wave');
+$('waveInput').onkeydown=e=>e.key==='Enter'&&chat('waveInput','waveChat','wave');
+$('drawerClose').onclick=()=>$('drawer').classList.remove('open');
+$('logoutBtn').onclick=()=>location.reload();
 $('themeBtn').textContent=document.documentElement.classList.contains('light')?'Dark theme':'Light theme';$('themeBtn').onclick=()=>{document.documentElement.classList.toggle('light');localStorage.setItem('mog_theme',document.documentElement.classList.contains('light')?'light':'dark');$('themeBtn').textContent=document.documentElement.classList.contains('light')?'Dark theme':'Light theme';toast(document.documentElement.classList.contains('light')?'Light command theme':'Dark command theme')};
 document.querySelectorAll('.nav button').forEach(b=>{
   b.onmousemove=e=>{let r=b.getBoundingClientRect();b.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');b.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%')};
@@ -341,15 +408,15 @@ document.querySelectorAll('.nav button').forEach(b=>{
   }
 });
 function openProfile(){
-  let p=$('profilePanel'), c=$('profileContent');
-  if(!currentUser)return;
-  p.style.display='block';
-  c.innerHTML=`<div class="settings">
+  if(!currentUser){toast('No signed-in profile found');return}
+  const d=$('drawer'), title=$('drawerTitle'), body=$('drawerBody');
+  title.textContent='Profile Command';
+  body.innerHTML=`<div class="settings">
     <div class="settingcard"><label>Profile</label><strong>${escapeHtml(currentUser.name||'Abhijith')}</strong><div class="mini">${escapeHtml(currentUser.id||'admin')}</div></div>
     <div class="settingcard"><label>Access</label><strong>${currentUser.admin?'ADMIN':'VISITOR'}</strong><div class="mini">${currentUser.admin?'Full local controls':'AHT analytics access'}</div></div>
-    <div class="settingcard"><label>Watermark</label><strong>${escapeHtml(localStorage.getItem('mog_watermark')||'Abhijith')}</strong><div class="mini">${currentUser.admin?'Editable by admin':'Locked by admin'}</div></div>
+    <div class="settingcard"><label>Watermark</label><strong>${escapeHtml(localStorage.getItem('mog_watermark')||'Abhijith')}</strong><div class="mini">${currentUser.admin?'Editable by admin':'Locked by administrator'}</div></div>
   </div>`;
-  p.scrollIntoView({behavior:'smooth',block:'start'});
+  d.classList.add('open');
 }
 function updateWatermarks(){
   let wm=localStorage.getItem('mog_watermark')||'Abhijith';
@@ -361,8 +428,35 @@ function syncWatermarkAccess(){
   document.querySelectorAll('.admin-only').forEach(x=>x.style.opacity=admin?'1':'.58');
   updateWatermarks();
 }
-function renderAdmin(){if(!currentUser?.admin)return;$('adminPanel').classList.remove('hidden');let users=loadUsers();$('adminContent').innerHTML=`<div class="settings"><div class="settingcard"><label>Access requests</label>${users.filter(u=>!u.approved).map(u=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)"><span><b>${escapeHtml(u.name)}</b><div class="mini">${escapeHtml(u.id)}</div></span><span><button class="btn" onclick="approve('${escapeHtml(u.id)}')">Approve</button> <button class="btn" onclick="reject('${escapeHtml(u.id)}')">Reject</button></span></div>`).join('')||'<div class="mini">No pending requests.</div>'}</div><div class="settingcard"><label>Approved local profiles</label>${users.filter(u=>u.approved).map(u=>`<div style="padding:7px 0;border-bottom:1px solid var(--line)"><b>${escapeHtml(u.name)}</b> <span class="mini">${escapeHtml(u.id)}</span></div>`).join('')||'<div class="mini">No visitor profiles yet.</div>'}</div></div><p class="mini" style="margin-top:12px">Watermark changes are restricted to the administrator on this browser. Visitor profiles cannot edit it.</p>`}
-window.approve=id=>{let u=loadUsers();let x=u.find(a=>a.id===id);if(x)x.approved=true;saveUsers(u);renderAdmin();toast('Access approved locally')};window.reject=id=>{saveUsers(loadUsers().filter(a=>a.id!==id));renderAdmin();toast('Access request removed')};$('adminNav').onclick=()=>renderAdmin();
+function renderAdmin(){
+  if(!currentUser?.admin){toast('Admin access only');return}
+  const d=$('drawer'), title=$('drawerTitle'), body=$('drawerBody');
+  title.textContent='Admin Command';
+  const users=loadUsers();
+  body.innerHTML=`<div class="settings">
+    <div class="settingcard"><label>Access Requests</label>
+      ${users.filter(u=>!u.approved).map(u=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)">
+        <span><b>${escapeHtml(u.name)}</b><div class="mini">${escapeHtml(u.id)}</div></span>
+        <span><button class="btn" onclick="approve('${escapeHtml(u.id)}')">Approve</button> <button class="btn" onclick="reject('${escapeHtml(u.id)}')">Reject</button></span>
+      </div>`).join('')||'<div class="mini">No pending requests.</div>'}
+    </div>
+    <div class="settingcard"><label>Approved Profiles</label>
+      ${users.filter(u=>u.approved).map(u=>`<div style="padding:7px 0;border-bottom:1px solid var(--line)"><b>${escapeHtml(u.name)}</b> <span class="mini">${escapeHtml(u.id)}</span></div>`).join('')||'<div class="mini">No visitor profiles yet.</div>'}
+    </div>
+    <div class="settingcard"><label>Watermark</label>
+      <div class="mini">Only the administrator can change the watermark.</div>
+      <div style="display:flex;gap:8px;margin-top:8px"><input id="adminWatermark" value="${escapeHtml(localStorage.getItem('mog_watermark')||'Abhijith')}" maxlength="32" style="flex:1"><button class="btn primary" id="saveAdminWatermark">Save</button></div>
+    </div>
+  </div>`;
+  d.classList.add('open');
+  setTimeout(()=>{
+    $('saveAdminWatermark')?.addEventListener('click',()=>{
+      const v=($('adminWatermark').value||'').trim()||'Abhijith';
+      localStorage.setItem('mog_watermark',v); updateWatermarks(); syncWatermarkAccess(); toast('Watermark updated by admin');
+    });
+  },0);
+}
+window.approve=id=>{let u=loadUsers();let x=u.find(a=>a.id===id);if(x)x.approved=true;saveUsers(u);renderAdmin();toast('Access approved locally')};window.reject=id=>{saveUsers(loadUsers().filter(a=>a.id!==id));renderAdmin();toast('Access request removed')};$('adminNav').onclick=(e)=>{e.preventDefault();e.stopPropagation();renderAdmin()};
 function export4k(kind){
  let wm=localStorage.getItem('mog_watermark')||'Abhijith',W=2400,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;
  let x=cv.getContext('2d');x.fillStyle=document.documentElement.classList.contains('light')?'#edf2f8':'#070b14';x.fillRect(0,0,W,H);
