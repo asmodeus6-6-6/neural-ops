@@ -1138,35 +1138,52 @@ function normalizeHeader(k){return String(k??'').toLowerCase().replace(/[^a-z0-9
 function mapRosterRow(row){
  const keys=Object.keys(row||{});
  const normalized=keys.map(x=>({raw:x,n:normalizeHeader(x)}));
- const get=aliases=>{
+ const exact=(aliases)=>{
    const a=aliases.map(normalizeHeader);
-   const hit=normalized.find(x=>a.includes(x.n)||a.some(y=>x.n===y||x.n.includes(y)||y.includes(x.n)));
+   const hit=normalized.find(x=>a.includes(x.n));
    return hit?clean(row[hit.raw]):'';
  };
+ // Canonical MOGAMBO roster format is positional by its exact headers:
+ // Agent ID / Login ID | Agent Name | TL | AM | Bucket | OJT / Non-OJT | Shift Status | Process
+ const canonical={
+   agentidloginid:'agentId', agentname:'agent', tl:'tl', am:'am', bucket:'bucket',
+   ojtnonojt:'ojt', shiftstatus:'shiftStatus', process:'process'
+ };
+ const exactCanonical={};
+ for(const k of keys){const n=normalizeHeader(k); if(Object.prototype.hasOwnProperty.call(canonical,n)) exactCanonical[canonical[n]]=clean(row[k]);}
+ // If the exact approved headers are present, NEVER use fuzzy matching. This prevents
+ // values from adjacent columns (especially AM/Agent Name/Email) being cross-mapped.
+ const hasCanonical=['agentId','agent','tl','am','bucket','ojt','shiftStatus','process'].filter(k=>clean(exactCanonical[k])).length>=3
+   && (normalized.some(x=>x.n==='agentidloginid')||normalized.some(x=>x.n==='agentid')||normalized.some(x=>x.n==='loginid'))
+   && normalized.some(x=>x.n==='agentname')
+   && normalized.some(x=>x.n==='process');
+ if(hasCanonical){
+   return {agentId:exactCanonical.agentId||'',agent:exactCanonical.agent||exactCanonical.agentId||'',email:exact(['Email','Email ID','Email Address','Work Email','Login Email','Official Email']),tl:exactCanonical.tl||'',am:exactCanonical.am||'',bucket:exactCanonical.bucket||'',ojt:exactCanonical.ojt||'',shiftStatus:exactCanonical.shiftStatus||'',process:exactCanonical.process||''};
+ }
+ // Legacy/variation fallback: exact alias match only; no substring matching.
+ const get=aliases=>exact(aliases);
  const agentId=get(['Agent ID / Login ID','Agent ID','AgentID','Login ID','LoginID','Employee ID','EmployeeID','Associate ID','AssociateID','User ID','UserID','Employee Code','Agent Code']);
  const agent=get(['Agent Name','AgentName','Agent','Name','Associate','Associate Name','Employee Name']);
  const email=get(['Email','Email ID','Email Address','Work Email','Login Email','Official Email']);
  return {agentId,agent:agent||agentId,email,tl:get(['TL','Team Lead','Team Leader','TL Name']),am:get(['AM','Area Manager','Assistant Manager','Manager','AM Name']),bucket:get(['Bucket','Bucket Name']),ojt:get(['OJT / Non-OJT','OJT/Non-OJT','OJT Non-OJT','OJT','Non-OJT','Training Status','OJT Status']),shiftStatus:get(['Shift Status','Shift','Status','ShiftStatus']),process:get(['Process','Process Name'])};
 }
 function rosterHeaderIndex(rows){
- const wanted=['agentidloginid','agentid','loginid','employeeid','associateid','userid','agentname','agent','name','email','tl','am','bucket','ojtnonoJT'.toLowerCase(),'ojt','shiftstatus','process'];
+ const wanted=['agentidloginid','agentid','loginid','employeeid','associateid','userid','agentname','email','tl','am','bucket','ojtnonoJT'.toLowerCase(),'ojt','shiftstatus','process'];
  let best=-1,bestScore=0;
  for(let i=0;i<Math.min(rows.length,30);i++){
    const vals=(rows[i]||[]).map(normalizeHeader).filter(Boolean);
    if(!vals.length)continue;
    let score=0;
-   for(const v of vals){
-     if(wanted.some(w=>v===w||v.includes(w)||w.includes(v)))score++;
-   }
+   for(const v of vals){if(wanted.includes(v))score++;}
    if(score>bestScore){bestScore=score;best=i;}
  }
  return bestScore>=1?best:-1;
 }
 function sheetRowsToObjects(ws){
  const matrix=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false,blankrows:false});
- if(!matrix.length)return {rows:[],headerIndex:-1};
+ if(!matrix.length)return {rows:[],headerIndex:-1,headers:[]};
  const hi=rosterHeaderIndex(matrix);
- if(hi<0)return {rows:[],headerIndex:-1};
+ if(hi<0)return {rows:[],headerIndex:-1,headers:[]};
  const headers=matrix[hi].map((v,i)=>clean(v)||`Column ${i+1}`);
  const objects=[];
  for(let i=hi+1;i<matrix.length;i++){
@@ -1174,7 +1191,7 @@ function sheetRowsToObjects(ws){
    if(!row.some(v=>clean(v)))continue;
    const obj={};headers.forEach((h,j)=>obj[h]=clean(row[j]));objects.push(obj);
  }
- return {rows:objects,headerIndex:hi};
+ return {rows:objects,headerIndex:hi,headers};
 }
 let rosterData=[];
 let rosterLoadedFromCloud=false;
@@ -1341,7 +1358,7 @@ async function importRoster(file){
    const duplicateCount=Math.max(0,valid.length-deduped.length);
    const missingId=valid.filter(r=>!r.agentId).length;
    if(!deduped.length)throw new Error('No valid agent rows found. Required: Agent ID / Login ID or Agent Name.');
-   setPreview(`<strong>✓ Excel validated</strong><br>${fmt(deduped.length)} unique agents detected · ${fmt(duplicateCount)} duplicate${duplicateCount===1?'':'s'} removed${missingId?` · ${fmt(missingId)} rows without Agent ID kept by name`:''}<br><span class="mini">Header row ${parsed.headerIndex+1} · Sheet: ${esc(wb.SheetNames[0])} · Ready to publish</span>`,'ok');
+   setPreview(`<strong>✓ Excel validated</strong><br>${fmt(deduped.length)} unique agents detected · ${fmt(duplicateCount)} duplicate${duplicateCount===1?'':'s'} removed${missingId?` · ${fmt(missingId)} rows without Agent ID kept by name`:''}<br><span class="mini">Header row ${parsed.headerIndex+1} · Sheet: ${esc(wb.SheetNames[0])} · Exact header mapping verified · Ready to publish</span>`,'ok');
    if(cloudConfigured()){
      if(!cloudSession)throw new Error('Connect Cloud Admin first, then publish the roster.');
      const count=await publishRosterCloud(deduped);
@@ -1368,7 +1385,7 @@ async function removeRosterCloud(){
  applyRoster([],new Date().toISOString());
  return data;
 }
-function rosterAdminBlock(){return `<div class="roster-admin-grid"><div class="settingcard upload-zone"><label>Weekly Agent Details — Admin Only</label><div class="mini">Upload XLSX/XLS/CSV and publish. Agent ID / Login ID is the protected unique key. V36 uses a schema-compatible cloud roster with all approved template fields. Run the V36 master SQL once if your existing Supabase roster table was created by an older version. The roster is validated, deduplicated and immediately remapped into AHT profiles.</div><input id="rosterFile" type="file" accept=".xlsx,.xls,.csv" style="margin-top:10px"><div class="publish-state">${rosterData.length?`${rosterData.length} published records`:'No roster published yet.'}</div><div class="template-note"><b>Required / recommended columns</b><div class="mini">Agent ID / Login ID · Agent Name · TL · AM · Bucket · OJT / Non-OJT · Shift Status · Process</div><button class="btn sample-btn" id="downloadRosterTemplate">Download Excel Sample Template</button></div></div><div class="settingcard"><label>Published Roster Controls</label><div class="mini">Admin-only upload/remove. Visitors are read-only. The AHT table dynamically matches roster data by Agent ID/Login ID, email prefix or Agent Name.</div><button class="btn sample-btn" id="removeRoster">Remove Published Roster</button></div></div>`}
+function rosterAdminBlock(){return `<div class="roster-admin-grid"><div class="settingcard upload-zone"><label>Weekly Agent Details — Admin Only</label><div class="mini">Upload XLSX/XLS/CSV and publish. Agent ID / Login ID is the protected unique key. V36 uses a schema-compatible cloud roster with all approved template fields. Run the V36 master SQL once if your existing Supabase roster table was created by an older version. The roster is validated using the exact approved 8-column headers, mapped by header name (never by guessed position), deduplicated and immediately remapped into AHT profiles.</div><input id="rosterFile" type="file" accept=".xlsx,.xls,.csv" style="margin-top:10px"><div class="publish-state">${rosterData.length?`${rosterData.length} published records`:'No roster published yet.'}</div><div class="template-note"><b>Required / recommended columns</b><div class="mini">Agent ID / Login ID · Agent Name · TL · AM · Bucket · OJT / Non-OJT · Shift Status · Process</div><button class="btn sample-btn" id="downloadRosterTemplate">Download Excel Sample Template</button></div></div><div class="settingcard"><label>Published Roster Controls</label><div class="mini">Admin-only upload/remove. Visitors are read-only. The AHT table dynamically matches roster data by Agent ID/Login ID, email prefix or Agent Name.</div><button class="btn sample-btn" id="removeRoster">Remove Published Roster</button></div></div>`}
 async function copyImage(kind){
  let target=null;
  if(kind==='table')target=$('tableStage');
