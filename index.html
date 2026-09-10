@@ -1124,6 +1124,7 @@ html.light .switch-track{background:#d7ad4a}.light .switch-knob{transform:transl
 </div></section>
 </main></div>
 <div id="drawer" class="drawer"><div class="drawerhead"><b id="drawerTitle">Agent profile</b><button class="close" id="drawerClose">✕</button></div><div class="drawerbody" id="drawerBody"></div></div><div id="toast" class="toast"></div>
+<span id="brandName" hidden aria-hidden="true"></span>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* MOGAMBO V9 LOGIN FAILSAFE — deliberately isolated from the application runtime. */
@@ -1285,7 +1286,7 @@ async function enter(id,pass){id=clean(id);pass=String(pass||'');const norm=id.t
  if(norm.includes('@')&&cloudConfigured()){const cloud=await cloudVisitorLogin(id,pass);if(cloud.handled)return !!cloud.ok}
  let u=null;if(['admin','abhijith'].includes(norm)&&pass==='Abhijith@123')u={id:'admin',name:'Abhijith',admin:true,approved:true};else u=loadUsers().find(x=>String(x.id||'').toLowerCase()===norm&&String(x.pass||'')===pass&&x.approved);
  if(!u){$('loginMsg').textContent=cloudConfigured()?'Access denied. Use an approved cloud email/password or the local Admin credentials.':'Access denied. Admin: admin / Abhijith@123';return false}
- currentUser=u;$('brandName').textContent=u.name||u.id;setProfileTrigger();$('adminNav').classList.toggle('hidden',!u.admin);updateWm();intro();return true}
+ currentUser=u;setBrandName(u.name||u.id);setProfileTrigger();$('adminNav').classList.toggle('hidden',!u.admin);updateWm();intro();return true}
 function intro(){
  const login=$('login'),introEl=$('intro'),app=$('app'),audio=$('introAudio'),fallback=$('introAudioFallback');
  login?.classList.add('hidden');introEl?.classList.remove('hidden');
@@ -1332,7 +1333,7 @@ function profile(){
    const name=clean($('editName')?.value)||currentUser.id, team=clean($('editTeam')?.value);
    const avatar=$('profileAvatar')?.dataset.data||currentUser.avatar||'';
    currentUser={...currentUser,name,team,avatar};
-   $('brandName').textContent=name; setProfileTrigger();
+   setBrandName(name); setProfileTrigger();
    if(!currentUser.admin){const us=loadUsers(),idx=us.findIndex(x=>String(x.id).toLowerCase()===String(currentUser.id).toLowerCase());if(idx>=0){us[idx]={...us[idx],name,team,avatar};saveUsers(us)}}
    closeDrawer(); toast('Profile updated');
  });
@@ -1367,6 +1368,7 @@ async function renderAdminPage(){
 }
 function formatRequestDate(v){if(!v)return 'unknown time';try{return new Date(v).toLocaleString()}catch(e){return 'unknown time'}}
 
+function setBrandName(v){const e=$('brandName');if(e)e.textContent=v||''}
 function setProfileTrigger(){const n=currentUser?.name||currentUser?.id||'Profile',av=currentUser?.avatar||'',eln=$('profileBtnName'),avEl=$('profileAvatarMini');if(eln)eln.textContent=n;if(avEl){if(av){avEl.innerHTML=`<img src="${esc(av)}" alt="">`}else avEl.textContent=String(n).charAt(0).toUpperCase()}}
 function normalizeHeader(k){return String(k??'').toLowerCase().replace(/[^a-z0-9]+/g,'').trim()}
 function mapRosterRow(row){
@@ -1692,7 +1694,7 @@ async function cloudVisitorLogin(email,password){
  if(isAdmin){
    cloudSession=data.session;
    currentUser={id:user.id,name:user.user_metadata?.full_name||'Abhijith',email:user.email,team:'Administrator',approved:true,admin:true,cloud:true,avatar:user.user_metadata?.avatar_url||''};
-   $('brandName').textContent=currentUser.name;setProfileTrigger();$('adminNav').classList.remove('hidden');updateWm();intro();
+   setBrandName(currentUser.name);setProfileTrigger();$('adminNav').classList.remove('hidden');updateWm();intro();
    return {handled:true,ok:true};
  }
  let req=await getOwnCloudRequest(user.id).catch(err=>{console.error(err);return null});
@@ -1700,7 +1702,7 @@ async function cloudVisitorLogin(email,password){
  if(!req){await supabaseClient.auth.signOut();$('loginMsg').textContent='No access request is linked to this account. Use Request Access first.';return {handled:true,ok:false}}
  if(req.status!=='approved'){await supabaseClient.auth.signOut();$('loginMsg').textContent=req.status==='rejected'?'This access request was rejected.':'Access is still pending Admin approval.';return {handled:true,ok:false}}
  cloudSession=data.session;currentUser={id:user.id,name:req.name||user.user_metadata?.full_name||user.email.split('@')[0],email:user.email,team:req.team||'Visitor',approved:true,admin:false,cloud:true,avatar:user.user_metadata?.avatar_url||''};
- $('brandName').textContent=currentUser.name;setProfileTrigger();$('adminNav').classList.add('hidden');updateWm();intro();return {handled:true,ok:true}
+ setBrandName(currentUser.name);setProfileTrigger();$('adminNav').classList.add('hidden');updateWm();intro();return {handled:true,ok:true}
 }
 async function requestAccessCloud(name,email,password){
  const cleanName=String(name||'').trim();
