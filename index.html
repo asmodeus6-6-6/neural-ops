@@ -1164,6 +1164,13 @@ html,body{margin:0!important;width:100%!important;height:100%!important;overflow
   .v52-content{padding:0 10px 24px!important}
 }
 </style>
+
+<style id="v63-aht-focus">
+/* AHT-focused product shell: no unrelated operational modules in navigation. */
+.v52-nav button{min-height:47px}
+.v52-nav button.active{border-color:rgba(241,213,125,.55)}
+.v63-aht-scope{font-size:8px;letter-spacing:1.4px;color:#7e8a95;text-transform:uppercase}
+</style>
 </head>
 <body>
 
@@ -1238,12 +1245,9 @@ html,body{margin:0!important;width:100%!important;height:100%!important;overflow
     <button data-page="aht"><i>ϟ</i><span>AHT Monitor</span></button>
     <button data-page="live"><i>◉</i><span>Live AHT</span></button>
     <button data-page="agent"><i>♟</i><span>Agent Performance</span></button>
-    <button data-page="hierarchy"><i>♜</i><span>TL / AM / Process</span></button>
-    <button data-page="city"><i>⌖</i><span>City &amp; DP Analysis</span></button>
-    <button data-page="rejection"><i>⚠</i><span>Rejection Analysis</span></button>
-    <button data-page="orders"><i>▣</i><span>Order Insights</span></button>
+    <button data-page="hierarchy"><i>♜</i><span>TL / AM / Process AHT</span></button>
+    <button data-page="city"><i>⌖</i><span>AHT by City &amp; DP</span></button>
     <button data-page="reports"><i>▤</i><span>Reports</span></button>
-    <button data-page="sop"><i>▧</i><span>SOP &amp; Help</span></button>
     <button data-page="upload"><i>⇧</i><span>Data Upload</span></button>
     <button data-page="settings"><i>⚙</i><span>Settings</span></button>
   </nav>
@@ -1256,7 +1260,7 @@ html,body{margin:0!important;width:100%!important;height:100%!important;overflow
     <div class="top-logo"><span class="mog-mark">M</span></div>
     <div class="top-brand-copy"><strong>MOGAMBO</strong><span>NEURAL OPS // AHT INTELLIGENCE</span></div>
   </div>
-  <div class="top-search"><span>⌕</span><input id="globalSearch" placeholder="Search agent, TL, AM, city, DP…" autocomplete="off"></div>
+  <div class="top-search"><span>⌕</span><input id="globalSearch" placeholder="Search agent, TL, AM, city, process…" autocomplete="off"></div>
   <div class="top-actions">
     <span class="pill live"><i class="dot"></i> LIVE DATA</span>
     <span class="top-clock" id="topClock">--:--:-- IST</span>
@@ -1426,24 +1430,9 @@ html,body{margin:0!important;width:100%!important;height:100%!important;overflow
     <div id="v52-city-workspace"></div>
   </section>
 
-  <section class="v52-page" data-page-view="rejection" id="page-rejection">
-    <div class="v52-page-head"><div><div class="eyebrow">REJECTION ANALYSIS // SEPARATE WORKSPACE</div><h1>Order Rejection Intelligence</h1><p>Paste rejection records to calculate unique orders, rejection %, drivers and segmentation.</p></div></div>
-    <div id="v52-rejection-workspace"></div>
-  </section>
-
-  <section class="v52-page" data-page-view="orders" id="page-orders">
-    <div class="v52-page-head"><div><div class="eyebrow">ORDER INSIGHTS</div><h1>Order Intelligence Console</h1><p>Search order IDs, tags and operational reasons without leaving the command center.</p></div></div>
-    <div id="v52-orders-workspace"></div>
-  </section>
-
   <section class="v52-page" data-page-view="reports" id="page-reports">
     <div class="v52-page-head"><div><div class="eyebrow">REPORTS</div><h1>Reporting &amp; Export Center</h1><p>Generate daily/weekly operational outputs from the current dataset.</p></div></div>
     <div id="v52-reports-workspace"></div>
-  </section>
-
-  <section class="v52-page" data-page-view="sop" id="page-sop">
-    <div class="v52-page-head"><div><div class="eyebrow">SOP &amp; HELP</div><h1>Operational Knowledge Console</h1><p>Search issue tags and open concise step-by-step audit guidance.</p></div></div>
-    <div id="v52-sop-workspace"></div>
   </section>
 
   <section class="v52-page" data-page-view="upload" id="page-upload">
