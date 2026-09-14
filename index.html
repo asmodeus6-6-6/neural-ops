@@ -1088,7 +1088,35 @@ html,body{margin:0!important;width:100%!important;height:100%!important;overflow
 <style id="v59-home-audio-fix">
 #introAudio{display:none!important}
 #introAudioFallback{position:fixed;left:24px;bottom:24px;z-index:1000000;padding:10px 14px;border:1px solid #d8ad43;border-radius:8px;background:#090c10;color:#f1d57d;cursor:pointer}
-</style></head>
+</style>
+<style id="v60-dashboard-css">
+.v60-dashboard-hero{min-height:150px;margin:8px 0 14px;padding:28px 30px;display:flex;align-items:flex-end;justify-content:space-between;gap:25px;border:1px solid rgba(215,173,74,.22);border-radius:12px;background:linear-gradient(100deg,rgba(7,12,17,.98),rgba(10,15,20,.88)),radial-gradient(circle at 80% 30%,rgba(150,25,35,.15),transparent 34%);box-shadow:inset 0 1px rgba(255,255,255,.035),0 16px 40px rgba(0,0,0,.22);position:relative;overflow:hidden}
+.v60-dashboard-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(215,173,74,.035),transparent);transform:translateX(-100%);animation:v60Sweep 7s ease-in-out infinite}
+.v60-dashboard-hero h1{font:900 36px/1.02 Georgia,serif;letter-spacing:.2px;margin:8px 0;color:#f0ce72;text-shadow:0 3px 16px #000}
+.v60-dashboard-hero h1 span{color:#fff}
+.v60-dashboard-hero p{margin:8px 0 0;color:#9aa7b3;font-size:12px}
+.v60-hero-status{min-width:190px;padding:14px 16px;border:1px solid rgba(72,201,138,.22);border-radius:9px;background:rgba(4,12,12,.7);display:grid;gap:6px;position:relative;z-index:1}
+.v60-hero-status i{width:8px;height:8px;border-radius:50%;background:#48c98a;box-shadow:0 0 12px #48c98a}.v60-hero-status b{font-size:11px;color:#dfffea;letter-spacing:1px}.v60-hero-status span{font-size:9px;color:#c3aa6d;letter-spacing:1px}
+.v60-dashboard-trends{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}.v60-trend{min-height:230px}.v60-trend canvas{width:100%;height:185px;display:block}
+@keyframes v60Sweep{0%,60%{transform:translateX(-100%)}85%,100%{transform:translateX(100%)}}
+@media(max-width:850px){.v60-dashboard-trends{grid-template-columns:1fr}.v60-dashboard-hero{align-items:flex-start;flex-direction:column}.v60-dashboard-hero h1{font-size:28px}}
+</style>
+
+<style id="v60-aht-hero-compact">
+#v52-aht-hero{margin-bottom:12px}
+#v52-aht-hero .hero{min-height:260px!important;max-height:330px!important;overflow:hidden!important}
+#v52-aht-hero .hero-copy h1{font-size:clamp(30px,4vw,54px)!important}
+#v52-aht-hero .paste-box{max-height:150px!important}
+</style>
+
+<style id="v61-aht-only">
+.v61-aht-controls{margin:10px 0 12px;padding:13px 16px;border:1px solid rgba(214,172,67,.2);border-radius:10px;background:linear-gradient(100deg,rgba(8,13,18,.96),rgba(12,17,21,.86));display:flex;align-items:center;justify-content:space-between;gap:18px}
+.v61-control-title{display:grid;gap:4px;min-width:240px}.v61-control-title b{font-size:11px;letter-spacing:1.2px;color:#efd071}.v61-control-title span{font-size:10px;color:#7f8b96}
+.v61-control-pills{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:7px}.v61-control-pills span{font-size:9px;letter-spacing:.55px;color:#aab5bf;border:1px solid rgba(150,165,180,.14);background:rgba(255,255,255,.025);padding:7px 9px;border-radius:7px;white-space:nowrap}
+#page-aht .rejection,.page-aht .rejection,#page-aht [data-module="rejection"],#page-aht [data-section="rejection"]{display:none!important}
+@media(max-width:1000px){.v61-aht-controls{align-items:flex-start;flex-direction:column}.v61-control-pills{justify-content:flex-start}}
+</style>
+</head>
 <body>
 
 <div id="login" class="login-screen v53-login">
@@ -1291,15 +1319,41 @@ html,body{margin:0!important;width:100%!important;height:100%!important;overflow
 <!-- V52 WORKSPACE ROUTER -->
 <div id="v52Pages">
   <section class="v52-page active" data-page-view="dashboard" id="page-dashboard">
-    <div id="v52-dashboard-hero"></div>
+    <div class="v60-dashboard-hero">
+      <div>
+        <div class="eyebrow">MOGAMBO NEURAL OPS // COMMAND CENTRE</div>
+        <h1>OPERATIONS PERFORMANCE<br><span>AT A GLANCE</span></h1>
+        <p>Live operational intelligence across AHT, FRT, productivity and target control.</p>
+      </div>
+      <div class="v60-hero-status"><i></i><b>LIVE OPERATIONS</b><span>195s AHT TARGET</span></div>
+    </div>
     <div id="v52-dashboard-kpis"></div>
+    <div class="v60-dashboard-trends">
+      <div class="panel v60-trend"><div class="panelhead"><div><div class="paneltitle">AHT TREND</div><div class="sub">Current active-agent performance vs 195s target</div></div></div><div class="panelbody"><canvas id="v60AhtTrend"></canvas></div></div>
+      <div class="panel v60-trend"><div class="panelhead"><div><div class="paneltitle">FRT TREND</div><div class="sub">Current active-agent first-response movement</div></div></div><div class="panelbody"><canvas id="v60FrtTrend"></canvas></div></div>
+    </div>
     <div class="v52-grid-2"><div id="v52-dashboard-wave"></div><div id="v52-dashboard-frt"></div></div>
     <div class="v52-section-head"><div><b>COMMAND SNAPSHOTS</b><span>Fast operational view from the current dataset</span></div></div>
     <div id="v52-dashboard-snapshots" class="v52-snapshot-grid"></div>
   </section>
 
   <section class="v52-page" data-page-view="aht" id="page-aht">
-    <div class="v52-page-head"><div><div class="eyebrow">AHT MONITOR</div><h1>Live Agent-by-Agent Monitoring</h1><p>Active agents only. Target is 195 seconds. Use search, conditional themes and HD copy.</p></div><div class="v52-head-badge">TARGET <b>195s</b></div></div>
+    <div class="v52-page-head">
+      <div>
+        <div class="eyebrow">AHT MONITOR // LIVE OPERATIONS</div>
+        <h1>Agent-by-Agent AHT Monitoring</h1>
+        <p>Live AHT control only — AHT, target, reduction required, Avg. HT, Avg. FRT, received, resolved and status.</p>
+      </div>
+      <div class="v52-head-badge">AHT TARGET <b>195s</b></div>
+    </div>
+    <div id="v52-aht-hero"></div>
+    <div class="v61-aht-controls panel">
+      <div class="v61-control-title"><b>AHT CONTROL</b><span>Only active agents • zero AHT hidden • target 195s</span></div>
+      <div class="v61-control-pills">
+        <span>⚡ AHT (SEC)</span><span>🎯 TARGET</span><span>↕ REDUCTION REQUIRED</span>
+        <span>◷ AVG. HT</span><span>◉ AVG. FRT</span><span>✓ RECEIVED / RESOLVED</span>
+      </div>
+    </div>
     <div id="v52-aht-table"></div>
   </section>
 
@@ -1325,7 +1379,7 @@ html,body{margin:0!important;width:100%!important;height:100%!important;overflow
   </section>
 
   <section class="v52-page" data-page-view="rejection" id="page-rejection">
-    <div class="v52-page-head"><div><div class="eyebrow">REJECTION ANALYSIS</div><h1>Order Rejection Intelligence</h1><p>Paste rejection records to calculate unique orders, rejection %, drivers and segmentation.</p></div></div>
+    <div class="v52-page-head"><div><div class="eyebrow">REJECTION ANALYSIS // SEPARATE WORKSPACE</div><h1>Order Rejection Intelligence</h1><p>Paste rejection records to calculate unique orders, rejection %, drivers and segmentation.</p></div></div>
     <div id="v52-rejection-workspace"></div>
   </section>
 
@@ -2153,7 +2207,7 @@ function move(id,target,display='block'){const el=document.getElementById(id),ho
 function setup(){
   // Move each legacy functional panel exactly once. Live AHT gets its own
   // freshly-rendered charts; it must not steal Dashboard's panels.
-  move('hero','v52-dashboard-hero','block');
+  move('hero','v52-aht-hero','block');
   move('kpis','v52-dashboard-kpis','grid');
   move('wavePanel','v52-dashboard-wave','block');
   move('frtPanel','v52-dashboard-frt','block');
@@ -2179,6 +2233,31 @@ function setup(){
   clearInterval(window.__mogamboClock);
   window.__mogamboClock=setInterval(updateClock,1000);
 }
+
+function drawV60Trend(canvasId,values,target,mode){
+ const c=document.getElementById(canvasId); if(!c)return;
+ const box=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1,w=Math.max(420,box.width),hh=Math.max(180,box.height);
+ c.width=w*dpr;c.height=hh*dpr;const x=c.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);
+ x.clearRect(0,0,w,hh);x.strokeStyle='rgba(170,190,205,.12)';x.lineWidth=1;
+ for(let i=1;i<5;i++){let y=i*hh/5;x.beginPath();x.moveTo(0,y);x.lineTo(w,y);x.stroke()}
+ if(!values.length){x.fillStyle='#758392';x.font='12px Inter,Arial';x.fillText('Waiting for active AHT data…',18,28);return}
+ const max=Math.max(target,...values)*1.18,min=Math.max(0,Math.min(target,...values)*.55);
+ const px=i=>18+(w-38)*(i/Math.max(1,values.length-1)),py=v=>hh-22-(hh-42)*(v-min)/Math.max(1,max-min);
+ x.strokeStyle=mode==='aht'?'#e8c66c':'#28c7f7';x.lineWidth=3;x.beginPath();
+ values.forEach((v,i)=>{const xx=px(i),yy=py(v);i?x.lineTo(xx,yy):x.moveTo(xx,yy)});x.stroke();
+ x.setLineDash([6,5]);x.strokeStyle='rgba(239,82,99,.7)';x.lineWidth=1.5;x.beginPath();x.moveTo(0,py(target));x.lineTo(w,py(target));x.stroke();x.setLineDash([]);
+ values.forEach((v,i)=>{const xx=px(i),yy=py(v);x.beginPath();x.fillStyle=mode==='aht'?'#f1d57d':'#45d9ff';x.arc(xx,yy,3.2,0,Math.PI*2);x.fill()});
+ x.fillStyle='#8f9aa5';x.font='10px Inter,Arial';x.fillText('LOW',18,hh-6);x.fillText('TARGET '+target+'s',w-85,py(target)-7);
+ const last=values[values.length-1];x.fillStyle='#fff';x.font='800 16px Inter,Arial';x.fillText(Math.round(last)+'s',w-55,Math.max(18,py(last)-10));
+}
+function renderDashboardTrends(){
+ const c=calc(), rows=c.active||[];
+ const aht=rows.map(r=>Number(r.aht)||0).filter(v=>v>0).slice(-24);
+ const frt=rows.map(r=>Number(r.frt)||0).filter(v=>v>=0).slice(-24);
+ drawV60Trend('v60AhtTrend',aht,c.target||195,'aht');
+ drawV60Trend('v60FrtTrend',frt,Math.max(1,Math.round(c.frt||1)),'frt');
+}
+
 function renderDashboard(){
  const c=calc(),rows=c.active||[], target=c.target||195;
  q('#v52-dashboard-kpis').innerHTML=`<div class="v52-stat-row">
@@ -2188,7 +2267,7 @@ function renderDashboard(){
   <div class="v52-stat ${c.delta>0?'bad':'good'}"><small>AVERAGE AHT</small><strong>${fmtV(c.aht)} s</strong><span>Target ${fmtV(target)} s</span></div>
   <div class="v52-stat ${c.frt>target?'bad':'cyan'}"><small>AVERAGE FRT</small><strong>${fmtV(c.frt)} s</strong><span>${c.delta>0?'+':''}${fmtV(c.delta)} s AHT delta</span></div>
  </div>`;
- renderSnapshots(rows);
+ renderSnapshots(rows);renderDashboardTrends();
 }
 function renderSnapshots(rows){
  const top=[...rows].sort((a,b)=>b.aht-a.aht).slice(0,5), bottom=[...rows].sort((a,b)=>a.aht-b.aht).slice(0,5);
@@ -2255,7 +2334,8 @@ function renderReports(){
  q('#v52-reports-workspace').innerHTML=`<div class="v52-segment-grid"><div class="v52-card"><div class="v52-card-title">Daily Report</div><p class="v52-note">Current live dataset with active agents, AHT, FRT, received and resolved.</p><button class="btn primary" id="v52ExportDaily">Export Excel</button></div><div class="v52-card"><div class="v52-card-title">Agent Report</div><p class="v52-note">High-resolution agent performance table.</p><button class="btn" id="v52CopyReport">Copy AHT 4K</button></div><div class="v52-card"><div class="v52-card-title">HTML Mail</div><p class="v52-note">Generate a standalone HTML report from the current data.</p><button class="btn" id="v52HtmlMail">Generate HTML</button></div></div><div id="v52ReportStatus" class="v52-note" style="margin-top:10px"></div>`;
  q('#v52ExportDaily').onclick=()=>{const rows=calc().active||[];if(!window.XLSX){q('#v52ReportStatus').textContent='Excel engine unavailable.';return}const out=rows.map(r=>({Agent:r.agent,'Login ID':r.email,'Received':r.received,'Resolved':r.resolved,'Avg HT':r.avg,'AHT Sec':r.aht,'Avg FRT':r.frt}));const ws=XLSX.utils.json_to_sheet(out);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'AHT Report');XLSX.writeFile(wb,'Mogambo_Daily_AHT_Report.xlsx');q('#v52ReportStatus').textContent='Daily Excel report generated.'};
  q('#v52CopyReport').onclick=()=>window.MOGAMBO_API?.copyImage?.('table');
- q('#v52HtmlMail').onclick=()=>{const c=calc(),rows=c.active||[];const table=rows.map(r=>`<tr><td>${escV(r.agent)}</td><td>${r.received}</td><td>${r.resolved}</td><td>${escV(r.avg)}</td><td>${r.aht}s</td><td>${r.frt}s</td></tr>`).join('');const doc=`<!doctype html><html><body style="font-family:Arial"><h2>Mogambo Neural Ops — AHT Report</h2><p>Target: ${c.target}s · Average AHT: ${fmtV(c.aht)}s · Average FRT: ${fmtV(c.frt)}s</p><table border="1" cellpadding="8" cellspacing="0"><tr><th>Agent</th><th>Received</th><th>Resolved</th><th>Avg HT</th><th>AHT Sec</th><th>Avg FRT</th></tr>${table}</table></body></html>`;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([doc],{type:'text/html'}));a.download='Mogambo_AHT_Report.html';a.click();q('#v52ReportStatus').textContent='HTML mail/report generated.'};
+ q('#v52HtmlMail').onclick=()=>{const c=calc(),rows=c.active||[];const table=rows.map(r=>`<tr><td>${escV(r.agent)}</td><td>${r.received}</td><td>${r.resolved}</td><td>${escV(r.avg)}</td><td>${r.aht}s</td><td>${r.frt}s</td></tr>`).join('');const doc=`<!doctype html><html><body style="font-family:Arial"><h2>Mogambo Neural Ops — AHT Report</h2><p>Target: ${c.target}s · Average AHT: ${fmtV(c.aht)}s · Average FRT: ${fmtV(c.frt)}s</p><table border="1" cellpadding="8" cellspacing="0"><tr><th>Agent</th><th>Received</th><th>Resolved</th><th>Avg HT</th><th>AHT Sec</th><th>Avg FRT</th></tr>${table}</table>
+</body></html>`;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([doc],{type:'text/html'}));a.download='Mogambo_AHT_Report.html';a.click();q('#v52ReportStatus').textContent='HTML mail/report generated.'};
 }
 function renderSop(){
  const cards=[['CFCA','Customer address mismatch / cannot find customer address','Probe nearby/chat where applicable; confirm customer reachability; follow waiting-time policy before final disposition.'],['CAM / WUA','Customer address mismatch','Call customer, confirm corrected location/address and document the outcome.'],['HWT','High wait time at MX','Confirm pickup delay, advise DP on the applicable wait process and document the concern.'],['NCDP / CNR','DP or customer not reachable','Attempt the relevant party, document attempts and follow the applicable disposition policy.'],['IOOS','Item Out of Stock','Confirm the missing item with the outlet and follow the approved replacement/cancellation SOP.'],['CDO','Customer denying order','Confirm denial with customer and apply the approved cancellation workflow.'],['ICA','Incomplete customer address','Identify the missing address element and attempt customer contact before final action.'],['IAR','Issue Already Resolved','Validate the resolution and close with concise documentation.']];
