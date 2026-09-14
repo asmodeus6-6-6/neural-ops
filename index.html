@@ -1008,8 +1008,8 @@ html.light .v52-rail{background:linear-gradient(180deg,#e7edf3,#f6f9fb)!importan
 
 <style id="v53-login-css">
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap');
-.v53-login{position:fixed!important;inset:0!important;z-index:99999!important;overflow:hidden!important;background:#020405!important;color:#fff;font-family:Inter,Arial,sans-serif}
-.v53-login.hidden{display:none!important}.v53-login-bg{position:absolute;inset:-3%;background-image:url('hero-command-center.png');background-size:cover;background-position:center center;filter:saturate(1.05) contrast(1.05);transform:scale(1.03);animation:v53Ken 20s ease-in-out infinite alternate}.v53-login-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.06) 0%,rgba(0,0,0,.10) 45%,rgba(0,0,0,.72) 64%,rgba(0,0,0,.88) 100%),linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.30))}
+.v53-login{position:fixed!important;inset:0!important;z-index:999999!important;overflow:hidden!important;background:#020405!important;isolation:isolate;color:#fff;font-family:Inter,Arial,sans-serif}
+.v53-login.hidden{display:none!important}.v53-login-bg{position:absolute;inset:-3%;background-image:url('login-reference.png');background-size:cover;background-position:center center;filter:saturate(1.05) contrast(1.05);transform:scale(1.03);animation:v53Ken 20s ease-in-out infinite alternate}.v53-login-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.10) 43%,rgba(0,0,0,.55) 62%,rgba(0,0,0,.78) 100%),linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.30))}
 .v53-scan{position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(221,176,57,.035) 48%,transparent 52%);background-size:100% 220px;animation:v53Scan 8s linear infinite;pointer-events:none}.v53-ambient{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}.v53-ambient-a{width:330px;height:330px;right:18%;top:13%;background:rgba(220,167,44,.10);animation:v53Glow 6s infinite}.v53-ambient-b{width:260px;height:260px;left:32%;bottom:4%;background:rgba(26,137,180,.08);animation:v53Glow 8s infinite reverse}
 .v53-login-layout{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,60%) minmax(420px,40%);align-items:center;padding:28px 4vw 54px;gap:1vw;box-sizing:border-box}.v53-hero-copy{position:relative;height:100%;display:flex;align-items:flex-end;padding-bottom:7vh}
 .v53-brand-lockup{margin-left:5vw;margin-bottom:2vh;text-shadow:0 6px 26px #000}.v53-brand-kicker{font-size:10px;letter-spacing:2.6px;color:#dfb94f}.v53-brand-title{font:900 clamp(66px,7vw,128px)/.84 Cinzel,Georgia,serif;letter-spacing:1px;color:#e8bb48}.v53-brand-sub{font:800 clamp(22px,2vw,38px)/1 Inter,sans-serif;letter-spacing:7px;color:#f1d074;margin-left:8px}.v53-brand-rule{width:120px;height:3px;background:#e0b63d;margin:14px 0 11px 8px;box-shadow:0 0 14px rgba(224,182,61,.45)}.v53-brand-tag{font-size:10px;letter-spacing:1.8px;color:#d8b95f;margin-left:8px}
@@ -1019,6 +1019,7 @@ html.light .v52-rail{background:linear-gradient(180deg,#e7edf3,#f6f9fb)!importan
 @keyframes v53CardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}@keyframes v53Ken{from{transform:scale(1.03) translate3d(0,0,0)}to{transform:scale(1.06) translate3d(-.5%,-.4%,0)}}@keyframes v53Scan{to{background-position:0 220px}}@keyframes v53Glow{50%{opacity:.5;transform:scale(1.08)}}
 @media(max-width:1100px){.v53-login-layout{grid-template-columns:minmax(0,56%) 44%}.v53-brand-title{font-size:70px}.v53-q-left{display:none}.v53-brand-lockup{margin-left:2vw}}
 @media(max-width:800px){.v53-login{overflow:auto}.v53-login-bg{position:fixed;background-position:36% center}.v53-login-layout{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:20px 5%;gap:16px}.v53-hero-copy{height:190px;min-height:190px;align-items:center;justify-content:center;padding:0}.v53-brand-lockup{margin:0;text-align:center}.v53-brand-kicker,.v53-brand-tag,.v53-q-left,.v53-q-top,.v53-q-mid,.v53-q-bottom{display:none}.v53-brand-title{font-size:56px}.v53-brand-sub{font-size:18px;letter-spacing:5px}.v53-brand-rule{margin:9px auto}.v53-login-card{justify-self:auto;margin:0 auto;width:min(94vw,470px);padding:23px 25px}.v53-footer{position:relative;left:auto;right:auto;bottom:auto;padding:0 5% 12px;gap:8px;flex-direction:column;text-align:center}.v53-footer span:last-child{display:none}}
+.mogambo-login-stage,.login-ambient{display:none!important}
 </style>
 
 </head>
@@ -1433,8 +1434,8 @@ function openAgent(name){
 }
 function loadUsers(){try{return JSON.parse(localStorage.getItem('mog_users')||'[]')}catch(e){return[]}}
 function saveUsers(u){localStorage.setItem('mog_users',JSON.stringify(u))}
-async function enter(id,pass){id=clean(id);pass=String(pass||'');const norm=id.toLowerCase();
- if(norm.includes('@')&&cloudConfigured()){const cloud=await cloudVisitorLogin(id,pass);if(cloud.handled)return !!cloud.ok}
+async function enter(id,pass){id=clean(id);pass=String(pass||'');const norm=id.toLowerCase(); if((norm==='admin'||norm==='abhijith')&&cloudConfigured())id='ex.god.hell.666@gmail.com';
+ if(id.toLowerCase().includes('@')&&cloudConfigured()){const cloud=await cloudVisitorLogin(id,pass);if(cloud.handled)return !!cloud.ok}
  let u=null;if(['admin','abhijith'].includes(norm)&&pass==='Abhijith@123')u={id:'admin',name:'Abhijith',admin:true,approved:true};else u=loadUsers().find(x=>String(x.id||'').toLowerCase()===norm&&String(x.pass||'')===pass&&x.approved);
  if(!u){$('loginMsg').textContent=cloudConfigured()?'Access denied. Use an approved cloud email/password or the local Admin credentials.':'Access denied. Admin: admin / Abhijith@123';return false}
  currentUser=u;setBrandName(u.name||u.id);setProfileTrigger();$('adminNav').classList.toggle('hidden',!u.admin);updateWm();intro();return true}
@@ -1824,7 +1825,7 @@ async function getOwnCloudRequest(userId){if(!supabaseClient||!userId)return nul
 async function cloudVisitorLogin(email,password){
  if(!(await initSupabase()))return {handled:false};
  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
- if(error){$('loginMsg').textContent=error.message||'Cloud sign-in failed.';return {handled:true,ok:false}}
+ if(error){console.warn('Cloud sign-in failed:',error);$('loginMsg').textContent='ACCESS DENIED — Please verify your credentials.';return {handled:true,ok:false}}
  const user=data.user;
  // Check the shared Admin allow-list first. This prevents an Admin's Supabase
  // email from being incorrectly treated as a visitor who needs an access request.
@@ -2186,11 +2187,17 @@ function setBusy(on){var b=$('loginBtn');if(!b)return;b.disabled=!!on;var t=b.qu
 function bind(){
  var f=$('loginForm');if(!f||f.dataset.v53bound)return;f.dataset.v53bound='1';
  var pw=$('loginPass'),eye=$('loginPassToggle');if(eye)eye.onclick=function(){pw.type=pw.type==='password'?'text':'password'};
- var req=$('requestAccessBtn');if(req)req.onclick=function(){if(typeof window.openRequestAccess==='function')window.openRequestAccess();else if(typeof window.requestAccessPage==='function')window.requestAccessPage();else if(document.getElementById('requestAccess'))document.getElementById('requestAccess').click();else setMsg('ACCESS REQUEST — Please use the registration page after the system finishes loading.','loading')};
+ var req=$('requestAccessBtn');if(req)req.onclick=function(){
+   if(typeof window.openRequestAccess==='function'){window.openRequestAccess();return}
+   if(typeof window.requestAccessPage==='function'){window.requestAccessPage();return}
+   var r=document.getElementById('requestAccess');if(r){r.click();return}
+   var rp=document.querySelector('[data-page="request"]');if(rp){rp.click();return}
+   setMsg('ACCESS REQUEST — Please use the registration page after the system finishes loading.','loading');
+ };
  var forgot=$('forgotPasswordBtn');if(forgot)forgot.onclick=function(){setMsg('PASSWORD RECOVERY — Please contact the system administrator.','loading')};
  f.addEventListener('submit',async function(e){
    e.preventDefault();e.stopImmediatePropagation();
-   var id=($('loginId')?.value||'').trim(),pass=$('loginPass')?.value||'';
+   var id=($('loginId')?.value||'').trim(),pass=$('loginPass')?.value||''; if(id.toLowerCase()==='admin'||id.toLowerCase()==='abhijith') id='ex.god.hell.666@gmail.com';
    if(!id||!pass){setMsg('ACCESS DENIED — Please enter Profile ID and Passcode.','error');return}
    setBusy(true);setMsg('AUTHENTICATING…','loading');
    try{
