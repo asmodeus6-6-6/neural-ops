@@ -510,7 +510,6 @@ function tableVars(){
  return `--rt-bg:${t.bg};--rt-head:${t.head};--rt-grid:${t.grid};--rt-fg:${t.fg};--rt-muted:${t.muted};--rt-grand:${t.grand};--cf-bad:${cf.bad};--cf-good:${cf.good};--cf-neutral:${cf.neutral};--cf-fg:${cf.fg};--cf-nfg:${cf.nfg};`;
 }
 function tableClass(){return `table-shell rt-custom-theme cf-custom font-${$('font').value}`}
-{return `table-shell table-${$('tableTheme').value} cf-${$('cf').value} font-${$('font').value}`}
 function tableHTML(rows=S.agents,detail=false){
  if(!rows.length)return '<div class="hint" style="padding:20px">Paste data to generate the AHT table.</div>';
  const avg=rows.reduce((a,r)=>a+r.aht,0)/rows.length,rec=rows.reduce((a,r)=>a+r.received,0),res=rows.reduce((a,r)=>a+r.resolved,0),frt=rows.reduce((a,r)=>a+r.frtSec,0)/rows.length;
