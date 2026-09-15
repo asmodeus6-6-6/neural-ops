@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Real Time SAHT Tracker by Abhijith</title>
-<link rel="icon" type="image/png" href="mogambo-profile.png">
+<link rel="icon" type="image/png" href="mogambo-head-logo.png">
+<link rel="apple-touch-icon" href="mogambo-head-logo.png">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap');
@@ -103,6 +104,24 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;background:lin
 @media(max-width:1100px){.command-design{grid-template-columns:repeat(2,1fr)}.copy-grid{grid-template-columns:repeat(3,1fr)}.hierarchy-filters{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.command-design,.copy-grid,.hierarchy-filters{grid-template-columns:1fr}}
 
+
+/* Poster + logo treatment */
+.brand-head{width:34px;height:34px;object-fit:cover;border-radius:50%;border:1px solid rgba(231,184,79,.65);box-shadow:0 0 18px rgba(231,184,79,.18)}
+.top-left{display:flex;align-items:center;gap:10px}
+.hero{background-image:url("mogambo-home-poster.png")!important;background-position:center center!important;background-size:cover!important;min-height:290px}
+.hero:before{background:linear-gradient(90deg,rgba(3,5,8,.92),rgba(3,5,8,.68) 48%,rgba(3,5,8,.16) 100%)!important}
+.paste-panel{background:linear-gradient(90deg,rgba(5,8,12,.97),rgba(5,8,12,.86)),url("mogambo-home-poster.png") 30% center/cover no-repeat!important}
+.paste-panel:after{background:linear-gradient(90deg,rgba(231,184,79,.10),transparent 52%,rgba(0,0,0,.28))!important}
+#pasteBox{min-height:380px!important}
+
+
+/* Home poster is the supplied cinematic artwork. The embedded artwork already contains the headline/buttons,
+   so the HTML overlay is reduced to functional click hotspots to avoid duplicated visual content. */
+.home-poster-mode .hero-copy,.home-poster-mode .hero > div:first-child{display:none!important}
+.home-poster-mode .hero{min-height:430px!important;background-image:url("mogambo-home-poster.png")!important;background-size:cover!important;background-position:center!important;align-items:flex-end!important}
+.home-poster-mode .hero .actions{position:absolute;right:9.5%;bottom:42px;z-index:5;display:flex;gap:16px}
+.home-poster-mode .hero .actions .btn{opacity:0;width:255px;height:70px}
+
 </style>
 </head>
 <body>
@@ -144,7 +163,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;background:lin
 
 <section id="app" class="app hidden">
 <header class="topbar">
-  <div class="top-left"><div class="logo">Real Time SAHT Tracker by Abhijith</div><div class="live-pill"><i class="dot"></i>LIVE ENGINE</div></div>
+  <div class="top-left"><img src="mogambo-head-logo.png" class="brand-head" alt="Mogambo"><div class="logo">Real Time SAHT Tracker by Abhijith</div><div class="live-pill"><i class="dot"></i>LIVE ENGINE</div></div>
   <div class="top-right"><img id="topAvatar" src="mogambo-profile.png" class="avatar"><span id="topUser" class="hint">ADMIN</span><button class="btn" onclick="toggleAudio()">♫ Audio</button><button class="btn red" onclick="logout()">Logout</button></div>
 </header>
 <div class="shell">
@@ -165,8 +184,8 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;background:lin
 <main class="main">
 <!-- HOME -->
 <section id="page-home" class="page active">
-<div class="hero">
- <div><div class="eyebrow">REAL TIME SAHT TRACKER BY ABHIJITH</div><h1>DISCIPLINE <span>MEASURED</span> IN SECONDS.</h1><p>Paste the copied agent table. The engine automatically removes browser noise, ignores zero-AHT rows, converts Avg. HT to seconds and ranks active agents <b>highest → lowest</b>.</p></div>
+<div class="hero home-poster-mode">
+ <div class="hero-copy"><div class="eyebrow">REAL TIME SAHT TRACKER BY ABHIJITH</div><h1>DISCIPLINE <span>MEASURED</span> IN SECONDS.</h1><p>Paste the copied agent table. The engine automatically removes browser noise, ignores zero-AHT rows, converts Avg. HT to seconds and ranks active agents <b>highest → lowest</b>.</p></div>
  <div class="actions"><button class="btn primary" onclick="copyAHTFormat('standard')">COPY 4K UHD</button><button class="btn" onclick="loadExample()">Load Example</button></div>
 </div>
 <div class="panel paste-panel">
@@ -187,6 +206,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;background:lin
    <div class="field"><label>Timestamp</label><select id="timestampMode" class="select" onchange="renderAll()"><option value="live">Live timestamp</option><option value="date">Date only</option><option value="off">Hide</option></select></div>
    <div class="field"><label>AHT Target (seconds)</label><input id="homeTargetInput" type="number" min="1" value="195" onchange="setTarget(this.value)"></div>
    <div class="field"><label>Export image</label><select id="exportImageBg" class="select" onchange="renderAll()"><option value="match">Match table</option><option value="white">Clean White</option><option value="black">Deep Black</option><option value="gold">Gold Command</option><option value="navy">Midnight Navy</option></select></div>
+   <div class="field"><label>4K Table Format</label><select id="exportLayout" class="select" onchange="renderAll()"><option value="executive">Executive Clean</option><option value="detail">Agent Detail</option></select></div>
   </div>
  </div>
 </div>
@@ -451,23 +471,73 @@ function drawBarsChart(c,mode){
 }
 function drawCharts(){drawBarsChart($('ahtChart'));drawBarsChart($('targetChart'))}
 function exportCanvas(variant='standard'){
- const rows=[...S.agents].sort((a,b)=>b.aht-a.aht);if(!rows.length)return null;
- const W=3840,pad=150,compact=variant==='compact',rowH=compact?78:variant==='cinematic'?112:96,headerH=125,topH=250,H=topH+headerH+(rows.length+1)*rowH+150;
- const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+ const rows=[...S.agents].sort((a,b)=>b.aht-a.aht); if(!rows.length)return null;
+ const W=3840, pad=130, layout=$('exportLayout')?.value||'executive';
+ const compact=variant==='compact', cinematic=variant==='cinematic', minimal=variant==='minimal';
+ const rowH=layout==='detail'?(compact?92:112):(compact?82:104), headerH=125, topH=245;
+ const H=topH+headerH+(rows.length+1)*rowH+120;
+ const c=document.createElement('canvas'); c.width=W;c.height=H; const x=c.getContext('2d');
  const mode=$('tableMode')?.value||'light',cond=$('conditionStyle')?.value||'classic',font=$('fontStyle')?.value||'inter',align=$('alignment')?.value||'center',bgMode=$('exportImageBg')?.value||'match';
- const themes={light:{bg:'#f5f8fb',panel:'#f5f8fb',head:'#e7edf4',grid:'#cbd5e1',text:'#172235',muted:'#64748b'},dark:{bg:'#070b10',panel:'#0a1118',head:'#182330',grid:'#2e3b49',text:'#edf3f8',muted:'#8492a3'},slate:{bg:'#e9eef4',panel:'#eef2f6',head:'#dce4ed',grid:'#bdc9d6',text:'#1d2939',muted:'#64748b'},royal:{bg:'#f4f1fa',panel:'#f7f4fc',head:'#e5e0f1',grid:'#c9c0dc',text:'#2b2140',muted:'#70658b'},emerald:{bg:'#edf7f1',panel:'#f1faf5',head:'#d8eee2',grid:'#b8d6c5',text:'#163427',muted:'#5f7e70'},crimson:{bg:'#fbf0f2',panel:'#fff5f6',head:'#f1dadd',grid:'#d9b6bd',text:'#37171e',muted:'#80606a'}}[mode];
- const bgMap={white:'#ffffff',black:'#06080b',gold:'#241a08',navy:'#081426',match:themes.bg};const bg=bgMap[bgMode]||themes.bg;x.fillStyle=bg;x.fillRect(0,0,W,H);
- const ff={inter:'Inter',orbitron:'Orbitron',rajdhani:'Rajdhani',mono:'Share Tech Mono'}[font]||'Inter';const text=bgMode==='black'?'#f5f7fa':themes.text,muted=bgMode==='black'?'#9aa5b4':themes.muted,panel=bgMode==='black'?'#0b1017':themes.panel,head=bgMode==='black'?'#151d27':themes.head,grid=bgMode==='black'?'#303b48':themes.grid;
- x.fillStyle=text;x.font=`900 ${variant==='cinematic'?62:56}px ${ff}`;x.fillText('REAL TIME AHT',pad,82);x.fillStyle=muted;x.font=`500 24px ${ff}`;x.fillText(`AGENT WISE • HIGH → LOW • TARGET ${S.target}s • ACTIVE AGENTS ${rows.length}`,pad,128);if($('timestampMode')?.value!=='off')x.fillText(nowStamp(),pad,168);
- const X=[pad,1530,1810,2090,2400,2740,3130],HDS=['Agent Name','Received','Resolved','Avg. HT','AHT (Sec)','Avg. FRT','Target Gap'];x.fillStyle=head;x.fillRect(pad,topH,W-pad*2,headerH);x.strokeStyle=grid;x.lineWidth=2;
- HDS.forEach((h,i)=>{x.fillStyle=text;x.font=`900 ${compact?25:28}px ${ff}`;x.textAlign=i===0&&align==='left'?'left':align==='right'?'right':'center';x.fillText(h,i===0?X[i]+30:X[i]+100,topH+75)});
- rows.forEach((r,i)=>{const y=topH+headerH+i*rowH;x.fillStyle=panel;x.fillRect(pad,y,W-pad*2,rowH);x.strokeStyle=grid;x.strokeRect(pad,y,W-pad*2,rowH);const vals=[r.name,r.received,r.resolved,r.ht,Math.round(r.aht)+'s',r.frt,Math.max(0,Math.round(r.aht-S.target))+'s'];vals.forEach((v,j)=>{x.fillStyle=text;x.font=`${j===0?'750':'600'} ${compact?23:25}px ${ff}`;x.textAlign=j===0&&align==='left'?'left':align==='right'?'right':'center';x.fillText(String(v),j===0?X[j]+30:X[j]+100,y+rowH/2+8)});
-   let fill=cond==='mono'?'#8c949e':r.aht>S.target?'#c9344b':r.aht<S.target?'#168457':'#c79b13';if(cond==='soft')fill=r.aht>S.target?'#a84a5b':r.aht<S.target?'#3f8065':'#a38b3b';if(cond==='bold')fill=r.aht>S.target?'#d7263d':r.aht<S.target?'#009b62':'#d4a500';const ax=X[4]-45,aw=240;x.fillStyle=fill;x.fillRect(ax,y+10,aw,rowH-20);x.fillStyle='#fff';x.font=`900 ${compact?23:26}px ${ff}`;x.textAlign='center';x.fillText(Math.round(r.aht)+'s',ax+aw/2,y+rowH/2+8);
- });
- const avg=rows.reduce((s,r)=>s+r.aht,0)/rows.length,fy=topH+headerH+rows.length*rowH;x.fillStyle=head;x.fillRect(pad,fy,W-pad*2,rowH);x.strokeStyle=grid;x.strokeRect(pad,fy,W-pad*2,rowH);x.fillStyle=text;x.font=`900 ${compact?27:30}px ${ff}`;x.textAlign='left';x.fillText('Grand Total / Avg',pad+30,fy+rowH/2+9);x.textAlign='center';x.fillText(String(rows.reduce((s,r)=>s+r.received,0)),1630,fy+rowH/2+9);x.fillText(String(rows.reduce((s,r)=>s+r.resolved,0)),1910,fy+rowH/2+9);x.fillText(formatSec(avg),2490,fy+rowH/2+9);x.fillText(Math.round(avg)+'s —',2840,fy+rowH/2+9);x.fillText(Math.round(rows.reduce((s,r)=>s+r.frtSec,0)/rows.length)+'s',3210,fy+rowH/2+9);
- // repeated watermark INSIDE the image
- x.save();x.globalAlpha=.10;x.fillStyle=mode==='dark'?'#d7dde6':'#7da1c7';x.font=`800 ${variant==='cinematic'?72:58}px ${ff}`;for(let yy=fy+70;yy<H-90;yy+=145){for(let xx=250;xx<W-250;xx+=720){x.save();x.translate(xx,yy);x.rotate(-.18);x.fillText($('watermark')?.value||S.watermark,0,0);x.restore()}}x.restore();
- x.fillStyle=muted;x.font=`500 19px ${ff}`;x.textAlign='left';x.fillText($('watermark')?.value||S.watermark,pad,H-38);return c;
+ const themes={
+ light:{bg:'#f2f6fa',panel:'#edf2f7',head:'#ffffff',grand:'#e6edf4',grid:'#c7d2df',text:'#172235',muted:'#637083',accent:'#246fbe'},
+ dark:{bg:'#070b10',panel:'#0b1219',head:'#17212c',grand:'#111a23',grid:'#2e3b49',text:'#eef3f8',muted:'#8592a2',accent:'#e7b84f'},
+ slate:{bg:'#e8eef4',panel:'#eef3f7',head:'#dce5ee',grand:'#d5dfe9',grid:'#b8c6d4',text:'#1d2939',muted:'#657386',accent:'#315c83'},
+ royal:{bg:'#f5f1fa',panel:'#f0ebf7',head:'#e5dff0',grand:'#ded6ea',grid:'#c9bedb',text:'#2a2140',muted:'#72678a',accent:'#6b4ea0'},
+ emerald:{bg:'#edf7f2',panel:'#f1f9f5',head:'#d9eee3',grand:'#d2e8dc',grid:'#b8d4c5',text:'#153126',muted:'#617d70',accent:'#167b54'},
+ crimson:{bg:'#fcf0f2',panel:'#fff6f7',head:'#f1dadd',grand:'#ebced2',grid:'#dcb7bf',text:'#35161d',muted:'#81616a',accent:'#b62e43'}
+ }[mode]||null;
+ const bgMap={match:themes.bg,white:'#ffffff',black:'#06080b',gold:'#241a08',navy:'#081426'};
+ const bg=bgMap[bgMode]||themes.bg; x.fillStyle=bg;x.fillRect(0,0,W,H);
+ const ff={inter:'Inter',orbitron:'Orbitron',rajdhani:'Rajdhani',mono:'Share Tech Mono'}[font]||'Inter';
+ const text=bgMode==='black'?'#f5f7fa':themes.text, muted=bgMode==='black'?'#9aa5b4':themes.muted;
+ const panel=bgMode==='black'?'#0b1017':themes.panel,head=bgMode==='black'?'#151d27':themes.head,grand=bgMode==='black'?'#111821':themes.grand,grid=bgMode==='black'?'#303b48':themes.grid;
+ const totalA=rows.reduce((s,r)=>s+r.aht,0)/rows.length,totalF=rows.reduce((s,r)=>s+r.frtSec,0)/rows.length,totalR=rows.reduce((s,r)=>s+r.received,0),totalRes=rows.reduce((s,r)=>s+r.resolved,0);
+ x.fillStyle=text;x.textAlign='left';x.font=`900 ${cinematic?64:58}px ${ff}`;x.fillText('REAL TIME AHT',pad,78);
+ x.fillStyle=muted;x.font=`600 23px ${ff}`;x.fillText(`AGENT WISE  •  HIGH → LOW  •  TARGET ${S.target}s  •  ACTIVE AGENTS ${rows.length}`,pad,120);
+ if($('timestampMode')?.value!=='off')x.fillText(nowStamp(),pad,158);
+ x.fillStyle=themes.accent;x.fillRect(pad,184,190,5);
+ const yHead=topH;
+ if(layout==='detail'){
+   const X=[pad,1660,1940,2220,2520,2860]; const HDS=['AGENT DETAILS','RECEIVED','RESOLVED','AVG. HT','AHT (SEC)','AVG. FRT'];
+   x.fillStyle=head;x.fillRect(pad,yHead,W-pad*2,headerH);x.strokeStyle=grid;x.lineWidth=2;
+   HDS.forEach((hd,i)=>{x.fillStyle=text;x.font=`900 27px ${ff}`;x.textAlign=i===0?'left':'center';x.fillText(hd,i===0?pad+28:X[i]+100,yHead+75)});
+   rows.forEach((r,i)=>{
+     const y=yHead+headerH+i*rowH;x.fillStyle=panel;x.fillRect(pad,y,W-pad*2,rowH);x.strokeStyle=grid;x.strokeRect(pad,y,W-pad*2,rowH);
+     const rr=rosterFor(r),initials=(r.name||'?').split(/\s+/).map(s=>s[0]).join('').slice(0,2).toUpperCase();
+     const cx=pad+58,cy=y+rowH/2;x.beginPath();x.arc(cx,cy,35,0,Math.PI*2);x.fillStyle=bgMode==='black'?'#33260b':'#4a3a16';x.fill();
+     x.fillStyle='#f6d778';x.font=`900 21px ${ff}`;x.textAlign='center';x.fillText(initials,cx,cy+7);
+     x.textAlign='left';x.fillStyle=text;x.font=`800 ${compact?24:27}px ${ff}`;x.fillText(r.name,pad+112,y+42);
+     x.fillStyle=muted;x.font=`500 17px ${ff}`;x.fillText(r.email||'',pad+112,y+69);
+     const meta=`TL ${rr.tl||'—'}   •   AM ${rr.am||'—'}   •   Bucket ${rr.bucket||'—'}   •   ${rr.ojt||'—'}   •   Shift ${rr.shift||'—'}   •   ${rr.process||'—'}`;
+     x.font=`600 15px ${ff}`;x.fillText(meta,pad+112,y+92);
+     const vals=[r.received,r.resolved,r.ht,Math.round(r.aht)+'s',r.frt]; [1660,1940,2220,2620,2960].forEach((xx,j)=>{x.textAlign='center';x.fillStyle=text;x.font=`${j===3?'900':'650'} ${j===3?29:24}px ${ff}`;x.fillText(String(vals[j]),xx,y+rowH/2+8)});
+     let fill=cond==='mono'?'#8c949e':r.aht>S.target?'#d7354b':r.aht<S.target?'#00a879':'#d6a500';
+     if(cond==='soft')fill=r.aht>S.target?'#a84a5b':r.aht<S.target?'#43856b':'#a58a36';
+     if(cond==='bold')fill=r.aht>S.target?'#ff2746':r.aht<S.target?'#00a968':'#e1af00';
+     x.fillStyle=fill;x.fillRect(2500,y+8,280,rowH-16);x.fillStyle='#fff';x.font=`900 ${compact?25:29}px ${ff}`;x.fillText(Math.round(r.aht)+'s',2640,y+rowH/2+9);
+   });
+ } else {
+   const X=[pad,1540,1810,2080,2390,2730,3110],HDS=['AGENT NAME','RECEIVED','RESOLVED','AVG. HT','AHT (SEC)','AVG. FRT','TARGET GAP'];
+   x.fillStyle=head;x.fillRect(pad,yHead,W-pad*2,headerH);x.strokeStyle=grid;x.lineWidth=2;
+   HDS.forEach((hd,i)=>{x.fillStyle=text;x.font=`900 ${compact?25:29}px ${ff}`;x.textAlign=i===0&&align==='left'?'left':align==='right'?'right':'center';x.fillText(hd,i===0?X[i]+30:X[i]+100,yHead+75)});
+   rows.forEach((r,i)=>{
+     const y=yHead+headerH+i*rowH;x.fillStyle=panel;x.fillRect(pad,y,W-pad*2,rowH);x.strokeStyle=grid;x.strokeRect(pad,y,W-pad*2,rowH);
+     const vals=[r.name,r.received,r.resolved,r.ht,Math.round(r.aht)+'s',r.frt,Math.max(0,Math.round(r.aht-S.target))+'s'];
+     vals.forEach((v,j)=>{x.fillStyle=text;x.font=`${j===0?'800':'600'} ${compact?23:26}px ${ff}`;x.textAlign=j===0&&align==='left'?'left':align==='right'?'right':'center';x.fillText(String(v),j===0?X[j]+30:X[j]+100,y+rowH/2+9)});
+     let fill=cond==='mono'?'#8c949e':r.aht>S.target?'#d7354b':r.aht<S.target?'#00a879':'#d6a500';
+     if(cond==='soft')fill=r.aht>S.target?'#a84a5b':r.aht<S.target?'#43856b':'#a58a36';
+     if(cond==='bold')fill=r.aht>S.target?'#ff2746':r.aht<S.target?'#00a968':'#e1af00';
+     x.fillStyle=fill;x.fillRect(X[4]-45,y+9,245,rowH-18);x.fillStyle='#fff';x.font=`900 ${compact?24:29}px ${ff}`;x.textAlign='center';x.fillText(Math.round(r.aht)+'s'+(variant==='analysis'?(r.aht>S.target?' ▲':r.aht<S.target?' ▼':' —'):''),X[4]+77,y+rowH/2+9);
+   });
+ }
+ const fy=yHead+headerH+rows.length*rowH;x.fillStyle=grand;x.fillRect(pad,fy,W-pad*2,rowH);x.strokeStyle=grid;x.strokeRect(pad,fy,W-pad*2,rowH);
+ x.fillStyle=text;x.font=`900 ${compact?28:31}px ${ff}`;x.textAlign='left';x.fillText('GRAND TOTAL / AVG',pad+28,fy+rowH/2+10);
+ if(layout==='detail'){[1660,1940,2220,2960].forEach(()=>{});x.textAlign='center';x.fillText(totalR,1710,fy+rowH/2+10);x.fillText(totalRes,1990,fy+rowH/2+10);x.fillText(formatSec(totalA),2290,fy+rowH/2+10);x.fillText(Math.round(totalF)+'s',3060,fy+rowH/2+10);x.fillStyle=themes.accent;x.fillText(Math.round(totalA)+'s',2640,fy+rowH/2+10)}
+ else {x.textAlign='center';x.fillText(totalR,1640,fy+rowH/2+10);x.fillText(totalRes,1910,fy+rowH/2+10);x.fillText(formatSec(totalA),2490,fy+rowH/2+10);x.fillStyle=themes.accent;x.fillText(Math.round(totalA)+'s',2840,fy+rowH/2+10);x.fillStyle=text;x.fillText(Math.round(totalF)+'s',3210,fy+rowH/2+10)}
+ // Watermark stays inside the image, tiled behind the data area.
+ x.save();x.globalAlpha=.075;x.fillStyle=mode==='dark'?'#dce4ee':'#7e9fbe';x.font=`900 ${cinematic?74:62}px ${ff}`;
+ for(let yy=yHead+headerH+65;yy<fy-15;yy+=145){for(let xx=280;xx<W-300;xx+=760){x.save();x.translate(xx,yy);x.rotate(-.18);x.fillText($('watermark')?.value||S.watermark,0,0);x.restore()}}x.restore();
+ return c;
 }
 function copyAHTFormat(variant){const c=exportCanvas(variant);if(!c){toast('Paste AHT data first.');return}c.toBlob(blob=>{if(!blob)return;if(navigator.clipboard&&window.ClipboardItem)navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(()=>toast('Agent-wise AHT 4K image copied to clipboard.')).catch(()=>downloadBlob(blob));else downloadBlob(blob)},'image/png')}
 function copyCurrent4K(){copyAHTFormat('standard')}
