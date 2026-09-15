@@ -84,6 +84,12 @@ input:focus,select:focus,textarea:focus{border-color:rgba(230,184,77,.55)}.toolb
 .cf-strong .bad{background:#ff2346!important;color:#fff!important}.cf-strong .good{background:#00a86b!important;color:#fff!important}.cf-strong .neutral{background:#e5b400!important;color:#191300!important}
 .cf-soft .bad{background:#f6dfe3!important;color:#a82f42!important}.cf-soft .good{background:#dff3eb!important;color:#157657!important}.cf-soft .neutral{background:#f5edcc!important;color:#8c6a00!important}
 .cf-mono .aht{background:#cfd5db!important;color:#25313c!important}.table-dark.cf-mono .aht{background:#56616c!important;color:#fff!important}
+.rt-custom-theme .result-table th{background:var(--rt-head)!important;color:var(--rt-fg)!important;border-color:var(--rt-grid)!important}
+.rt-custom-theme .result-table td{background:var(--rt-bg)!important;color:var(--rt-fg)!important;border-color:var(--rt-grid)!important}
+.rt-custom-theme .result-table .grand td{background:var(--rt-grand)!important;color:var(--rt-fg)!important;border-color:var(--rt-grid)!important}
+.rt-custom-theme .result-table .aht.bad{background:var(--cf-bad)!important;color:var(--cf-fg)!important}
+.rt-custom-theme .result-table .aht.good{background:var(--cf-good)!important;color:var(--cf-fg)!important}
+.rt-custom-theme .result-table .aht.neutral{background:var(--cf-neutral)!important;color:var(--cf-nfg)!important}
 .font-inter{--font:Inter,sans-serif}.font-orbitron{--font:Orbitron,sans-serif}.font-rajdhani{--font:Rajdhani,sans-serif}.font-mono{--font:'Share Tech Mono',monospace}
 .theme-note{font-size:9px;color:#71808c;margin-top:6px}.bars{display:grid;gap:8px}.barrow{display:grid;grid-template-columns:160px 1fr 70px;align-items:center;gap:9px;font-size:10px}.bar{height:9px;border-radius:99px;background:#17212a;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#b6811e,#ffd978);border-radius:99px}
 .chart{width:100%;height:300px;display:block;background:#080d11;border-radius:12px}.filter-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
@@ -229,8 +235,8 @@ input:focus,select:focus,textarea:focus{border-color:rgba(230,184,77,.55)}.toolb
   <div class="panel-head"><div><div class="panel-title">RESULT FORMAT</div><div class="panel-note">The screen and the 4K export use the selected visual settings.</div></div></div>
   <div class="panel-body">
    <div class="controls">
-    <div class="field"><label>Table Theme</label><select id="tableTheme" onchange="render()"><option value="light">Executive Light</option><option value="dark">Command Dark</option><option value="blue">Blue Executive</option><option value="gold">Gold Command</option><option value="rose">Rose Professional</option></select></div>
-    <div class="field"><label>Conditional Formatting</label><select id="cf" onchange="render()"><option value="classic">Classic Red / Green / Amber</option><option value="strong">Strong Contrast</option><option value="soft">Soft Professional</option><option value="mono">Monochrome</option></select></div>
+    <div class="field"><label>Table Theme</label><select id="tableTheme" onchange="render()"><option value="aurora">Aurora Glass</option><option value="arctic">Arctic Mint</option><option value="sand">Sandstone Editorial</option><option value="lavender">Lavender Luxe</option><option value="ocean">Deep Ocean</option><option value="copper">Copper Ledger</option><option value="graphite">Graphite Pro</option><option value="pearl">Pearl Boardroom</option><option value="forest">Forest Executive</option><option value="sunset">Sunset Paper</option><option value="indigo">Indigo Slate</option><option value="teal">Teal Matrix</option><option value="crimson">Crimson Executive</option><option value="cobalt">Cobalt Steel</option><option value="champagne">Champagne Black</option><option value="slate">Slate Silver</option><option value="rosewood">Rosewood Office</option><option value="moss">Moss & Ivory</option><option value="ice">Ice Blue</option><option value="carbon">Carbon Luxe</option></select></div>
+    <div class="field"><label>Conditional Formatting</label><select id="cf" onchange="render()"><option value="traffic">Traffic Signal</option><option value="neon">Neon Signal</option><option value="jewel">Jewel Contrast</option><option value="ocean">Ocean / Coral</option><option value="sunset">Sunset / Mint</option><option value="forest">Forest / Rose</option><option value="violet">Violet / Lime</option><option value="electric">Electric Blue / Amber</option><option value="high">High Contrast</option><option value="pastel">Pastel Professional</option><option value="earth">Earth Tones</option><option value="mono2">Monochrome Pro</option><option value="cyan">Cyan / Magenta</option><option value="amber">Amber / Teal</option><option value="crimson2">Crimson / Lime</option><option value="steel">Steel / Gold</option><option value="ruby">Ruby / Emerald</option><option value="navy">Navy / Ice</option><option value="plum">Plum / Citrus</option><option value="blackwhite">Black / White</option></select></div>
     <div class="field"><label>Font</label><select id="font" onchange="render()"><option value="inter">Inter</option><option value="orbitron">Orbitron</option><option value="rajdhani">Rajdhani</option><option value="mono">Share Tech Mono</option></select></div>
     <div class="field"><label>AHT Target</label><input id="target" type="number" min="1" value="195" onchange="setTarget(this.value)"></div>
    </div>
@@ -454,7 +460,57 @@ function processPaste(){
  render();
 }
 function condition(r){return r.aht>S.target?'bad':r.aht===S.target?'neutral':'good'}
-function tableClass(){return `table-shell table-${$('tableTheme').value} cf-${$('cf').value} font-${$('font').value}`}
+const TABLE_THEMES={
+ aurora:{bg:'#eef5f5',head:'#d9eeeb',grid:'#8fb9b3',fg:'#173536',muted:'#557678',grand:'#cfe4e1'},
+ arctic:{bg:'#edf7fa',head:'#d9f0f5',grid:'#91bdc8',fg:'#16313b',muted:'#557985',grand:'#cbe4ea'},
+ sand:{bg:'#f5efe4',head:'#e9dcc7',grid:'#b9a789',fg:'#342b20',muted:'#746451',grand:'#e2d3b9'},
+ lavender:{bg:'#f4f0fa',head:'#e7def3',grid:'#b7a5ca',fg:'#30263d',muted:'#71647d',grand:'#dfd2ed'},
+ ocean:{bg:'#eaf3f7',head:'#cfe3ec',grid:'#86aebb',fg:'#17333e',muted:'#56727e',grand:'#c7dce5'},
+ copper:{bg:'#f4eee9',head:'#e6d4c8',grid:'#b9947e',fg:'#38261e',muted:'#765c4d',grand:'#dfc9ba'},
+ graphite:{bg:'#edf0f2',head:'#dce2e6',grid:'#9aa8b2',fg:'#202b33',muted:'#5f6d76',grand:'#cfd7dc'},
+ pearl:{bg:'#f8f8f5',head:'#ffffff',grid:'#c7c9c2',fg:'#222721',muted:'#687067',grand:'#e9eae4'},
+ forest:{bg:'#edf4ee',head:'#d8e8da',grid:'#91af95',fg:'#1c3321',muted:'#5f7863',grand:'#ccdfce'},
+ sunset:{bg:'#fff3e9',head:'#f8ddca',grid:'#d0a186',fg:'#3b2920',muted:'#7e6657',grand:'#ecd0bd'},
+ indigo:{bg:'#eef0f8',head:'#dce0f0',grid:'#9ba6c7',fg:'#202842',muted:'#616b88',grand:'#d0d6e8'},
+ teal:{bg:'#eaf6f5',head:'#d0e9e6',grid:'#86b7b0',fg:'#163b38',muted:'#5c7774',grand:'#c5dfdb'},
+ crimson:{bg:'#f8eef0',head:'#eed7db',grid:'#c89ba3',fg:'#3c2027',muted:'#795961',grand:'#e6cbd0'},
+ cobalt:{bg:'#edf3fa',head:'#d8e5f4',grid:'#8ea8c4',fg:'#1b3047',muted:'#5d748a',grand:'#cddceb'},
+ champagne:{bg:'#17130d',head:'#292218',grid:'#655338',fg:'#f5ead7',muted:'#b8a483',grand:'#342a1c'},
+ slate:{bg:'#eef1f3',head:'#dfe4e8',grid:'#a7b1b8',fg:'#24303a',muted:'#64717a',grand:'#d3dbe0'},
+ rosewood:{bg:'#f6eeee',head:'#ead8d8',grid:'#bd9a9a',fg:'#392426',muted:'#765b5e',grand:'#e3cdcf'},
+ moss:{bg:'#f1f4ea',head:'#dfe7d2',grid:'#a4b38b',fg:'#2d3823',muted:'#687458',grand:'#d5dfc6'},
+ ice:{bg:'#eef6fb',head:'#d9eaf5',grid:'#98b9cc',fg:'#193040',muted:'#607888',grand:'#cfe2ed'},
+ carbon:{bg:'#12171b',head:'#20282e',grid:'#4b5962',fg:'#edf2f4',muted:'#9caab1',grand:'#263138'}
+};
+const CF_THEMES={
+ traffic:{bad:'#dc304b',good:'#08a875',neutral:'#d6a400',fg:'#fff',nfg:'#201700'},
+ neon:{bad:'#ff2752',good:'#00d98b',neutral:'#ffd21a',fg:'#fff',nfg:'#201700'},
+ jewel:{bad:'#b51f4d',good:'#008c95',neutral:'#7b55b5',fg:'#fff',nfg:'#fff'},
+ ocean:{bad:'#e05a5a',good:'#1687a8',neutral:'#d59b25',fg:'#fff',nfg:'#fff'},
+ sunset:{bad:'#d94a38',good:'#1b9a73',neutral:'#e0a12a',fg:'#fff',nfg:'#fff'},
+ forest:{bad:'#b53c4f',good:'#237a48',neutral:'#a87c18',fg:'#fff',nfg:'#fff'},
+ violet:{bad:'#a43fc0',good:'#5b9b35',neutral:'#d19b17',fg:'#fff',nfg:'#fff'},
+ electric:{bad:'#245eea',good:'#009b83',neutral:'#e59c00',fg:'#fff',nfg:'#fff'},
+ high:{bad:'#b00020',good:'#006b3c',neutral:'#8a6500',fg:'#fff',nfg:'#fff'},
+ pastel:{bad:'#f0a1ad',good:'#8ed5bd',neutral:'#e8c86a',fg:'#4a1f28',nfg:'#4a3900'},
+ earth:{bad:'#a64b3c',good:'#4d7b48',neutral:'#b48735',fg:'#fff',nfg:'#fff'},
+ mono2:{bad:'#555',good:'#888',neutral:'#bbb',fg:'#fff',nfg:'#111'},
+ cyan:{bad:'#c51b72',good:'#009f9a',neutral:'#c58c00',fg:'#fff',nfg:'#fff'},
+ amber:{bad:'#c94d38',good:'#007f79',neutral:'#d58e00',fg:'#fff',nfg:'#fff'},
+ crimson2:{bad:'#c8203e',good:'#1c9b50',neutral:'#b5a000',fg:'#fff',nfg:'#fff'},
+ steel:{bad:'#b83c52',good:'#27846c',neutral:'#b58920',fg:'#fff',nfg:'#fff'},
+ ruby:{bad:'#c22f45',good:'#11865c',neutral:'#9b8613',fg:'#fff',nfg:'#fff'},
+ navy:{bad:'#c4374f',good:'#19769d',neutral:'#b58b1d',fg:'#fff',nfg:'#fff'},
+ plum:{bad:'#a43b72',good:'#4f8a35',neutral:'#d38c16',fg:'#fff',nfg:'#fff'},
+ blackwhite:{bad:'#111',good:'#444',neutral:'#777',fg:'#fff',nfg:'#fff'}
+};
+function tableVars(){
+ const t=TABLE_THEMES[$('tableTheme')?.value]||TABLE_THEMES.aurora;
+ const cf=CF_THEMES[$('cf')?.value]||CF_THEMES.traffic;
+ return `--rt-bg:${t.bg};--rt-head:${t.head};--rt-grid:${t.grid};--rt-fg:${t.fg};--rt-muted:${t.muted};--rt-grand:${t.grand};--cf-bad:${cf.bad};--cf-good:${cf.good};--cf-neutral:${cf.neutral};--cf-fg:${cf.fg};--cf-nfg:${cf.nfg};`;
+}
+function tableClass(){return `table-shell rt-custom-theme cf-custom font-${$('font').value}`}
+{return `table-shell table-${$('tableTheme').value} cf-${$('cf').value} font-${$('font').value}`}
 function tableHTML(rows=S.agents,detail=false){
  if(!rows.length)return '<div class="hint" style="padding:20px">Paste data to generate the AHT table.</div>';
  const avg=rows.reduce((a,r)=>a+r.aht,0)/rows.length,rec=rows.reduce((a,r)=>a+r.received,0),res=rows.reduce((a,r)=>a+r.resolved,0),frt=rows.reduce((a,r)=>a+r.frtSec,0)/rows.length;
@@ -463,7 +519,7 @@ function tableHTML(rows=S.agents,detail=false){
  <td class="name">${detail?`<b>${esc(r.name)}</b><small style="display:block;color:#7d8993;font-size:9px">${esc(r.email||'')}</small><small style="display:block;color:#87939d;font-size:8px">TL — • AM — • Bucket — • OJT — • Shift — • Process —</small>`:esc(r.name)}</td>
  <td>${r.received}</td><td>${r.resolved}</td><td>${esc(r.ht)}</td><td class="aht ${condition(r)}">${Math.round(r.aht)} ${r.aht>S.target?'▲':r.aht<S.target?'▼':'!'}</td><td>${esc(r.frt)}</td>
  </tr>`).join('');
- return `<div class="${tableClass()}"><table class="result-table"><thead><tr>${cols}<th>Received</th><th>Resolved</th><th>Avg. HT</th><th>AHT (Sec)</th><th>Avg. FRT</th></tr></thead><tbody>${body}
+ return `<div class="${tableClass()}" style="${tableVars()}"><table class="result-table"><thead><tr>${cols}<th>Received</th><th>Resolved</th><th>Avg. HT</th><th>AHT (Sec)</th><th>Avg. FRT</th></tr></thead><tbody>${body}
  <tr class="grand"><td class="name">GRAND TOTAL / AVG</td><td>${rec}</td><td>${res}</td><td>${formatSec(avg)}</td><td class="aht">${Math.round(avg)} —</td><td>${Math.round(frt)}s</td></tr></tbody></table></div>`;
 }
 function formatSec(sec){sec=Math.round(sec);return `${Math.floor(sec/60)} m ${sec%60} s`}
@@ -501,7 +557,7 @@ function groupRows(rows,dim){
 function groupTable(rows){
  if(!rows.length)return '<div class="hint">No records match the selected filters.</div>';
  const rec=rows.reduce((a,r)=>a+r.received,0),res=rows.reduce((a,r)=>a+r.resolved,0),avg=rows.reduce((a,r)=>a+r.aht,0)/rows.length,frt=rows.reduce((a,r)=>a+r.frt,0)/rows.length;
- return `<div class="${tableClass()}"><table class="result-table"><thead><tr><th>GROUP</th><th>AGENTS</th><th>RECEIVED</th><th>RESOLVED</th><th>AVG AHT</th><th>AVG FRT</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="name">${esc(r.name)}</td><td>${r.n}</td><td>${r.received}</td><td>${r.resolved}</td><td class="aht ${r.aht>S.target?'bad':r.aht===S.target?'neutral':'good'}">${Math.round(r.aht)}s</td><td>${Math.round(r.frt)}s</td></tr>`).join('')}<tr class="grand"><td class="name">GRAND TOTAL / AVG</td><td>${rows.length}</td><td>${rec}</td><td>${res}</td><td>${Math.round(avg)}s</td><td>${Math.round(frt)}s</td></tr></tbody></table></div>`
+ return `<div class="${tableClass()}" style="${tableVars()}"><table class="result-table"><thead><tr><th>GROUP</th><th>AGENTS</th><th>RECEIVED</th><th>RESOLVED</th><th>AVG AHT</th><th>AVG FRT</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="name">${esc(r.name)}</td><td>${r.n}</td><td>${r.received}</td><td>${r.resolved}</td><td class="aht ${r.aht>S.target?'bad':r.aht===S.target?'neutral':'good'}">${Math.round(r.aht)}s</td><td>${Math.round(r.frt)}s</td></tr>`).join('')}<tr class="grand"><td class="name">GRAND TOTAL / AVG</td><td>${rows.length}</td><td>${rec}</td><td>${res}</td><td>${Math.round(avg)}s</td><td>${Math.round(frt)}s</td></tr></tbody></table></div>`
 }
 function renderHierarchy(){
  if(!$('hierarchyTable'))return;
@@ -557,63 +613,67 @@ function drawChart(){
 function exportCanvas(kind='executive'){
  const base=[...S.agents].sort((a,b)=>b.aht-a.aht);
  if(!base.length){toast('Paste AHT data first.');return null}
- let rows=base, title='REAL TIME AHT', subtitle='AGENT PERFORMANCE';
- if(kind==='top'){rows=base.filter(r=>r.aht>S.target);title='AHT IMPROVEMENT';subtitle='AGENTS ABOVE TARGET';}
- if(kind==='below'){rows=base.filter(r=>r.aht<S.target);title='AHT ACHIEVERS';subtitle='AGENTS BELOW TARGET';}
- if(kind==='hierarchy'){rows=filteredAgents().map(enrich).sort((a,b)=>b.aht-a.aht);title='AHT HIERARCHY';subtitle=($('dimension')?.value||'GROUP VIEW').toUpperCase();}
- if(kind==='analysis'){rows=base;title='AHT ANALYSIS';subtitle='PERFORMANCE DISTRIBUTION';}
+ let rows=base,title='REAL TIME AHT',subtitle='AGENT PERFORMANCE';
+ if(kind==='top'){rows=base.filter(r=>r.aht>S.target);title='AHT IMPROVEMENT';subtitle='AGENTS ABOVE TARGET'}
+ if(kind==='below'){rows=base.filter(r=>r.aht<S.target);title='AHT ACHIEVERS';subtitle='AGENTS BELOW TARGET'}
+ if(kind==='hierarchy'){rows=filteredAgents().map(enrich).sort((a,b)=>b.aht-a.aht);title='AHT HIERARCHY';subtitle=($('dimension')?.value||'GROUP VIEW').toUpperCase()}
+ if(kind==='analysis'){rows=base;title='AHT ANALYSIS';subtitle='PERFORMANCE DISTRIBUTION'}
  if(!rows.length){toast('No records match this report.');return null}
- // Portrait-first WhatsApp canvas. Width stays narrow; height expands with agent count.
- const W=1440,pad=48,tableW=W-pad*2,top=142,headerH=82;
- const rowH=base.length<=12?112:base.length<=20?102:base.length<=30?94:88;
- const footerH=88;
+ const W=1280,pad=34,tableW=W-pad*2,top=92,headerH=64;
+ const rowH=rows.length<=10?92:rows.length<=18?82:rows.length<=28?76:70;
+ const footerH=28;
  const H=top+headerH+(rows.length+1)*rowH+footerH;
  const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
- const theme=$('tableTheme')?.value||'light',cf=$('cf')?.value||'strong',font=$('font')?.value||'inter';
- const fonts={inter:'Inter',orbitron:'Orbitron',rajdhani:'Rajdhani',mono:'Share Tech Mono'},ff=fonts[font]||'Inter';
- const palettes={
-  light:{bg:'#eef3f7',head:'#ffffff',grid:'#b9c9d7',fg:'#17263a',muted:'#66788a',grand:'#dce6ee'},
-  blue:{bg:'#edf4fb',head:'#f8fbff',grid:'#afc4da',fg:'#15304b',muted:'#607b95',grand:'#d8e5f2'},
-  rose:{bg:'#fbf4f7',head:'#fffafd',grid:'#d9beca',fg:'#35232b',muted:'#806873',grand:'#eadde4'},
-  dark:{bg:'#081017',head:'#14212c',grid:'#344551',fg:'#f1f5f7',muted:'#9aa8b3',grand:'#182833'},
-  gold:{bg:'#15110b',head:'#2a2114',grid:'#5b4827',fg:'#f7efe1',muted:'#c2aa7c',grand:'#2d2313'}
- }[theme]||null;
- x.fillStyle=palettes.bg;x.fillRect(0,0,W,H);
- // Professional internal watermark: subtle, evenly spaced, never placed in the title zone.
- x.save();x.globalAlpha=theme==='dark'||theme==='gold'?0.075:0.055;x.fillStyle=theme==='dark'||theme==='gold'?'#bfcbd3':'#6487a3';x.font=`800 ${Math.max(34,Math.min(52,rowH*.48))}px ${ff}`;
- const wmRows=Math.max(2,Math.ceil(rows.length/5));
- for(let wy=top+headerH+rowH*.55;wy<top+headerH+(rows.length*rowH);wy+=rowH*3.2){
-  for(let wx=100;wx<W-160;wx+=610){x.save();x.translate(wx,wy);x.rotate(-0.10);x.fillText(S.watermark,0,0);x.restore()}
+ const theme=$('tableTheme')?.value||'aurora',cf=$('cf')?.value||'traffic',font=$('font')?.value||'inter';
+ const t=TABLE_THEMES[theme]||TABLE_THEMES.aurora,cc=CF_THEMES[cf]||CF_THEMES.traffic;
+ const ff=({inter:'Inter',orbitron:'Orbitron',rajdhani:'Rajdhani',mono:'Share Tech Mono'})[font]||'Inter';
+ x.fillStyle=t.bg;x.fillRect(0,0,W,H);
+ x.fillStyle=t.fg;x.textAlign='left';x.font=`900 ${rows.length>20?42:46}px ${ff}`;x.fillText(title,pad,48);
+ x.fillStyle=t.muted;x.font=`700 ${rows.length>20?16:18}px ${ff}`;x.fillText(subtitle,pad,73);
+ const heads=['AGENT NAME','RECEIVED','RESOLVED','AVG. HT','AHT (SEC)','AVG. FRT'];
+ const widths=[370,145,145,180,252,120];
+ // widths exactly fill tableW (1212)
+ let cx=pad;const colX=[];widths.forEach(w=>{colX.push(cx);cx+=w});
+ x.fillStyle=t.head;x.fillRect(pad,top,tableW,headerH);x.strokeStyle=t.grid;x.lineWidth=2;x.strokeRect(pad,top,tableW,headerH);
+ heads.forEach((h,i)=>{x.fillStyle=t.fg;x.font=`900 ${rows.length>20?16:18}px ${ff}`;x.textAlign=i===0?'left':'center';x.fillText(h,i===0?colX[i]+16:colX[i]+widths[i]/2,top+40)});
+ // Row backgrounds first, then watermark, then text. This keeps the watermark actually visible.
+ rows.forEach((r,i)=>{
+   const y=top+headerH+i*rowH;
+   x.fillStyle=t.bg;x.fillRect(pad,y,tableW,rowH);x.strokeStyle=t.grid;x.lineWidth=1.5;x.strokeRect(pad,y,tableW,rowH);
+ });
+ // Professional repeated watermark INSIDE the image.
+ x.save();x.globalAlpha=(theme==='carbon'||theme==='champagne')?.11:.075;x.fillStyle=theme==='carbon'||theme==='champagne'?'#ffffff':'#55738a';
+ x.font=`800 ${Math.max(30,Math.min(46,rowH*.48))}px ${ff}`;
+ const wmText=String(S.watermark||'Abhijith');
+ for(let wy=top+headerH+rowH*.62;wy<top+headerH+rows.length*rowH;wy+=rowH*3){
+   for(let wx=pad+90;wx<tableW+pad-100;wx+=430){
+     x.save();x.translate(wx,wy);x.rotate(-0.08);x.fillText(wmText,0,0);x.restore();
+   }
  }
  x.restore();
- x.fillStyle=palettes.fg;x.textAlign='left';x.font=`900 54px ${ff}`;x.fillText(title,pad,62);
- x.fillStyle=palettes.muted;x.font=`700 22px ${ff}`;x.fillText(subtitle,pad,98);
- const heads=['AGENT NAME','RECEIVED','RESOLVED','AVG. HT','AHT (SEC)','AVG. FRT'];
- const widths=[410,175,175,230,270,132];
- let cx=pad;const colX=[];widths.forEach(w=>{colX.push(cx);cx+=w});
- const grid=()=>{x.strokeStyle=palettes.grid;x.lineWidth=2};
- x.fillStyle=palettes.head;x.fillRect(pad,top,tableW,headerH);grid();x.strokeRect(pad,top,tableW,headerH);
- heads.forEach((head,i)=>{x.fillStyle=palettes.fg;x.font=`900 22px ${ff}`;x.textAlign=i===0?'left':'center';x.fillText(head,i===0?colX[i]+22:colX[i]+widths[i]/2,top+51)});
- const text=(v,xx,yy,w,align='center',spec=`800 27px ${ff}`)=>{x.fillStyle=palettes.fg;x.font=spec;x.textAlign=align;x.fillText(String(v),align==='left'?xx+22:xx+w/2,yy)};
+ const text=(v,xx,yy,w,align='center',spec=`800 25px ${ff}`)=>{x.fillStyle=t.fg;x.font=spec;x.textAlign=align;x.fillText(String(v),align==='left'?xx+16:xx+w/2,yy)};
  rows.forEach((r,i)=>{
-  const y=top+headerH+i*rowH;
-  x.fillStyle=palettes.bg;x.fillRect(pad,y,tableW,rowH);grid();x.strokeRect(pad,y,tableW,rowH);
-  text(r.name,colX[0],y+rowH*.56,widths[0],'left',`900 ${rowH>=100?28:25}px ${ff}`);
-  text(r.received,colX[1],y+rowH*.56,widths[1], 'center',`800 ${rowH>=100?27:24}px ${ff}`);
-  text(r.resolved,colX[2],y+rowH*.56,widths[2], 'center',`800 ${rowH>=100?27:24}px ${ff}`);
-  text(r.ht,colX[3],y+rowH*.56,widths[3], 'center',`800 ${rowH>=100?25:22}px ${ff}`);
-  const fill=r.aht>S.target?(cf==='neon'||cf==='strong'?'#ef2347':cf==='mono'?'#525b63':'#dc2f4a'):r.aht<S.target?(cf==='neon'||cf==='strong'?'#05a878':cf==='mono'?'#525b63':'#079d70'):(cf==='neon'||cf==='strong'?'#e0aa00':cf==='mono'?'#525b63':'#d09b00');
-  x.fillStyle=fill;x.fillRect(colX[4]+10,y+9,widths[4]-20,rowH-18);
-  x.fillStyle='#fff';x.textAlign='center';x.font=`900 ${rowH>=100?34:30}px ${ff}`;
-  const sym=r.aht>S.target?'▲':r.aht<S.target?'▼':'—';x.fillText(`${Math.round(r.aht)} ${sym}`,colX[4]+widths[4]/2,y+rowH*.48);
-  x.font=`700 ${rowH>=100?16:14}px ${ff}`;const gap=Math.abs(Math.round(r.aht-S.target));x.fillText(r.aht>S.target?`+${gap}s above`:r.aht<S.target?`${gap}s below`:'at target',colX[4]+widths[4]/2,y+rowH*.72);
-  text(r.frt,colX[5],y+rowH*.56,widths[5], 'center',`800 ${rowH>=100?25:22}px ${ff}`);
+   const y=top+headerH+i*rowH;
+   text(r.name,colX[0],y+rowH*.56,widths[0],'left',`900 ${rowH>=82?25:22}px ${ff}`);
+   text(r.received,colX[1],y+rowH*.56,widths[1],'center',`800 ${rowH>=82?25:22}px ${ff}`);
+   text(r.resolved,colX[2],y+rowH*.56,widths[2],'center',`800 ${rowH>=82?25:22}px ${ff}`);
+   text(r.ht,colX[3],y+rowH*.56,widths[3],'center',`800 ${rowH>=82?23:20}px ${ff}`);
+   const fill=r.aht>S.target?cc.bad:r.aht<S.target?cc.good:cc.neutral;
+   x.fillStyle=fill;x.fillRect(colX[4]+7,y+6,widths[4]-14,rowH-12);
+   x.fillStyle=cc.fg;x.textAlign='center';x.font=`900 ${rowH>=82?31:27}px ${ff}`;
+   const sym=r.aht>S.target?'▲':r.aht<S.target?'▼':'—';x.fillText(`${Math.round(r.aht)} ${sym}`,colX[4]+widths[4]/2,y+rowH*.48);
+   x.font=`800 ${rowH>=82?14:12}px ${ff}`;const gap=Math.abs(Math.round(r.aht-S.target));x.fillText(r.aht>S.target?`+${gap}s above`:r.aht<S.target?`${gap}s below`:'at target',colX[4]+widths[4]/2,y+rowH*.72);
+   text(r.frt,colX[5],y+rowH*.56,widths[5],'center',`800 ${rowH>=82?22:20}px ${ff}`);
  });
  const rec=rows.reduce((a,r)=>a+(Number(r.received)||0),0),res=rows.reduce((a,r)=>a+(Number(r.resolved)||0),0),avg=rows.reduce((a,r)=>a+r.aht,0)/rows.length,frt=rows.reduce((a,r)=>a+(Number(r.frtSec)||0),0)/rows.length;
- const gy=top+headerH+rows.length*rowH;x.fillStyle=palettes.grand;x.fillRect(pad,gy,tableW,rowH);grid();x.lineWidth=3;x.strokeRect(pad,gy,tableW,rowH);
- text('GRAND TOTAL / AVG',colX[0],gy+rowH*.56,widths[0],'left',`900 ${rowH>=100?28:25}px ${ff}`);text(rec,colX[1],gy+rowH*.56,widths[1],'center',`900 27px ${ff}`);text(res,colX[2],gy+rowH*.56,widths[2],'center',`900 27px ${ff}`);text(formatSec(avg),colX[3],gy+rowH*.56,widths[3],'center',`900 25px ${ff}`);text(`${Math.round(avg)} —`,colX[4],gy+rowH*.56,widths[4],'center',`900 29px ${ff}`);text(`${Math.round(frt)}s`,colX[5],gy+rowH*.56,widths[5],'center',`900 25px ${ff}`);
- // Tiny, clean attribution only; no timestamp/technical export metadata.
- x.fillStyle=palettes.muted;x.font=`600 15px ${ff}`;x.textAlign='left';x.fillText('Abhijith',pad,H-22);
+ const gy=top+headerH+rows.length*rowH;
+ x.fillStyle=t.grand;x.fillRect(pad,gy,tableW,rowH);x.strokeStyle=t.grid;x.lineWidth=2;x.strokeRect(pad,gy,tableW,rowH);
+ text('GRAND TOTAL / AVG',colX[0],gy+rowH*.56,widths[0],'left',`900 ${rowH>=82?25:22}px ${ff}`);
+ text(rec,colX[1],gy+rowH*.56,widths[1],'center',`900 ${rowH>=82?24:21}px ${ff}`);
+ text(res,colX[2],gy+rowH*.56,widths[2],'center',`900 ${rowH>=82?24:21}px ${ff}`);
+ text(formatSec(avg),colX[3],gy+rowH*.56,widths[3],'center',`900 ${rowH>=82?22:19}px ${ff}`);
+ text(`${Math.round(avg)} —`,colX[4],gy+rowH*.56,widths[4],'center',`900 ${rowH>=82?25:22}px ${ff}`);
+ text(`${Math.round(frt)}s`,colX[5],gy+rowH*.56,widths[5],'center',`900 ${rowH>=82?22:19}px ${ff}`);
  return c;
 }
 function copy4K(kind='executive'){
