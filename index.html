@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Real Time SAHT Tracker by Abhijith</title>
 <link rel="icon" type="image/png" href="mogambo-profile.png">
-<title>MOGAMBO // AHT Command Center</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap');
@@ -81,51 +81,28 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;background:lin
 .toast{position:fixed;right:20px;bottom:20px;z-index:300;background:#101720;border:1px solid var(--gold);border-radius:12px;padding:12px 15px;font-size:12px;box-shadow:var(--shadow);animation:reveal .25s ease}
 .admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.request{border:1px solid var(--line2);border-radius:12px;padding:12px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.request+.request{margin-top:8px}
 .file-input{display:none}
-
-/* Command V2: themeable previews + one-click exports */
-.design-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.copy-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
-.copy-btn{min-height:66px;text-align:left}
-.copy-btn b{display:block;color:var(--gold2);font-size:11px}.copy-btn span{display:block;color:#7e8998;font-size:9px;margin-top:4px}
-.table-preview{--t-bg:#0e141d;--t-head:#18212d;--t-grid:#303947;--t-fg:#f3f6fa}
-.table-preview.skin-obsidian{--t-bg:#0d1219;--t-head:#18212d;--t-grid:#303947;--t-fg:#f3f6fa}
-.table-preview.skin-crimson{--t-bg:#160b0e;--t-head:#3a1118;--t-grid:#57242d;--t-fg:#fff0f2}
-.table-preview.skin-emerald{--t-bg:#091711;--t-head:#123522;--t-grid:#28513d;--t-fg:#edfff6}
-.table-preview.skin-steel{--t-bg:#12171e;--t-head:#29323d;--t-grid:#3d4855;--t-fg:#f2f5f8}
-.table-preview.skin-ivory{--t-bg:#fffdf8;--t-head:#e8e0d0;--t-grid:#c9c0af;--t-fg:#222019}
-.table-preview table{background:var(--t-bg);font-family:var(--table-font,'Inter',sans-serif)}
-.table-preview th{background:var(--t-head);color:var(--t-fg);border-color:var(--t-grid)}
-.table-preview td{color:var(--t-fg);border-color:var(--t-grid)}
-.table-preview .grand td{background:var(--t-head)!important;color:var(--t-fg)!important}
-.table-preview.font-inter{--table-font:'Inter'}.table-preview.font-orbitron{--table-font:'Orbitron'}.table-preview.font-rajdhani{--table-font:'Rajdhani'}.table-preview.font-mono{--table-font:'Share Tech Mono'}
-.table-preview.cf-classic .aht-bad{background:#7d1f2c!important;color:#fff!important}.table-preview.cf-classic .aht-good{background:#176241!important;color:#fff!important}.table-preview.cf-classic .aht-neutral{background:#806a1f!important;color:#fff!important}
-.table-preview.cf-soft .aht-bad{background:#5b3038!important;color:#ffdce0!important}.table-preview.cf-soft .aht-good{background:#285744!important;color:#dcfff0!important}.table-preview.cf-soft .aht-neutral{background:#5a4e29!important;color:#fff0bd!important}
-.table-preview.cf-contrast .aht-bad{background:#ff2442!important;color:#fff!important}.table-preview.cf-contrast .aht-good{background:#00a968!important;color:#fff!important}.table-preview.cf-contrast .aht-neutral{background:#f1bd00!important;color:#17120a!important}
-.table-preview.cf-mono .aht-bad,.table-preview.cf-mono .aht-good,.table-preview.cf-mono .aht-neutral{background:#8e96a1!important;color:#fff!important}
-.skin-ivory td,.skin-ivory th{color:#222!important}
-.analytics-strip{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}
-.segment{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.segment .card{padding:12px}.segment .value{font-size:22px}
-@media(max-width:1200px){.copy-grid{grid-template-columns:repeat(3,1fr)}.design-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){.copy-grid,.design-grid,.analytics-strip{grid-template-columns:1fr}.segment{grid-template-columns:1fr}}
-
-
-/* V3 controlled UI fixes */
-#pasteBox{display:block!important;width:100%!important;min-width:0!important;box-sizing:border-box!important;min-height:330px!important;height:330px!important;resize:vertical!important;line-height:1.45;padding:18px!important;font-size:13px!important}
-.paste-panel .panel-body{padding:12px 16px 16px}.paste-panel{min-height:0}
-.hero{background-position:32% 34%!important;min-height:270px!important}.hero:before{background:linear-gradient(90deg,rgba(4,6,9,.84),rgba(4,6,9,.67) 48%,rgba(4,6,9,.14) 100%)!important}
-.table-preview.mode-dark table{background:var(--t-bg)}
-.table-preview.mode-light{--t-bg:#f7f9fc;--t-head:#e8eef6;--t-grid:#cbd5e1;--t-fg:#182438}
-.table-preview.mode-light table{background:#f7f9fc}.table-preview.mode-light th{color:#182438!important}.table-preview.mode-light td{color:#182438!important}.table-preview.mode-light .grand td{background:#e8eef6!important;color:#182438!important}
-.table-preview.style-slate.mode-light{--t-head:#e7edf5;--t-grid:#cbd5e1}.table-preview.style-blue.mode-light{--t-head:#dceafe;--t-grid:#b9cef0}.table-preview.style-gold.mode-light{--t-head:#f4ead1;--t-grid:#ddc99d}.table-preview.style-green.mode-light{--t-head:#dff2e8;--t-grid:#b9d9c8}.table-preview.style-rose.mode-light{--t-head:#f8e2e6;--t-grid:#e5b8c0}
-.table-preview.style-slate.mode-dark{--t-bg:#0d131c;--t-head:#1a2431;--t-grid:#344153}.table-preview.style-blue.mode-dark{--t-bg:#091424;--t-head:#102a4a;--t-grid:#294e78}.table-preview.style-gold.mode-dark{--t-bg:#171208;--t-head:#30240e;--t-grid:#5c4820}.table-preview.style-green.mode-dark{--t-bg:#081810;--t-head:#123322;--t-grid:#2d5a3f}.table-preview.style-rose.mode-dark{--t-bg:#180b0e;--t-head:#39131a;--t-grid:#63303a}
-.table-preview.style-blue.mode-light .aht-bad{background:#fee2e2!important;color:#b42318!important}.table-preview.style-blue.mode-light .aht-good{background:#dcfce7!important;color:#087443!important}.table-preview.style-gold.mode-light .aht-bad{background:#fde7e9!important;color:#b42318!important}.table-preview.style-gold.mode-light .aht-good{background:#e4f5ea!important;color:#087443!important}.table-preview.style-green.mode-light .aht-bad{background:#ffe4e6!important;color:#b42318!important}.table-preview.style-green.mode-light .aht-good{background:#dff7e8!important;color:#087443!important}.table-preview.style-rose.mode-light .aht-bad{background:#ffdfe4!important;color:#b42318!important}.table-preview.style-rose.mode-light .aht-good{background:#e2f6eb!important;color:#087443!important}
-.hierarchy-filters{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.hierarchy-filters .field{min-width:0}.filter-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
-.watermark-layer{pointer-events:none}
-@media(max-width:1000px){.hierarchy-filters{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:650px){.hierarchy-filters{grid-template-columns:1fr}.hero{min-height:320px!important}}
-
 @media(max-width:1100px){.cards,.admin-grid{grid-template-columns:repeat(2,1fr)}.grid2,.profile-grid{grid-template-columns:1fr}.shell{grid-template-columns:78px 1fr}.sidebar{padding:12px 8px}.side-brand small,.side-brand strong,.nav-label,.nav button span{display:none}.nav button{justify-content:center}.main{padding:18px}}
 @media(max-width:700px){.login{grid-template-columns:1fr}.login-visual{min-height:45vh}.login-copy{left:24px;bottom:24px}.login-panel{padding:22px}.cards,.grid3,.admin-grid{grid-template-columns:1fr}.hero{min-height:300px;padding:22px}.topbar{padding:0 12px}.top-left .logo{font-size:10px}.top-left .live-pill{display:none}.main{padding:12px}.shell{grid-template-columns:1fr}.sidebar{display:none}}
+
+/* FINAL CONTROLLED UI FIXES */
+.paste-panel{position:relative;overflow:hidden;background:linear-gradient(90deg,rgba(7,11,15,.96),rgba(7,11,15,.91)),url("mogambo-command-bg.png") 22% center/cover no-repeat!important}
+.paste-panel:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 18% 50%,rgba(231,184,79,.12),transparent 32%);z-index:0}.paste-panel>*{position:relative;z-index:1}
+#pasteBox{min-height:330px;width:100%;display:block;background:rgba(3,7,11,.72)!important;color:#f4f7fb!important;border:1px solid rgba(231,184,79,.22)!important;border-radius:14px!important;resize:vertical;line-height:1.45;font-family:'Share Tech Mono',monospace;font-size:12px;box-shadow:inset 0 0 35px rgba(0,0,0,.28)}
+#pasteBox::placeholder{color:#697587}
+.command-design{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.copy-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}.copy-option{min-height:74px;text-align:left}.copy-option b{display:block;color:var(--gold2);font-size:11px}.copy-option span{display:block;color:#7d8899;font-size:9px;margin-top:5px;line-height:1.4}
+.table-preview{border:1px solid var(--line2);border-radius:14px;overflow:hidden}.table-preview table{min-width:900px}.table-preview th,.table-preview td{border:1px solid var(--tp-grid);font-family:var(--tp-font)!important}.table-preview th{background:var(--tp-head);color:var(--tp-text);font-size:12px;font-weight:900;padding:13px 12px}.table-preview td{background:var(--tp-bg);color:var(--tp-text);font-size:13px;padding:13px 12px}.table-preview td.name{text-align:left;font-weight:800}.table-preview .grand td{background:var(--tp-grand)!important;color:var(--tp-text)!important;font-weight:950}.table-preview.light{--tp-bg:#f3f6fa;--tp-head:#e8eef5;--tp-grand:#dfe7ef;--tp-grid:#cbd5e1;--tp-text:#162235}.table-preview.dark{--tp-bg:#090e14;--tp-head:#17212d;--tp-grand:#121b25;--tp-grid:#2e3947;--tp-text:#eef3f8}.table-preview.slate{--tp-bg:#eef2f6;--tp-head:#dbe3ec;--tp-grand:#d1dae5;--tp-grid:#b9c5d2;--tp-text:#1c293a}.table-preview.royal{--tp-bg:#f4f2fb;--tp-head:#e5e0f3;--tp-grand:#dad3ec;--tp-grid:#c8c0df;--tp-text:#29203f}.table-preview.emerald{--tp-bg:#edf7f2;--tp-head:#d9eee3;--tp-grand:#cde6d8;--tp-grid:#b8d7c7;--tp-text:#153126}.table-preview.crimson{--tp-bg:#fbf0f2;--tp-head:#f2dadd;--tp-grand:#e9cbd0;--tp-grid:#dcb5bd;--tp-text:#35161c}
+.table-preview.cf-classic .aht-bad{background:#fbe4e8!important;color:#b4233a!important}.table-preview.cf-classic .aht-good{background:#e2f5ea!important;color:#087443!important}.table-preview.cf-classic .aht-neutral{background:#fff4cf!important;color:#765b00!important}
+.table-preview.cf-bold .aht-bad{background:#d7354b!important;color:#fff!important}.table-preview.cf-bold .aht-good{background:#168557!important;color:#fff!important}.table-preview.cf-bold .aht-neutral{background:#d6a500!important;color:#fff!important}
+.table-preview.cf-soft .aht-bad{background:#f4dce1!important;color:#923449!important}.table-preview.cf-soft .aht-good{background:#dceee5!important;color:#24634a!important}.table-preview.cf-soft .aht-neutral{background:#f1e8c7!important;color:#6d5c1d!important}
+.table-preview.cf-mono .aht-bad,.table-preview.cf-mono .aht-good,.table-preview.cf-mono .aht-neutral{background:#d7dce2!important;color:#222b36!important}
+.table-preview.font-inter{--tp-font:'Inter',sans-serif}.table-preview.font-orbitron{--tp-font:'Orbitron',sans-serif}.table-preview.font-rajdhani{--tp-font:'Rajdhani',sans-serif}.table-preview.font-mono{--tp-font:'Share Tech Mono',monospace}
+.format-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.format-strip .tag{cursor:pointer}.format-strip .tag.active{border-color:var(--gold);color:var(--gold2);box-shadow:0 0 16px rgba(231,184,79,.12)}
+.hierarchy-filters{display:grid;grid-template-columns:1.3fr repeat(5,1fr);gap:9px}.filter-result{font-size:10px;color:#8d98a8}.filter-result b{color:var(--gold2)}
+
+.table-preview.align-center td,.table-preview.align-center th{text-align:center}.table-preview.align-center td.name{text-align:center}.table-preview.align-left td,.table-preview.align-left th{text-align:center}.table-preview.align-left td.name{text-align:left}.table-preview.align-right td,.table-preview.align-right th{text-align:right}.table-preview.align-right td.name{text-align:right}
+@media(max-width:1100px){.command-design{grid-template-columns:repeat(2,1fr)}.copy-grid{grid-template-columns:repeat(3,1fr)}.hierarchy-filters{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.command-design,.copy-grid,.hierarchy-filters{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -177,10 +154,10 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;background:lin
   <nav class="nav">
     <button class="active" data-page="home" onclick="showPage('home',this)"><b class="nav-icon">⌂</b><span>Live AHT / Command</span></button>
     <button data-page="hierarchy" onclick="showPage('hierarchy',this)"><b class="nav-icon">⌘</b><span>Agent / TL / AM / Process</span></button>
-    <button data-page="profile" onclick="showPage('profile',this)"><b class="nav-icon">◎</b><span>Profile</span></button>
+    <button data-page="profile" title="Open Profile Session" onclick="showPage('profile',this)"><b class="nav-icon">◎</b><span>Profile</span></button>
     <div id="adminNav">
       <div class="nav-label">ADMIN</div>
-      <button data-page="admin" onclick="showPage('admin',this)"><b class="nav-icon">♛</b><span>Admin Control</span></button>
+      <button data-page="admin" title="Open Admin Control" onclick="showPage('admin',this)"><b class="nav-icon">♛</b><span>Admin Control</span></button>
     </div>
   </nav>
 </aside>
@@ -189,102 +166,41 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;background:lin
 <!-- HOME -->
 <section id="page-home" class="page active">
 <div class="hero">
-  <div><div class="eyebrow">REAL TIME SAHT TRACKER BY ABHIJITH</div><h1>CONTROL THE <span>SECONDS.</span></h1><p>Paste the copied agent table. It processes automatically, removes browser noise, hides zero-AHT agents and ranks active agents from <b>highest → lowest AHT</b>. All result controls are on this page.</p></div>
-  <div class="actions"><button class="btn primary" onclick="copySection4K('full')">COPY FULL 4K</button><button class="btn" onclick="loadExample()">Load Example</button></div>
+ <div><div class="eyebrow">REAL TIME SAHT TRACKER BY ABHIJITH</div><h1>DISCIPLINE <span>MEASURED</span> IN SECONDS.</h1><p>Paste the copied agent table. The engine automatically removes browser noise, ignores zero-AHT rows, converts Avg. HT to seconds and ranks active agents <b>highest → lowest</b>.</p></div>
+ <div class="actions"><button class="btn primary" onclick="copyAHTFormat('standard')">COPY 4K UHD</button><button class="btn" onclick="loadExample()">Load Example</button></div>
 </div>
-
 <div class="panel paste-panel">
- <div class="panel-head"><div><div class="panel-title">LIVE DATA INTAKE</div><div class="panel-note">Large paste area • automatic processing • no submit button required</div></div><span class="tag gold">AUTO PROCESS</span></div>
- <div class="panel-body">
-  <textarea id="pasteBox" style="min-height:340px" placeholder="Paste the copied browser table here..."></textarea>
-  <div class="toolbar" style="margin-top:10px"><button class="btn" onclick="clearData()">Clear</button><span id="pasteStatus" class="hint">Waiting for data…</span></div>
- </div>
+ <div class="panel-head"><div><div class="panel-title">LIVE DATA PASTE</div><div class="panel-note">Large full-width intake • paste directly from the browser table • processing is automatic</div></div><span class="tag gold">AUTO PROCESS</span></div>
+ <div class="panel-body"><textarea id="pasteBox" placeholder="Paste your copied agent table here…\n\nName\nOnline time\nBreak time\nReceived\nResolved\nAvg. HT\nAvg. FRT\n\nAgent Name\nEmail\nOnline time\nBreak time\nReceived\nResolved\nAvg. HT\nAvg. FRT"></textarea><div class="toolbar" style="margin-top:10px"><button class="btn" onclick="clearData()">Clear</button><span id="pasteStatus" class="hint">Waiting for data…</span></div></div>
 </div>
-
 <div class="panel">
- <div class="panel-head"><div><div class="panel-title">LIVE TABLE DESIGN + 4K EXPORT CONTROL</div><div class="panel-note">These selections immediately update both the on-screen table and the UHD renderer.</div></div><span class="tag">SYNCED</span></div>
+ <div class="panel-head"><div><div class="panel-title">AHT TABLE DESIGN</div><div class="panel-note">Live preview and 4K copy use the same selected settings.</div></div><span class="tag">SYNCED</span></div>
  <div class="panel-body">
-  <div class="design-grid">
-   <div class="field"><label>Table Mode</label><select id="tableMode" class="select" onchange="renderAll()"><option value="dark">Dark</option><option value="light">Light</option></select></div>
-   <div class="field"><label>Table Style</label><select id="tableSkin" class="select" onchange="renderAll()"><option value="slate">Slate Command</option><option value="blue">Blue Executive</option><option value="gold">Gold Board</option><option value="green">Emerald Board</option><option value="rose">Rose Contrast</option></select></div>
-   <div class="field"><label>Copy Image Background</label><select id="exportBackground" class="select" onchange="renderAll()"><option value="dark">Mogambo Dark</option><option value="light">Light / White</option><option value="gold">Gold Command</option><option value="red">Crimson</option><option value="green">Emerald</option><option value="blue">Midnight Blue</option></select></div>
+  <div class="command-design">
+   <div class="field"><label>Table Mode</label><select id="tableMode" class="select" onchange="renderAll()"><option value="light">Light Executive</option><option value="dark">Dark Command</option><option value="slate">Slate</option><option value="royal">Royal</option><option value="emerald">Emerald</option><option value="crimson">Crimson</option></select></div>
+   <div class="field"><label>Conditional Formatting</label><select id="conditionStyle" class="select" onchange="renderAll()"><option value="classic">Classic Soft</option><option value="bold">Strong Contrast</option><option value="soft">Professional Soft</option><option value="mono">Monochrome</option></select></div>
    <div class="field"><label>Font Style</label><select id="fontStyle" class="select" onchange="renderAll()"><option value="inter">Inter</option><option value="orbitron">Orbitron</option><option value="rajdhani">Rajdhani</option><option value="mono">Share Tech Mono</option></select></div>
-   <div class="field"><label>Conditional Formatting</label><select id="conditionStyle" class="select" onchange="renderAll()"><option value="classic">Classic Red / Green / Gold</option><option value="soft">Soft Professional</option><option value="contrast">Strong Contrast</option><option value="mono">Monochrome</option></select></div>
-  </div>
-  <div class="design-grid">
    <div class="field"><label>Alignment</label><select id="alignment" class="select" onchange="renderAll()"><option value="center">Center</option><option value="left">Agent Left / Values Center</option><option value="right">Right</option></select></div>
+  </div>
+  <div class="command-design">
    <div class="field"><label>Watermark</label><input id="watermark" value="Abhijith" maxlength="24" onchange="setWatermark(this.value)"></div>
    <div class="field"><label>Timestamp</label><select id="timestampMode" class="select" onchange="renderAll()"><option value="live">Live timestamp</option><option value="date">Date only</option><option value="off">Hide</option></select></div>
    <div class="field"><label>AHT Target (seconds)</label><input id="homeTargetInput" type="number" min="1" value="195" onchange="setTarget(this.value)"></div>
+   <div class="field"><label>Export image</label><select id="exportImageBg" class="select" onchange="renderAll()"><option value="match">Match table</option><option value="white">Clean White</option><option value="black">Deep Black</option><option value="gold">Gold Command</option><option value="navy">Midnight Navy</option></select></div>
   </div>
  </div>
 </div>
-
-<div class="cards">
- <div class="card"><div class="label">Overall AHT / Grand Total</div><div id="kAht" class="value gold">0s</div><div class="sub">Arithmetic mean of active-agent AHT</div></div>
- <div class="card"><div class="label">Calls Taken</div><div id="kCalls" class="value">0</div><div class="sub">Total Received</div></div>
- <div class="card"><div class="label">Resolved</div><div id="kResolved" class="value">0</div><div class="sub">Total Resolved</div></div>
- <div class="card"><div class="label">Avg FRT</div><div id="kFrt" class="value">0s</div><div class="sub">Active-agent average</div></div>
-</div>
-
-<div class="panel">
- <div class="panel-head"><div><div class="panel-title">REAL-TIME SAHT // HIGH → LOW</div><div class="panel-note">Target <b id="homeTarget">195s</b> • Zero AHT hidden • Grand Total included</div></div><span id="activeBadge" class="tag green">0 ACTIVE</span></div>
- <div id="homeTable"></div>
-</div>
-
-<div class="panel">
- <div class="panel-head"><div><div class="panel-title">FIVE INDIVIDUAL 4K UHD COPY OPTIONS</div><div class="panel-note">Each creates a separate 3840px-wide PNG and copies it directly to the clipboard.</div></div></div>
- <div class="panel-body">
-  <div class="copy-grid">
-   <button class="btn copy-btn" onclick="copySection4K('table')"><b>01 • LIVE TABLE</b><span>Agents + Grand Total</span></button>
-   <button class="btn copy-btn" onclick="copySection4K('kpi')"><b>02 • KPI BOARD</b><span>Overall AHT + calls + resolved + FRT</span></button>
-   <button class="btn copy-btn" onclick="copySection4K('charts')"><b>03 • AHT CHARTS</b><span>Bars + target line</span></button>
-   <button class="btn copy-btn" onclick="copySection4K('hierarchy')"><b>04 • GROUP VIEW</b><span>Agent / TL / AM / Process</span></button>
-   <button class="btn copy-btn" onclick="copySection4K('full')"><b>05 • FULL COMMAND</b><span>All key AHT intelligence</span></button>
-  </div>
- </div>
-</div>
-
-<div class="panel">
- <div class="panel-head"><div><div class="panel-title">AHT ANALYSIS // MULTIPLE VIEWS</div><div class="panel-note">AHT is not represented only by one average.</div></div><button class="btn" onclick="copySection4K('analytics')">COPY ANALYSIS 4K</button></div>
- <div class="panel-body">
-  <div class="segment">
-   <div class="card"><div class="label">Highest AHT</div><div id="xHigh" class="value bad">0s</div><div id="xHighName" class="sub">—</div></div>
-   <div class="card"><div class="label">Lowest AHT</div><div id="xLow" class="value good">0s</div><div id="xLowName" class="sub">—</div></div>
-   <div class="card"><div class="label">Median AHT</div><div id="xMedian" class="value">0s</div><div class="sub">Middle active-agent value</div></div>
-  </div>
-  <div class="segment" style="margin-top:12px">
-   <div class="card"><div class="label">Above Target</div><div id="xAbove" class="value bad">0</div><div class="sub">Agents requiring reduction</div></div>
-   <div class="card"><div class="label">At / Below Target</div><div id="xBelow" class="value good">0</div><div class="sub">Within target</div></div>
-   <div class="card"><div class="label">Grand Total Gap</div><div id="xGap" class="value gold">0s</div><div class="sub">Reduction needed to target</div></div>
-  </div>
-  <div class="analytics-strip" style="margin-top:14px">
-   <div class="panel"><div class="panel-head"><div class="panel-title">AGENT AHT BARS</div><div class="panel-note">Highest → lowest</div></div><div id="bars" class="panel-body"></div></div>
-   <div class="panel"><div class="panel-head"><div class="panel-title">AHT VS TARGET</div></div><div class="panel-body"><canvas id="targetChart" class="chart"></canvas></div></div>
-  </div>
- </div>
-</div>
+<div class="cards"><div class="card"><div class="label">Overall AHT / Grand Total</div><div id="kAht" class="value gold">0s</div><div class="sub">Arithmetic mean of active agents</div></div><div class="card"><div class="label">Calls Taken</div><div id="kCalls" class="value">0</div><div class="sub">Received</div></div><div class="card"><div class="label">Resolved</div><div id="kResolved" class="value">0</div><div class="sub">Resolved</div></div><div class="card"><div class="label">Avg FRT</div><div id="kFrt" class="value">0s</div><div class="sub">Active-agent average</div></div></div>
+<div class="panel"><div class="panel-head"><div><div class="panel-title">REAL-TIME AHT // AGENT WISE</div><div class="panel-note">High → Low • Target <b id="homeTarget">195s</b> • Grand Total included • zero AHT hidden</div></div><span id="activeBadge" class="tag green">0 ACTIVE</span></div><div id="homeTable"></div></div>
+<div class="panel"><div class="panel-head"><div><div class="panel-title">AHT ANALYSIS</div><div class="panel-note">Multiple views of the same live agent-wise dataset.</div></div><button class="btn" onclick="copyAHTFormat('analysis')">COPY ANALYSIS 4K</button></div><div class="panel-body"><div class="cards"><div class="card"><div class="label">Highest</div><div id="xHigh" class="value bad">0s</div><div id="xHighName" class="sub">—</div></div><div class="card"><div class="label">Lowest</div><div id="xLow" class="value good">0s</div><div id="xLowName" class="sub">—</div></div><div class="card"><div class="label">Median</div><div id="xMedian" class="value">0s</div><div class="sub">Middle AHT</div></div><div class="card"><div class="label">Above Target</div><div id="xAbove" class="value bad">0</div><div class="sub">Need reduction</div></div></div><div class="grid2" style="margin-top:12px"><div class="panel"><div class="panel-head"><div class="panel-title">AHT BARS</div></div><div id="bars" class="panel-body"></div></div><div class="panel"><div class="panel-head"><div class="panel-title">AHT VS TARGET</div></div><div class="panel-body"><canvas id="targetChart" class="chart"></canvas></div></div></div></div></div>
+<div class="panel"><div class="panel-head"><div><div class="panel-title">INDIVIDUAL 4K COPY FORMATS</div><div class="panel-note">Every option copies only the Agent-wise AHT table — no unrelated dashboard content.</div></div></div><div class="panel-body"><div class="copy-grid"><button class="btn copy-option" onclick="copyAHTFormat('standard')"><b>01 • STANDARD</b><span>Clean executive table + Grand Total</span></button><button class="btn copy-option" onclick="copyAHTFormat('compact')"><b>02 • COMPACT</b><span>Tighter rows for reporting</span></button><button class="btn copy-option" onclick="copyAHTFormat('cinematic')"><b>03 • CINEMATIC</b><span>Mogambo command presentation</span></button><button class="btn copy-option" onclick="copyAHTFormat('minimal')"><b>04 • MINIMAL</b><span>Maximum readability / no distraction</span></button><button class="btn copy-option" onclick="copyAHTFormat('analysis')"><b>05 • ANALYSIS</b><span>Agent AHT + target gap emphasis</span></button></div></div></div>
 </section>
+
 
 <!-- HIERARCHY -->
 <section id="page-hierarchy" class="page">
 <div class="hero"><div><div class="eyebrow">ROSTER-ENRICHED ANALYSIS</div><h2>AGENT / TL / AM / <span>PROCESS</span></h2><p>Paste AHT data remains the source. Roster details enrich each agent where a matching Agent ID/Login ID or email/name is available.</p></div><div class="actions"><button class="btn primary" onclick="copyCurrent4K()">COPY 4K UHD</button></div></div>
-<div class="panel"><div class="panel-body">
- <div class="hierarchy-filters">
-  <div class="field"><label>View / Group By</label><select id="dimension" class="select" onchange="renderHierarchy()"><option>Agent Wise</option><option>TL Wise</option><option>AM Wise</option><option>Process Wise</option><option>Bucket Wise</option><option>OJT / Non-OJT</option><option>Shift Status</option></select></div>
-  <div class="field"><label>Agent Search</label><input id="hSearch" placeholder="Name / email" oninput="renderHierarchy()"></div>
-  <div class="field"><label>TL</label><select id="hTl" class="select" onchange="renderHierarchy()"><option value="">All TL</option></select></div>
-  <div class="field"><label>AM</label><select id="hAm" class="select" onchange="renderHierarchy()"><option value="">All AM</option></select></div>
-  <div class="field"><label>Bucket</label><select id="hBucket" class="select" onchange="renderHierarchy()"><option value="">All Buckets</option></select></div>
-  <div class="field"><label>OJT / Non-OJT</label><select id="hOjt" class="select" onchange="renderHierarchy()"><option value="">All</option></select></div>
-  <div class="field"><label>Shift Status</label><select id="hShift" class="select" onchange="renderHierarchy()"><option value="">All Shifts</option></select></div>
-  <div class="field"><label>Process</label><select id="hProcess" class="select" onchange="renderHierarchy()"><option value="">All Processes</option></select></div>
-  <div class="field"><label>AHT Status</label><select id="hStatus" class="select" onchange="renderHierarchy()"><option value="">All AHT</option><option value="above">Above Target</option><option value="within">At / Below Target</option></select></div>
-  <div class="field"><label>Sort</label><select id="hSort" class="select" onchange="renderHierarchy()"><option value="ahtDesc">AHT High → Low</option><option value="ahtAsc">AHT Low → High</option><option value="receivedDesc">Received High → Low</option><option value="resolvedDesc">Resolved High → Low</option><option value="nameAsc">Name A → Z</option></select></div>
- </div>
- <div class="filter-actions"><button class="btn" onclick="clearHierarchyFilters()">Reset Filters</button><span id="hCount" class="tag gold">0 matched</span><span class="hint">Filters use the uploaded roster to enrich TL / AM / Bucket / OJT / Shift / Process.</span></div>
-</div></div>
-</div>
+<div class="panel"><div class="panel-body"><div class="hierarchy-filters"><input id="hSearch" placeholder="Search agent / group" oninput="renderHierarchy()"><select id="dimension" class="select" onchange="renderHierarchy()"><option>Agent Wise</option><option>TL Wise</option><option>AM Wise</option><option>Process Wise</option><option>Bucket Wise</option><option>OJT / Non-OJT</option><option>Shift Status</option></select><select id="hTarget" class="select" onchange="renderHierarchy()"><option value="all">All AHT</option><option value="above">Above Target</option><option value="within">At / Below Target</option></select><select id="hSort" class="select" onchange="renderHierarchy()"><option value="high">AHT High → Low</option><option value="low">AHT Low → High</option><option value="calls">Received High → Low</option><option value="resolved">Resolved High → Low</option></select><select id="hMap" class="select" onchange="renderHierarchy()"><option value="all">All Mapping</option><option value="mapped">Mapped Roster</option><option value="unmapped">Unmapped Roster</option></select><button class="btn" onclick="resetHierarchyFilters()">Reset</button></div><div class="filter-result" id="hierarchyResult" style="margin-top:9px"></div></div></div>
 <div class="panel"><div class="panel-head"><div class="panel-title">GROUP PERFORMANCE</div><div class="panel-note">Average AHT • Received • Resolved • Avg FRT</div></div><div id="hierarchyTable"></div></div>
 </section>
 
@@ -304,7 +220,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;background:lin
  <div class="card"><div class="label">Access Requests</div><div id="adminReqCount" class="value">0</div></div>
  <div class="card"><div class="label">Roster Agents</div><div id="adminRosterCount" class="value">0</div></div>
  <div class="card"><div class="label">Active AHT Agents</div><div id="adminAhtCount" class="value">0</div></div>
- <div class="card"><div class="label">Target</div><div id="adminTarget" class="value gold">195s</div></div>
+ <div class="card"><div class="label">Target</div><div id="adminTargetStat" class="value gold">195s</div></div>
 </div>
 <div class="grid2">
  <div class="panel"><div class="panel-head"><div class="panel-title">JOIN REQUESTS</div><div class="panel-note">Approve / reject locally</div></div><div class="panel-body"><div id="requests"></div></div></div>
@@ -318,14 +234,14 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;background:lin
 <div class="panel"><div class="panel-head"><div class="panel-title">ROSTER PREVIEW</div><div class="panel-note">Used to enrich TL / AM / Process analysis</div></div><div id="rosterPreview"></div></div>
 <div class="panel"><div class="panel-head"><div class="panel-title">ADMIN DEFAULTS</div></div><div class="panel-body">
  <div class="grid3">
-  <div class="field"><label>AHT Target (seconds)</label><input id="adminTarget" type="number" min="1" value="195" onchange="setTarget(this.value)"></div>
+  <div class="field"><label>AHT Target (seconds)</label><input id="adminTargetInput" type="number" min="1" value="195" onchange="setTarget(this.value)"></div>
   <div class="field"><label>Default Watermark</label><input id="adminWatermark" value="Abhijith" onchange="setWatermark(this.value)"></div>
   <div class="field"><label>Profile / DP Image</label><label class="btn" style="display:block;text-align:center"><input class="file-input" type="file" accept="image/*" onchange="changeAvatar(event)">Choose Image</label></div>
  </div>
 </div></div>
 </section>
 
-<div class="footer">MOGAMBO NEURAL OPS • AHT PERFORMANCE INTELLIGENCE • <span id="footerTime"></span></div>
+<div class="footer">REAL TIME SAHT TRACKER • ABHIJITH • <span id="footerTime"></span></div>
 </main></div>
 </section>
 
@@ -395,67 +311,57 @@ function rosterFor(r){
 function conditionClass(aht){
  if(aht>S.target)return 'aht-bad'; if(aht<S.target)return 'aht-good'; return 'aht-neutral'
 }
-function hierarchyFilteredAgents(){
- let rows=[...S.agents];const q=($('hSearch')?.value||'').trim().toLowerCase();
- const get=(r,k)=>String(rosterFor(r)[k]||'').trim();
- if(q)rows=rows.filter(r=>(r.name+' '+r.email).toLowerCase().includes(q));
- const pairs=[['hTl','tl'],['hAm','am'],['hBucket','bucket'],['hOjt','ojt'],['hShift','shift'],['hProcess','process']];
- pairs.forEach(([id,key])=>{const v=$(id)?.value||'';if(v)rows=rows.filter(r=>get(r,key)===v)});
- const st=$('hStatus')?.value||'';if(st==='above')rows=rows.filter(r=>r.aht>S.target);if(st==='within')rows=rows.filter(r=>r.aht<=S.target);
- return rows;
-}
-function fillHierarchyFilters(){
- const maps=[['hTl','tl','All TL'],['hAm','am','All AM'],['hBucket','bucket','All Buckets'],['hOjt','ojt','All'],['hShift','shift','All Shifts'],['hProcess','process','All Processes']];
- maps.forEach(([id,key,blank])=>{const el=$(id);if(!el)return;const old=el.value;const vals=[...new Set(S.agents.map(rosterFor).map(x=>String(x[key]||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));el.innerHTML='<option value="">'+blank+'</option>'+vals.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');if(vals.includes(old))el.value=old});
-}
-function groupData(dimension,sourceRows=hierarchyFilteredAgents()){
- const map={};sourceRows.forEach(r=>{const rr=rosterFor(r);let k;
-  if(dimension==='Agent Wise')k=r.name;else if(dimension==='TL Wise')k=rr.tl||'Unmapped';else if(dimension==='AM Wise')k=rr.am||'Unmapped';else if(dimension==='Process Wise')k=rr.process||'Unmapped';else if(dimension==='Bucket Wise')k=rr.bucket||'Unmapped';else if(dimension==='OJT / Non-OJT')k=rr.ojt||'Unmapped';else k=rr.shift||'Unmapped';
+function groupData(dimension){
+ const map={};S.agents.forEach(r=>{const rr=rosterFor(r);let k;
+  if(dimension==='Agent Wise')k=r.name;
+  else if(dimension==='TL Wise')k=rr.tl||'Unmapped';
+  else if(dimension==='AM Wise')k=rr.am||'Unmapped';
+  else if(dimension==='Process Wise')k=rr.process||'Unmapped';
+  else if(dimension==='Bucket Wise')k=rr.bucket||'Unmapped';
+  else if(dimension==='OJT / Non-OJT')k=rr.ojt||'Unmapped';
+  else k=rr.shift||'Unmapped';
   (map[k]??=[]).push(r);
- });
- const out=Object.entries(map).map(([name,rs])=>({name,n:rs.length,received:rs.reduce((a,r)=>a+r.received,0),resolved:rs.reduce((a,r)=>a+r.resolved,0),aht:rs.reduce((a,r)=>a+r.aht,0)/rs.length,frt:rs.reduce((a,r)=>a+r.frtSec,0)/rs.length}));
- const sort=$('hSort')?.value||'ahtDesc';if(sort==='ahtAsc')out.sort((a,b)=>a.aht-b.aht);else if(sort==='receivedDesc')out.sort((a,b)=>b.received-a.received);else if(sort==='resolvedDesc')out.sort((a,b)=>b.resolved-a.resolved);else if(sort==='nameAsc')out.sort((a,b)=>a.name.localeCompare(b.name));else out.sort((a,b)=>b.aht-a.aht);return out;
+ });return Object.entries(map).map(([name,rs])=>({name,n:rs.length,received:rs.reduce((a,r)=>a+r.received,0),resolved:rs.reduce((a,r)=>a+r.resolved,0),aht:rs.reduce((a,r)=>a+r.aht,0)/rs.length,frt:rs.reduce((a,r)=>a+r.frtSec,0)/rs.length})).sort((a,b)=>b.aht-a.aht)
 }
-function clearHierarchyFilters(){['hSearch','hTl','hAm','hBucket','hOjt','hShift','hProcess','hStatus'].forEach(id=>{const e=$(id);if(e)e.value=''});if($('hSort'))$('hSort').value='ahtDesc';renderHierarchy()}
-function tableHTML(rows=S.agents,grouped=false){
- if(!rows.length)return '<div class="panel-body"><div class="empty">No active AHT data. Paste the live table on Home.</div></div>';
+function tableHTML(rows=S.agents,grouped=false,variant='standard'){
+ if(!rows.length)return '<div class="panel-body"><div class="empty">No active AHT data. Paste the live agent table on Home.</div></div>';
+ const skin=$('tableMode')?.value||'light',font=$('fontStyle')?.value||'inter',cond=$('conditionStyle')?.value||'classic',align=$('alignment')?.value||'center';
  const totalA=rows.reduce((s,r)=>s+r.aht,0)/rows.length,totalR=rows.reduce((s,r)=>s+r.received,0),totalRes=rows.reduce((s,r)=>s+r.resolved,0),totalF=rows.reduce((s,r)=>s+r.frtSec,0)/rows.length;
- const skin=$('tableSkin')?.value||'obsidian',font=$('fontStyle')?.value||'inter',cond=$('conditionStyle')?.value||'classic';
- const wrap=`table-preview skin-${skin} font-${font} cf-${cond}`;
- if(grouped)return `<div class="${wrap}"><div class="table-wrap"><table><thead><tr><th>Group</th><th>Agents</th><th>Received</th><th>Resolved</th><th>Avg AHT</th><th>Avg FRT</th><th>Target Gap</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="name">${esc(r.name)}</td><td>${r.n}</td><td>${r.received}</td><td>${r.resolved}</td><td class="${conditionClass(r.aht)}">${Math.round(r.aht)}s</td><td>${Math.round(r.frt)}s</td><td class="${r.aht>S.target?'gap-bad':'gap-good'}">${Math.max(0,Math.round(r.aht-S.target))}s</td></tr>`).join('')}<tr class="grand"><td class="name">Grand Total</td><td>${S.agents.length}</td><td>${totalR}</td><td>${totalRes}</td><td>${Math.round(totalA)}s</td><td>${Math.round(totalF)}s</td><td>${Math.max(0,Math.round(totalA-S.target))}s</td></tr></tbody></table></div></div>`;
- return `<div class="${wrap}"><div class="table-wrap"><table><thead><tr><th>Agent Name</th><th>Received</th><th>Resolved</th><th>Avg. HT</th><th>AHT (Sec)</th><th>Avg. FRT</th><th>Target Gap</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="name">${esc(r.name)}</td><td>${r.received}</td><td>${r.resolved}</td><td>${esc(r.ht)}</td><td class="${conditionClass(r.aht)}">${Math.round(r.aht)}s</td><td>${esc(r.frt)}</td><td class="${r.aht>S.target?'gap-bad':'gap-good'}">${Math.max(0,Math.round(r.aht-S.target))}s${r.aht>S.target?' reduce':' OK'}</td></tr>`).join('')}<tr class="grand"><td class="name">Grand Total</td><td>${totalR}</td><td>${totalRes}</td><td>—</td><td>${Math.round(totalA)}s</td><td>${Math.round(totalF)}s</td><td>${Math.max(0,Math.round(totalA-S.target))}s</td></tr></tbody></table></div></div>`;
+ const cls=`table-preview ${skin} font-${font} cf-${cond} align-${align}`;
+ const density=variant==='compact'?'padding:8px 9px':variant==='minimal'?'padding:14px 12px':'';
+ if(grouped)return `<div class="${cls}"><div class="table-wrap"><table><thead><tr><th>Group</th><th>Agents</th><th>Received</th><th>Resolved</th><th>Avg AHT</th><th>Avg FRT</th><th>Target Gap</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="name">${esc(r.name)}</td><td>${r.n}</td><td>${r.received}</td><td>${r.resolved}</td><td class="${conditionClass(r.aht)}" style="${density}">${Math.round(r.aht)}s</td><td>${Math.round(r.frt)}s</td><td>${Math.max(0,Math.round(r.aht-S.target))}s</td></tr>`).join('')}<tr class="grand"><td class="name">Grand Total</td><td>${S.agents.length}</td><td>${totalR}</td><td>${totalRes}</td><td>${Math.round(totalA)}s</td><td>${Math.round(totalF)}s</td><td>${Math.max(0,Math.round(totalA-S.target))}s</td></tr></tbody></table></div></div>`;
+ const gapText=r=>variant==='analysis'?`${Math.max(0,Math.round(r.aht-S.target))}s`:'—';
+ return `<div class="${cls}"><div class="table-wrap"><table><thead><tr><th>Agent Name</th><th>Received</th><th>Resolved</th><th>Avg. HT</th><th>AHT (Sec)</th><th>Avg. FRT</th><th>Target Gap</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="name" style="${density}">${esc(r.name)}</td><td>${r.received}</td><td>${r.resolved}</td><td>${esc(r.ht)}</td><td class="${conditionClass(r.aht)}" style="${density}">${Math.round(r.aht)}${variant==='cinematic'?' ◆':''}${variant==='analysis'&&r.aht>S.target?' ▲':''}${variant==='analysis'&&r.aht<S.target?' ▼':''}s</td><td>${esc(r.frt)}</td><td>${variant==='analysis'?gapText(r):Math.max(0,Math.round(r.aht-S.target))+'s'}</td></tr>`).join('')}<tr class="grand"><td class="name">Grand Total</td><td>${totalR}</td><td>${totalRes}</td><td>${formatSec(totalA)}</td><td>${Math.round(totalA)}s —</td><td>${Math.round(totalF)}s</td><td>${Math.max(0,Math.round(totalA-S.target))}s</td></tr></tbody></table></div></div>`;
 }
+function formatSec(v){v=Math.round(v);return `${Math.floor(v/60)} m ${v%60} s`}
 function renderAll(){
- const n=S.agents.length,sorted=[...S.agents].sort((a,b)=>b.aht-a.aht);
- const avg=n?S.agents.reduce((s,r)=>s+r.aht,0)/n:0,rec=S.agents.reduce((s,r)=>s+r.received,0),res=S.agents.reduce((s,r)=>s+r.resolved,0),frt=n?S.agents.reduce((s,r)=>s+r.frtSec,0)/n:0;
- $('kAht').textContent=Math.round(avg)+'s';$('kCalls').textContent=rec;$('kResolved').textContent=res;$('kFrt').textContent=Math.round(frt)+'s';$('homeTarget').textContent=S.target+'s';$('activeBadge').textContent=n+' ACTIVE';
- $('homeTable').innerHTML=tableHTML(sorted);
- $('xAbove').textContent=S.agents.filter(r=>r.aht>S.target).length;$('xBelow').textContent=S.agents.filter(r=>r.aht<=S.target).length;
- const hi=sorted[0],lo=sorted[n-1],vals=sorted.map(r=>r.aht).sort((a,b)=>a-b);
- let median=0;if(n)median=n%2?vals[(n-1)/2]:(vals[n/2-1]+vals[n/2])/2;
- $('xHigh').textContent=hi?Math.round(hi.aht)+'s':'0s';$('xHighName').textContent=hi?hi.name:'—';$('xLow').textContent=lo?Math.round(lo.aht)+'s':'0s';$('xLowName').textContent=lo?lo.name:'—';$('xMedian').textContent=Math.round(median)+'s';$('xGap').textContent=Math.max(0,Math.round(avg-S.target))+'s';
- $('bars').innerHTML=n?sorted.slice(0,15).map((r,i)=>`<div style="margin:10px 0"><div style="display:flex;justify-content:space-between"><span class="rank-name">${i+1}. ${esc(r.name)}</span><b class="${r.aht>S.target?'gap-bad':'gap-good'}">${Math.round(r.aht)}s</b></div><div class="bar"><i style="width:${Math.min(100,Math.max(4,r.aht/Math.max(1,sorted[0].aht)*100))}%"></i></div></div>`).join(''):'<div class="empty">No data</div>';
- fillHierarchyFilters();const hRows=hierarchyFilteredAgents();$('hCount').textContent=hRows.length+' matched';$('hierarchyTable').innerHTML=tableHTML(groupData($('dimension')?.value||'Agent Wise',hRows),true);
- $('adminReqCount').textContent=S.requests.filter(x=>x.status==='pending').length;$('adminRosterCount').textContent=S.roster.length;$('adminAhtCount').textContent=n;
- $('adminTarget').textContent=S.target+'s';if($('adminTarget'))$('adminTarget').value=S.target;if($('homeTargetInput'))$('homeTargetInput').value=S.target;
- if($('adminWatermark'))$('adminWatermark').value=S.watermark;if($('watermark'))$('watermark').value=S.watermark;
- $('requests').innerHTML=S.requests.length?S.requests.map((r,i)=>`<div class="request"><div><b>${esc(r.name)}</b><div class="hint">${esc(r.email)} • ${esc(r.tl||'TL not given')}</div><div class="hint">${esc(r.reason||'')}</div><span class="tag ${r.status==='approved'?'green':'gold'}">${esc(r.status)}</span></div><div class="toolbar">${r.status==='pending'?`<button class="btn primary" onclick="requestAction(${i},'approved')">Approve</button><button class="btn red" onclick="requestAction(${i},'rejected')">Reject</button>`:''}</div></div>`).join(''):'<div class="empty">No access requests.</div>';
- $('rosterStatus').textContent=S.roster.length?`${S.roster.length} roster records loaded.`:'No roster loaded.';
- $('rosterPreview').innerHTML=S.roster.length?`<div class="table-wrap"><table><thead><tr><th>Agent ID / Login ID</th><th>Agent Name</th><th>TL</th><th>AM</th><th>Bucket</th><th>OJT / Non-OJT</th><th>Shift Status</th><th>Process</th></tr></thead><tbody>${S.roster.slice(0,30).map(r=>`<tr><td>${esc(r.id)}</td><td class="name">${esc(r.name)}</td><td>${esc(r.tl)}</td><td>${esc(r.am)}</td><td>${esc(r.bucket)}</td><td>${esc(r.ojt)}</td><td>${esc(r.shift)}</td><td>${esc(r.process)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="panel-body"><div class="empty">Upload the weekly roster to unlock TL / AM / Process enrichment.</div></div>';
- $('profileImg').src=S.avatar;$('topAvatar').src=S.avatar;$('profileName').textContent=S.user||'Admin';
- const rr=S.roster.find(x=>[x.id,x.email,x.name].filter(Boolean).some(v=>String(v).toLowerCase()===String(S.user).toLowerCase()))||{};
- $('profileRole').textContent=S.user.toLowerCase()==='admin'?'COMMAND ADMIN':(rr.process||'AHT USER').toUpperCase();
- $('profileDetails').innerHTML=`<div class="grid3"><div class="card"><div class="label">Login</div><div class="value" style="font-size:16px">${esc(S.user||'Admin')}</div></div><div class="card"><div class="label">TL</div><div class="value" style="font-size:16px">${esc(rr.tl||'—')}</div></div><div class="card"><div class="label">AM</div><div class="value" style="font-size:16px">${esc(rr.am||'—')}</div></div></div><div class="grid3" style="margin-top:12px"><div class="card"><div class="label">Bucket</div><div class="value" style="font-size:16px">${esc(rr.bucket||'—')}</div></div><div class="card"><div class="label">Shift</div><div class="value" style="font-size:16px">${esc(rr.shift||'—')}</div></div><div class="card"><div class="label">Process</div><div class="value" style="font-size:16px">${esc(rr.process||'—')}</div></div></div>`;
- $('footerTime').textContent=nowStamp();applyPreviewTheme();drawCharts();
+ const n=S.agents.length,rows=[...S.agents].sort((a,b)=>b.aht-a.aht),avg=n?S.agents.reduce((s,r)=>s+r.aht,0)/n:0,rec=S.agents.reduce((s,r)=>s+r.received,0),res=S.agents.reduce((s,r)=>s+r.resolved,0),frt=n?S.agents.reduce((s,r)=>s+r.frtSec,0)/n:0;
+ const set=(id,v)=>{const e=$(id);if(e)e.textContent=v}; const val=(id,v)=>{const e=$(id);if(e)e.value=v};
+ set('kAht',Math.round(avg)+'s');set('kCalls',rec);set('kResolved',res);set('kFrt',Math.round(frt)+'s');set('homeTarget',S.target+'s');set('activeBadge',n+' ACTIVE');
+ const ht=tableHTML(rows,false,'standard');setHTML('homeTable',ht);setHTML('hierarchyTable',tableHTML(groupData($('dimension')?.value||'Agent Wise'),true));
+ set('xAbove',rows.filter(r=>r.aht>S.target).length);set('xBelow',rows.filter(r=>r.aht<=S.target).length);const hi=rows[0],lo=rows[n-1];set('xHigh',hi?Math.round(hi.aht)+'s':'0s');set('xHighName',hi?hi.name:'—');set('xLow',lo?Math.round(lo.aht)+'s':'0s');set('xLowName',lo?lo.name:'—');
+ const vv=rows.map(r=>r.aht).sort((a,b)=>a-b);let med=0;if(n)med=n%2?vv[(n-1)/2]:(vv[n/2-1]+vv[n/2])/2;set('xMedian',Math.round(med)+'s');
+ setHTML('bars',n?rows.slice(0,15).map((r,i)=>`<div style="margin:9px 0"><div style="display:flex;justify-content:space-between"><span>${i+1}. ${esc(r.name)}</span><b class="${r.aht>S.target?'gap-bad':'gap-good'}">${Math.round(r.aht)}s</b></div><div class="bar"><i style="width:${Math.max(4,Math.min(100,r.aht/Math.max(1,rows[0].aht)*100))}%"></i></div></div>`).join(''):'<div class="empty">No data</div>');
+ set('adminReqCount',S.requests.filter(x=>x.status==='pending').length);set('adminRosterCount',S.roster.length);set('adminAhtCount',n);set('adminTargetStat',S.target+'s');val('adminTargetInput',S.target);val('homeTargetInput',S.target);val('watermark',S.watermark);val('adminWatermark',S.watermark);
+ setHTML('requests',S.requests.length?S.requests.map((r,i)=>`<div class="request"><div><b>${esc(r.name)}</b><div class="hint">${esc(r.email)} • ${esc(r.tl||'TL not given')}</div><div class="hint">${esc(r.reason||'')}</div><span class="tag ${r.status==='approved'?'green':'gold'}">${esc(r.status)}</span></div><div class="toolbar">${r.status==='pending'?`<button class="btn primary" onclick="requestAction(${i},'approved')">Approve</button><button class="btn red" onclick="requestAction(${i},'rejected')">Reject</button>`:''}</div></div>`).join(''):'<div class="empty">No access requests.</div>');
+ set('rosterStatus',S.roster.length?`${S.roster.length} roster records loaded.`:'No roster loaded.');setHTML('rosterPreview',S.roster.length?`<div class="table-wrap"><table><thead><tr><th>Agent ID / Login ID</th><th>Agent Name</th><th>TL</th><th>AM</th><th>Bucket</th><th>OJT / Non-OJT</th><th>Shift Status</th><th>Process</th></tr></thead><tbody>${S.roster.slice(0,30).map(r=>`<tr><td>${esc(r.id)}</td><td>${esc(r.name)}</td><td>${esc(r.tl)}</td><td>${esc(r.am)}</td><td>${esc(r.bucket)}</td><td>${esc(r.ojt)}</td><td>${esc(r.shift)}</td><td>${esc(r.process)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="panel-body"><div class="empty">Upload the weekly roster to enrich TL / AM / Process analysis.</div></div>');
+ const img=$('profileImg'),top=$('topAvatar');if(img)img.src=S.avatar;if(top)top.src=S.avatar;set('profileName',S.user||'Admin');const rr=S.roster.find(x=>[x.id,x.email,x.name].filter(Boolean).some(v=>String(v).toLowerCase()===String(S.user).toLowerCase()))||{};set('profileRole',S.user.toLowerCase()==='admin'?'COMMAND ADMIN':(rr.process||'AHT USER').toUpperCase());setHTML('profileDetails',`<div class="grid3"><div class="card"><div class="label">Login</div><div class="value" style="font-size:16px">${esc(S.user||'Admin')}</div></div><div class="card"><div class="label">TL</div><div class="value" style="font-size:16px">${esc(rr.tl||'—')}</div></div><div class="card"><div class="label">AM</div><div class="value" style="font-size:16px">${esc(rr.am||'—')}</div></div></div><div class="grid3" style="margin-top:12px"><div class="card"><div class="label">Bucket</div><div class="value" style="font-size:16px">${esc(rr.bucket||'—')}</div></div><div class="card"><div class="label">Shift</div><div class="value" style="font-size:16px">${esc(rr.shift||'—')}</div></div><div class="card"><div class="label">Process</div><div class="value" style="font-size:16px">${esc(rr.process||'—')}</div></div></div>`);
+ set('footerTime',nowStamp());applyTableTheme();drawCharts();
 }
-function applyPreviewTheme(){
- const mode=$('tableMode')?.value||'dark',skin=$('tableSkin')?.value||'slate',font=$('fontStyle')?.value||'inter',cond=$('conditionStyle')?.value||'classic';
- document.querySelectorAll('#homeTable,#hierarchyTable').forEach(el=>{const t=el.querySelector('.table-preview');if(t)t.className=`table-preview mode-${mode} style-${skin} font-${font} cf-${cond}`});
+function setHTML(id,v){const e=$(id);if(e)e.innerHTML=v}
+function applyTableTheme(){document.querySelectorAll('.table-preview').forEach(t=>{t.classList.remove('light','dark','slate','royal','emerald','crimson','font-inter','font-orbitron','font-rajdhani','font-mono','cf-classic','cf-bold','cf-soft','cf-mono');t.classList.add($('tableMode')?.value||'light','font-'+($('fontStyle')?.value||'inter'),'cf-'+($('conditionStyle')?.value||'classic'))})}
+function renderHierarchy(){
+ const dim=$('dimension')?.value||'Agent Wise',q=($('hSearch')?.value||'').toLowerCase(),tf=$('hTarget')?.value||'all',sf=$('hSort')?.value||'high',mf=$('hMap')?.value||'all';
+ let source=S.agents.filter(r=>{const rr=rosterFor(r),mapped=!!(rr.tl||rr.am||rr.process||rr.bucket||rr.ojt||rr.shift);if(q&&!(`${r.name} ${rr.tl||''} ${rr.am||''} ${rr.process||''} ${rr.bucket||''} ${rr.ojt||''} ${rr.shift||''}`.toLowerCase().includes(q)))return false;if(tf==='above'&&r.aht<=S.target)return false;if(tf==='within'&&r.aht>S.target)return false;if(mf==='mapped'&&!mapped)return false;if(mf==='unmapped'&&mapped)return false;return true});
+ const groups=groupDataFrom(source,dim);groups.sort((a,b)=>sf==='low'?a.aht-b.aht:sf==='calls'?b.received-a.received:sf==='resolved'?b.resolved-a.resolved:b.aht-a.aht);setHTML('hierarchyTable',tableHTML(groups,true));set('hierarchyResult',`${source.length} matching active agents • ${groups.length} groups • ${dim}`);applyTableTheme();
 }
-function renderHierarchy(){renderAll()}
+function groupDataFrom(source,dimension){const map={};source.forEach(r=>{const rr=rosterFor(r);let k=dimension==='Agent Wise'?r.name:dimension==='TL Wise'?(rr.tl||'Unmapped'):dimension==='AM Wise'?(rr.am||'Unmapped'):dimension==='Process Wise'?(rr.process||'Unmapped'):dimension==='Bucket Wise'?(rr.bucket||'Unmapped'):dimension==='OJT / Non-OJT'?(rr.ojt||'Unmapped'):(rr.shift||'Unmapped');(map[k]??=[]).push(r)});return Object.entries(map).map(([name,rs])=>({name,n:rs.length,received:rs.reduce((a,r)=>a+r.received,0),resolved:rs.reduce((a,r)=>a+r.resolved,0),aht:rs.reduce((a,r)=>a+r.aht,0)/rs.length,frt:rs.reduce((a,r)=>a+r.frtSec,0)/rs.length}));}
+function resetHierarchyFilters(){['hSearch'].forEach(id=>{const e=$(id);if(e)e.value=''});['hTarget','hMap'].forEach(id=>{const e=$(id);if(e)e.value='all'});if($('hSort'))$('hSort').value='high';renderHierarchy()}
 function showPage(page,btn){
  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const p=$('page-'+page);if(p)p.classList.add('active');
- document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));renderAll();
+ document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+ if(page==='admin' && String(S.user).toLowerCase()!=='admin' && String(S.user).toLowerCase()!=='abhijith'){toast('Admin Control is restricted to Admin.');return}
+ renderAll();window.scrollTo({top:0,behavior:'smooth'});
 }
 function processPaste(text){
  const rows=parseData(text);S.agents=rows;localStorage.setItem('mogamboAhtInput',text);
@@ -543,50 +449,33 @@ function drawBarsChart(c,mode){
  const max=Math.max(S.target,...rs.map(r=>r.aht))*1.12,barW=Math.max(22,(w-80)/rs.length-12);
  rs.forEach((r,i)=>{const x=45+i*(barW+12),bh=r.aht/max*220,y=245-bh;ctx.fillStyle=r.aht>S.target?'#b83245':'#b78a2c';ctx.fillRect(x,y,barW,bh);ctx.fillStyle='#d8dee8';ctx.save();ctx.translate(x+barW/2,265);ctx.rotate(-.55);ctx.textAlign='right';ctx.fillText(r.name.slice(0,14),0,0);ctx.restore();ctx.fillStyle='#f1c86b';ctx.textAlign='center';ctx.fillText(Math.round(r.aht)+'s',x+barW/2,y-7)});ctx.textAlign='left';const ty=245-S.target/max*220;ctx.strokeStyle='#e7b84f';ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(35,ty);ctx.lineTo(880,ty);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#e7b84f';ctx.fillText('TARGET '+S.target+'s',40,ty-7)
 }
-function drawCharts(){const tc=$('targetChart');if(tc)drawBarsChart(tc)}
-function exportCanvas(kind='table'){
- const rows=S.agents;if(!rows.length)return null;
- const W=3840,pad=150,rowH=100,headerH=125,topH=250;
- const mode=$('tableMode')?.value||'dark',skin=$('tableSkin')?.value||'slate',font=$('fontStyle')?.value||'inter',cond=$('conditionStyle')?.value||'classic',align=$('alignment')?.value||'center',bgChoice=$('exportBackground')?.value||'dark';
- const bgMap={dark:'#07090d',light:'#ffffff',gold:'#211807',red:'#16080b',green:'#06140d',blue:'#071326'};
- const bg=bgChoice==='dark'?(mode==='light'?'#f7f9fc':'#07090d'):(bgMap[bgChoice]||bgMap.dark);
- const skins={slate:{panel:mode==='light'?'#f7f9fc':'#0d131c',head:mode==='light'?'#e7edf5':'#1a2431',grid:mode==='light'?'#cbd5e1':'#344153',fg:mode==='light'?'#182438':'#f2f5f9',muted:mode==='light'?'#667085':'#8b95a5'},blue:{panel:mode==='light'?'#f7faff':'#091424',head:mode==='light'?'#dceafe':'#102a4a',grid:mode==='light'?'#b9cef0':'#294e78',fg:mode==='light'?'#16263f':'#eff6ff',muted:mode==='light'?'#64748b':'#8ca9ca'},gold:{panel:mode==='light'?'#fffdf7':'#171208',head:mode==='light'?'#f4ead1':'#30240e',grid:mode==='light'?'#ddc99d':'#5c4820',fg:mode==='light'?'#2a2417':'#fff5da',muted:mode==='light'?'#75694f':'#bda66c'},green:{panel:mode==='light'?'#f7fcf9':'#081810',head:mode==='light'?'#dff2e8':'#123322',grid:mode==='light'?'#b9d9c8':'#2d5a3f',fg:mode==='light'?'#173126':'#edfff5',muted:mode==='light'?'#5b7668':'#8ab9a2'},rose:{panel:mode==='light'?'#fff9fa':'#180b0e',head:mode==='light'?'#f8e2e6':'#39131a',grid:mode==='light'?'#e5b8c0':'#63303a',fg:mode==='light'?'#351b20':'#fff0f2',muted:mode==='light'?'#7b5d64':'#b8949a'}}[skin];
- const ff={inter:'Inter',orbitron:'Orbitron',rajdhani:'Rajdhani',mono:'Share Tech Mono'}[font]||'Inter';
- const fg=bgChoice==='light'?'#1b2432':skins.fg,muted=bgChoice==='light'?'#667085':skins.muted,panel=bgChoice==='light'?'#f3f5f7':skins.panel,head=bgChoice==='light'?'#e5e9ef':skins.head,grid=bgChoice==='light'?'#cbd3dc':skins.grid;
- const n=rows.length,avg=rows.reduce((s,r)=>s+r.aht,0)/n,frt=rows.reduce((s,r)=>s+r.frtSec,0)/n;
- const groups=groupData($('dimension')?.value||'Agent Wise'), extra=kind==='kpi'?290:kind==='charts'?470:kind==='analytics'?540:kind==='hierarchy'?320:kind==='full'?1050:0;
- const H=topH+headerH+(n+1)*rowH+extra+140,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
- x.fillStyle=bg;x.fillRect(0,0,W,H);
- // Repeating watermark inside the exported image.
- x.save();x.globalAlpha=.055;x.fillStyle=mode==='light'?'#18324f':'#d9e1ea';x.font=`900 62px ${ff}`;x.textAlign='center';x.translate(W/2,H/2);x.rotate(-.35);for(let yy=-H;yy<H;yy+=260){for(let xx=-W;xx<W;xx+=720){x.fillText($('watermark')?.value||S.watermark,xx,yy)}}x.restore();
- x.fillStyle=fg;x.font=`900 58px ${ff}`;x.fillText('REAL TIME SAHT TRACKER BY ABHIJITH',pad,80);x.fillStyle=muted;x.font=`500 25px ${ff}`;x.fillText(`LIVE AHT • TARGET ${S.target}s • ACTIVE AGENTS ${n}`,pad,130);if($('timestampMode')?.value!=='off')x.fillText(nowStamp(),pad,172);
- const cols=[pad,1550,1810,2070,2380,2700,3090],heads=['Agent Name','Received','Resolved','Avg. HT','AHT (Sec)','Avg. FRT','Target Gap'];
- if(['table','full','hierarchy'].includes(kind)){
-  x.fillStyle=head;x.fillRect(pad,topH,W-pad*2,headerH);x.strokeStyle=grid;x.lineWidth=2;
-  heads.forEach((h,i)=>{x.fillStyle=fg;x.font=`900 27px ${ff}`;x.textAlign=i===0&&align==='left'?'left':align==='right'?'right':'center';x.fillText(h,i===0?cols[i]+30:cols[i]+100,topH+76)});
-  rows.forEach((r,i)=>{const y=topH+headerH+i*rowH;x.fillStyle=panel;x.fillRect(pad,y,W-pad*2,rowH);x.strokeStyle=grid;x.strokeRect(pad,y,W-pad*2,rowH);const vals=[r.name,r.received,r.resolved,r.ht,Math.round(r.aht)+'s',r.frt,Math.max(0,Math.round(r.aht-S.target))+'s'];
-   vals.forEach((v,j)=>{x.fillStyle=fg;x.font=`${j===0?'750':'600'} 25px ${ff}`;x.textAlign=j===0&&align==='left'?'left':align==='right'?'right':'center';x.fillText(String(v),j===0?cols[j]+30:cols[j]+100,y+60)});
-   let fill=cond==='mono'?'#8e96a1':r.aht>S.target?'#7d1f2c':r.aht<S.target?'#176241':'#806a1f';if(cond==='soft')fill=r.aht>S.target?'#5b3038':r.aht<S.target?'#285744':'#5a4e29';if(cond==='contrast')fill=r.aht>S.target?'#ff2442':r.aht<S.target?'#00a968':'#f1bd00';
-   x.fillStyle=fill;x.fillRect(cols[4]-45,y+10,240,rowH-20);x.fillStyle='#fff';x.font=`900 26px ${ff}`;x.textAlign='center';x.fillText(Math.round(r.aht)+'s',cols[4]+75,y+60)
-  });
-  const gy=topH+headerH+n*rowH;x.fillStyle=head;x.fillRect(pad,gy,W-pad*2,rowH);x.strokeStyle=grid;x.strokeRect(pad,gy,W-pad*2,rowH);x.fillStyle=fg;x.font=`900 30px ${ff}`;x.textAlign='left';x.fillText('Grand Total',pad+30,gy+61);x.textAlign='center';x.fillText(String(rows.reduce((s,r)=>s+r.received,0)),1650,gy+61);x.fillText(String(rows.reduce((s,r)=>s+r.resolved,0)),1910,gy+61);x.fillText(Math.round(avg)+'s',2800,gy+61);x.fillText(Math.round(frt)+'s',3190,gy+61);
- }
- const cy=topH+headerH+(n+1)*rowH+35;
- if(['kpi','full'].includes(kind)){x.fillStyle=fg;x.font=`900 34px ${ff}`;x.textAlign='left';x.fillText('COMMAND KPI BOARD',pad,cy+25);[['OVERALL AHT / GRAND TOTAL',Math.round(avg)+'s'],['CALLS TAKEN',String(rows.reduce((s,r)=>s+r.received,0))],['RESOLVED',String(rows.reduce((s,r)=>s+r.resolved,0))],['AVG FRT',Math.round(frt)+'s'],['HIGHEST AHT',Math.round(rows[0].aht)+'s'],['LOWEST AHT',Math.round(rows[n-1].aht)+'s']].forEach((z,i)=>{const xx=pad+(i%3)*1180,yy=cy+70+Math.floor(i/3)*130;x.fillStyle=panel;x.fillRect(xx,yy,1060,100);x.strokeStyle=grid;x.strokeRect(xx,yy,1060,100);x.fillStyle=muted;x.font=`600 19px ${ff}`;x.fillText(z[0],xx+25,yy+35);x.fillStyle=fg;x.font=`900 31px ${ff}`;x.fillText(z[1],xx+25,yy+73)})}
- if(['charts','analytics','full'].includes(kind)){const y0=cy+(kind==='full'?300:0);x.fillStyle=fg;x.font=`900 34px ${ff}`;x.textAlign='left';x.fillText('AHT DISTRIBUTION',pad,y0+20);const max=Math.max(S.target,...rows.map(r=>r.aht))*1.1,bw=Math.max(45,(W-pad*2)/Math.min(rows.length,16)-25);rows.slice(0,16).forEach((r,i)=>{const bx=pad+i*(bw+20),bh=r.aht/max*230,by=y0+290-bh;x.fillStyle=r.aht>S.target?'#a92a3b':'#a47a20';x.fillRect(bx,by,bw,bh);x.fillStyle=fg;x.font=`600 18px ${ff}`;x.textAlign='center';x.fillText(Math.round(r.aht)+'s',bx+bw/2,by-8);x.save();x.translate(bx+bw/2,y0+310);x.rotate(-.55);x.fillText(r.name.slice(0,16),0,0);x.restore()});const ty=y0+290-S.target/max*230;x.strokeStyle='#e7b84f';x.setLineDash([8,8]);x.beginPath();x.moveTo(pad,ty);x.lineTo(W-pad,ty);x.stroke();x.setLineDash([])}
- if(['hierarchy','full'].includes(kind)){const gy=cy+(kind==='full'?640:0);x.fillStyle=fg;x.font=`900 34px ${ff}`;x.textAlign='left';x.fillText('GROUP PERFORMANCE • '+($('dimension')?.value||'Agent Wise').toUpperCase(),pad,gy+20);groups.slice(0,12).forEach((g,i)=>{const yy=gy+65+i*55;x.fillStyle=panel;x.fillRect(pad,yy,W-pad*2,43);x.fillStyle=fg;x.font=`600 20px ${ff}`;x.fillText(`${g.name} • ${Math.round(g.aht)}s AHT • ${g.received} received • ${g.resolved} resolved • ${Math.round(g.frt)}s FRT`,pad+18,yy+28)})}
- x.fillStyle=muted;x.font=`500 20px ${ff}`;x.textAlign='left';x.fillText($('watermark')?.value||S.watermark,pad,H-50);x.fillText(`Mode: ${mode.toUpperCase()} • Table: ${skin.toUpperCase()} • Font: ${ff} • CF: ${cond.toUpperCase()} • BG: ${bgChoice.toUpperCase()} • Align: ${align.toUpperCase()}`,pad+430,H-50);
- return c
+function drawCharts(){drawBarsChart($('ahtChart'));drawBarsChart($('targetChart'))}
+function exportCanvas(variant='standard'){
+ const rows=[...S.agents].sort((a,b)=>b.aht-a.aht);if(!rows.length)return null;
+ const W=3840,pad=150,compact=variant==='compact',rowH=compact?78:variant==='cinematic'?112:96,headerH=125,topH=250,H=topH+headerH+(rows.length+1)*rowH+150;
+ const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+ const mode=$('tableMode')?.value||'light',cond=$('conditionStyle')?.value||'classic',font=$('fontStyle')?.value||'inter',align=$('alignment')?.value||'center',bgMode=$('exportImageBg')?.value||'match';
+ const themes={light:{bg:'#f5f8fb',panel:'#f5f8fb',head:'#e7edf4',grid:'#cbd5e1',text:'#172235',muted:'#64748b'},dark:{bg:'#070b10',panel:'#0a1118',head:'#182330',grid:'#2e3b49',text:'#edf3f8',muted:'#8492a3'},slate:{bg:'#e9eef4',panel:'#eef2f6',head:'#dce4ed',grid:'#bdc9d6',text:'#1d2939',muted:'#64748b'},royal:{bg:'#f4f1fa',panel:'#f7f4fc',head:'#e5e0f1',grid:'#c9c0dc',text:'#2b2140',muted:'#70658b'},emerald:{bg:'#edf7f1',panel:'#f1faf5',head:'#d8eee2',grid:'#b8d6c5',text:'#163427',muted:'#5f7e70'},crimson:{bg:'#fbf0f2',panel:'#fff5f6',head:'#f1dadd',grid:'#d9b6bd',text:'#37171e',muted:'#80606a'}}[mode];
+ const bgMap={white:'#ffffff',black:'#06080b',gold:'#241a08',navy:'#081426',match:themes.bg};const bg=bgMap[bgMode]||themes.bg;x.fillStyle=bg;x.fillRect(0,0,W,H);
+ const ff={inter:'Inter',orbitron:'Orbitron',rajdhani:'Rajdhani',mono:'Share Tech Mono'}[font]||'Inter';const text=bgMode==='black'?'#f5f7fa':themes.text,muted=bgMode==='black'?'#9aa5b4':themes.muted,panel=bgMode==='black'?'#0b1017':themes.panel,head=bgMode==='black'?'#151d27':themes.head,grid=bgMode==='black'?'#303b48':themes.grid;
+ x.fillStyle=text;x.font=`900 ${variant==='cinematic'?62:56}px ${ff}`;x.fillText('REAL TIME AHT',pad,82);x.fillStyle=muted;x.font=`500 24px ${ff}`;x.fillText(`AGENT WISE • HIGH → LOW • TARGET ${S.target}s • ACTIVE AGENTS ${rows.length}`,pad,128);if($('timestampMode')?.value!=='off')x.fillText(nowStamp(),pad,168);
+ const X=[pad,1530,1810,2090,2400,2740,3130],HDS=['Agent Name','Received','Resolved','Avg. HT','AHT (Sec)','Avg. FRT','Target Gap'];x.fillStyle=head;x.fillRect(pad,topH,W-pad*2,headerH);x.strokeStyle=grid;x.lineWidth=2;
+ HDS.forEach((h,i)=>{x.fillStyle=text;x.font=`900 ${compact?25:28}px ${ff}`;x.textAlign=i===0&&align==='left'?'left':align==='right'?'right':'center';x.fillText(h,i===0?X[i]+30:X[i]+100,topH+75)});
+ rows.forEach((r,i)=>{const y=topH+headerH+i*rowH;x.fillStyle=panel;x.fillRect(pad,y,W-pad*2,rowH);x.strokeStyle=grid;x.strokeRect(pad,y,W-pad*2,rowH);const vals=[r.name,r.received,r.resolved,r.ht,Math.round(r.aht)+'s',r.frt,Math.max(0,Math.round(r.aht-S.target))+'s'];vals.forEach((v,j)=>{x.fillStyle=text;x.font=`${j===0?'750':'600'} ${compact?23:25}px ${ff}`;x.textAlign=j===0&&align==='left'?'left':align==='right'?'right':'center';x.fillText(String(v),j===0?X[j]+30:X[j]+100,y+rowH/2+8)});
+   let fill=cond==='mono'?'#8c949e':r.aht>S.target?'#c9344b':r.aht<S.target?'#168457':'#c79b13';if(cond==='soft')fill=r.aht>S.target?'#a84a5b':r.aht<S.target?'#3f8065':'#a38b3b';if(cond==='bold')fill=r.aht>S.target?'#d7263d':r.aht<S.target?'#009b62':'#d4a500';const ax=X[4]-45,aw=240;x.fillStyle=fill;x.fillRect(ax,y+10,aw,rowH-20);x.fillStyle='#fff';x.font=`900 ${compact?23:26}px ${ff}`;x.textAlign='center';x.fillText(Math.round(r.aht)+'s',ax+aw/2,y+rowH/2+8);
+ });
+ const avg=rows.reduce((s,r)=>s+r.aht,0)/rows.length,fy=topH+headerH+rows.length*rowH;x.fillStyle=head;x.fillRect(pad,fy,W-pad*2,rowH);x.strokeStyle=grid;x.strokeRect(pad,fy,W-pad*2,rowH);x.fillStyle=text;x.font=`900 ${compact?27:30}px ${ff}`;x.textAlign='left';x.fillText('Grand Total / Avg',pad+30,fy+rowH/2+9);x.textAlign='center';x.fillText(String(rows.reduce((s,r)=>s+r.received,0)),1630,fy+rowH/2+9);x.fillText(String(rows.reduce((s,r)=>s+r.resolved,0)),1910,fy+rowH/2+9);x.fillText(formatSec(avg),2490,fy+rowH/2+9);x.fillText(Math.round(avg)+'s —',2840,fy+rowH/2+9);x.fillText(Math.round(rows.reduce((s,r)=>s+r.frtSec,0)/rows.length)+'s',3210,fy+rowH/2+9);
+ // repeated watermark INSIDE the image
+ x.save();x.globalAlpha=.10;x.fillStyle=mode==='dark'?'#d7dde6':'#7da1c7';x.font=`800 ${variant==='cinematic'?72:58}px ${ff}`;for(let yy=fy+70;yy<H-90;yy+=145){for(let xx=250;xx<W-250;xx+=720){x.save();x.translate(xx,yy);x.rotate(-.18);x.fillText($('watermark')?.value||S.watermark,0,0);x.restore()}}x.restore();
+ x.fillStyle=muted;x.font=`500 19px ${ff}`;x.textAlign='left';x.fillText($('watermark')?.value||S.watermark,pad,H-38);return c;
 }
-function copyCanvas(c,label){c.toBlob(blob=>{if(!blob)return;if(navigator.clipboard&&window.ClipboardItem)navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(()=>toast(label+' copied directly to clipboard.')).catch(()=>downloadBlob(blob));else downloadBlob(blob)},'image/png')}
-function copyCurrent4K(){copySection4K('table')}
-function copySection4K(kind){const c=exportCanvas(kind);if(!c){toast('Paste AHT data first.');return}copyCanvas(c,kind.toUpperCase()+' 4K UHD')}
-function downloadBlob(blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Real_Time_SAHT_4K_UHD.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-function downloadPNG(){const c=exportCanvas('full');if(c)c.toBlob(downloadBlob,'image/png')}
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&['loginUser','loginPass'].includes(document.activeElement?.id))login()})
+function copyAHTFormat(variant){const c=exportCanvas(variant);if(!c){toast('Paste AHT data first.');return}c.toBlob(blob=>{if(!blob)return;if(navigator.clipboard&&window.ClipboardItem)navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(()=>toast('Agent-wise AHT 4K image copied to clipboard.')).catch(()=>downloadBlob(blob));else downloadBlob(blob)},'image/png')}
+function copyCurrent4K(){copyAHTFormat('standard')}
+function downloadBlob(blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Real_Time_AHT_Agent_Wise_4K.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function downloadPNG(){const c=exportCanvas('standard');if(c)c.toBlob(downloadBlob,'image/png')}
 function boot(){
  const saved=localStorage.getItem('mogamboAhtInput');if(saved){$('pasteBox').value=saved;S.agents=parseData(saved)}
- $('adminTarget').value=S.target;if($('homeTargetInput'))$('homeTargetInput').value=S.target;renderAll();
+ if($('adminTargetInput'))$('adminTargetInput').value=S.target;if($('homeTargetInput'))$('homeTargetInput').value=S.target;renderAll();
  if(S.user){$('intro').classList.add('hidden');$('login').classList.add('hidden');$('app').classList.remove('hidden');$('topUser').textContent=S.user.toUpperCase()}else{}
 }
 boot();
