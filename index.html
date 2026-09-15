@@ -34,7 +34,7 @@ padding:9px 12px;border-radius:10px;font-weight:700;font-size:11px}.nav button:h
 background:#070a0d;min-height:420px;display:flex;align-items:flex-end;box-shadow:0 24px 70px rgba(0,0,0,.35)}
 .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:.9}
 .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,7,9,.18),rgba(4,7,9,.04) 50%,rgba(4,7,9,.22))}
-.hero-content{position:relative;z-index:2;padding:30px;max-width:650px;margin-top:auto}
+.hero-content{position:relative;z-index:3;padding:28px 30px;max-width:700px;margin-top:auto;background:linear-gradient(90deg,rgba(4,7,9,.88),rgba(4,7,9,.55),transparent);border-radius:14px}
 .eyebrow{color:var(--gold2);font:700 10px var(--display);letter-spacing:.18em}.hero h1{font:900 clamp(30px,4vw,58px) var(--display);margin:10px 0 12px;line-height:1.05}
 .hero h1 span{color:var(--gold2)}.hero p{color:#c1c9cf;max-width:590px;line-height:1.7;font-size:13px}
 .hero-actions{display:flex;gap:10px;margin-top:18px}.btn{border:1px solid rgba(255,255,255,.14);background:#11181f;color:#eef2f5;padding:11px 15px;border-radius:10px;font-weight:800;font-size:11px}
@@ -53,9 +53,9 @@ input,select{width:100%;background:#0b1116;color:#edf1f4;border:1px solid rgba(2
 input:focus,select:focus,textarea:focus{border-color:rgba(230,184,77,.55)}.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.spacer{flex:1}
 .badge{padding:6px 9px;border-radius:99px;border:1px solid var(--line);font-size:9px;color:var(--gold2);white-space:nowrap}.badge.green{color:#6ee6b6;border-color:rgba(22,168,117,.35)}
 .table-shell{overflow:auto;border-radius:12px;border:1px solid rgba(255,255,255,.09)}
-.result-table{width:100%;border-collapse:collapse;table-layout:fixed}.result-table th{height:60px;background:#edf2f7;color:#1768b5;font-size:15px;font-weight:900;border:1px solid #d6dfe8;padding:10px;text-align:center}
-.result-table td{height:62px;background:#eef3f7;color:#1b2a3b;border:1px solid #d6dfe8;padding:8px;text-align:center;font-size:14px;font-weight:600}
-.result-table td.name{text-align:left;padding-left:22px;font-weight:850}.result-table .aht{font-weight:950;font-size:18px}.result-table .bad{color:#c43a51}.result-table .good{color:#16855f}.result-table .neutral{color:#a47700}
+.result-table{width:100%;border-collapse:collapse;table-layout:fixed}.result-table th{height:66px;background:#edf2f7;color:#1768b5;font-size:17px;font-weight:900;border:1px solid #d6dfe8;padding:10px;text-align:center}
+.result-table td{height:68px;background:#eef3f7;color:#1b2a3b;border:1px solid #d6dfe8;padding:8px;text-align:center;font-size:16px;font-weight:700}
+.result-table td.name{text-align:left;padding-left:22px;font-weight:850}.result-table .aht{font-weight:950;font-size:21px}.result-table .bad{color:#c43a51}.result-table .good{color:#16855f}.result-table .neutral{color:#a47700}
 .result-table .grand td{background:#e2e9f0;color:#1d2b3b;font-weight:950;border-top:2px solid #b9c7d4}
 .table-dark .result-table th{background:#16212b;color:#ffd978;border-color:#32404d}.table-dark .result-table td{background:#0c141b;color:#e8eef2;border-color:#2a3641}
 .table-dark .result-table .grand td{background:#17242f;color:#f3f6f8}.table-dark .result-table .bad{color:#ff6073}.table-dark .result-table .good{color:#36d69a}.table-dark .result-table .neutral{color:#ffd24e}
@@ -124,7 +124,7 @@ input:focus,select:focus,textarea:focus{border-color:rgba(230,184,77,.55)}.toolb
 <main class="main">
 <section id="page-home" class="page">
  <div class="hero">
-  <img src="mogambo-home-poster.png" alt="Mogambo Command Center">
+  <img src="mogambo-clean-banner.png" alt="Mogambo Command Center">
   <div class="hero-content">
    <div class="eyebrow">REAL TIME SAHT TRACKER BY ABHIJITH</div>
    <h1>DISCIPLINE <span>MEASURED IN SECONDS.</span></h1>
@@ -465,35 +465,32 @@ function drawChart(){
 }
 function exportCanvas(kind){
  const rows=[...S.agents].sort((a,b)=>b.aht-a.aht);if(!rows.length){toast('Paste AHT data first.');return null}
- const W=3840, pad=150, titleY=120, tableTop=280, headerH=125,rowH=150, bottom=190;
+ const W=3840, pad=130, titleY=105, tableTop=225, headerH=110,rowH=132, bottom=85;
  const H=tableTop+headerH+(rows.length+1)*rowH+bottom,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
  const theme=$('tableTheme').value,cf=$('cf').value,font=$('font').value,light=theme!=='dark'&&theme!=='gold';
  const fonts={inter:'Inter',orbitron:'Orbitron',rajdhani:'Rajdhani',mono:'Share Tech Mono'},ff=fonts[font];
  const palettes={light:{bg:'#eef3f7',head:'#f8fafc',grid:'#d4dde6',fg:'#1b2a3b',muted:'#6b7a88',grand:'#e1e9f0'},blue:{bg:'#eef4fb',head:'#dfe9f7',grid:'#c6d5e5',fg:'#172d45',muted:'#5d7187',grand:'#dce7f3'},rose:{bg:'#f8f1f7',head:'#eadfe8',grid:'#d7c5d2',fg:'#2e2430',muted:'#756372',grand:'#e8dce7'},dark:{bg:'#0c141b',head:'#16212b',grid:'#34414d',fg:'#e8eef2',muted:'#8795a0',grand:'#17242f'},gold:{bg:'#19140c',head:'#3a2a12',grid:'#5a4b2d',fg:'#f5ede0',muted:'#bda77a',grand:'#2d220f'}}[theme];
  x.fillStyle=palettes.bg;x.fillRect(0,0,W,H);
- x.fillStyle=palettes.fg;x.font=`900 72px ${ff}`;x.textAlign='left';x.fillText('REAL TIME AHT',pad,titleY);
- x.fillStyle=palettes.muted;x.font=`600 27px ${ff}`;x.fillText(`AGENT WISE • HIGH → LOW • TARGET ${S.target}s • ACTIVE AGENTS ${rows.length}`,pad,titleY+55);x.fillText(now(),pad,titleY+95);
+ x.fillStyle=palettes.fg;x.font=`900 82px ${ff}`;x.textAlign='left';x.fillText('REAL TIME AHT',pad,titleY);
+ x.fillStyle=palettes.muted;x.font=`700 30px ${ff}`;x.fillText(`AGENT WISE • HIGH → LOW • TARGET ${S.target}s • ACTIVE AGENTS ${rows.length}`,pad,titleY+48);x.fillText(now(),pad,titleY+82);
  const cols=[pad,1630,1980,2340,2750,3160],heads=['Agent Name','Received','Resolved','Avg. HT','AHT (Sec)','Avg. FRT'];
  x.fillStyle=palettes.head;x.fillRect(pad,tableTop,W-pad*2,headerH);
- heads.forEach((h,i)=>{x.fillStyle=palettes.fg;x.font=`900 31px ${ff}`;x.textAlign=i===0?'left':'center';x.fillText(h,i===0?cols[i]+35:cols[i],tableTop+78)});
+ heads.forEach((h,i)=>{x.fillStyle=palettes.fg;x.font=`900 38px ${ff}`;x.textAlign=i===0?'left':'center';x.fillText(h,i===0?cols[i]+35:cols[i],tableTop+78)});
  rows.forEach((r,i)=>{const y=tableTop+headerH+i*rowH;x.fillStyle=palettes.bg;x.fillRect(pad,y,W-pad*2,rowH);x.strokeStyle=palettes.grid;x.lineWidth=2;x.strokeRect(pad,y,W-pad*2,rowH);
   const rr=enrich(r),vals=[r.name,r.received,r.resolved,r.ht,Math.round(r.aht)+' '+(r.aht>S.target?'▲':r.aht<S.target?'▼':'!'),r.frt];
-  vals.forEach((v,j)=>{x.fillStyle=palettes.fg;x.font=`${j===0?'800':'600'} ${j===0?'29':'28'}px ${ff}`;x.textAlign=j===0?'left':'center';x.fillText(String(v),j===0?cols[j]+35:cols[j],y+78)});
+  vals.forEach((v,j)=>{x.fillStyle=palettes.fg;x.font=`${j===0?'900':'700'} ${j===0?'36':'34'}px ${ff}`;x.textAlign=j===0?'left':'center';x.fillText(String(v),j===0?cols[j]+35:cols[j],y+78)});
   let fill=r.aht>S.target?'#d9364e':r.aht<S.target?'#149f70':'#d5a000';
   if(cf==='strong')fill=r.aht>S.target?'#ff2346':r.aht<S.target?'#00a86b':'#e5b400';
   if(cf==='soft')fill=r.aht>S.target?'#c56b78':r.aht<S.target?'#5aa88b':'#b89b48';
   if(cf==='mono')fill='#707b86';
-  x.fillStyle=fill;x.fillRect(cols[4]-135,y+12,270,rowH-24);x.fillStyle=(cf==='strong'&&r.aht===S.target)?'#171300':'#fff';x.font=`900 34px ${ff}`;x.textAlign='center';x.fillText(Math.round(r.aht)+' '+(r.aht>S.target?'▲':r.aht<S.target?'▼':'!'),cols[4],y+75);
+  x.fillStyle=fill;x.fillRect(cols[4]-135,y+12,270,rowH-24);x.fillStyle=(cf==='strong'&&r.aht===S.target)?'#171300':'#fff';x.font=`900 34px ${ff}`;x.textAlign='center';x.font=`900 40px ${ff}`;x.fillText(Math.round(r.aht)+' '+(r.aht>S.target?'▲':r.aht<S.target?'▼':'!'),cols[4],y+78);
   // repeated watermark inside image, behind visual data
   x.save();x.globalAlpha=.065;x.fillStyle=theme==='dark'?'#ffffff':'#3b7bb4';x.font=`900 64px ${ff}`;x.rotate(-.16);for(let wx=180;wx<W-200;wx+=850)x.fillText(S.watermark,wx,y+120);x.restore()
  });
  const avg=rows.reduce((a,r)=>a+r.aht,0)/rows.length,rec=rows.reduce((a,r)=>a+r.received,0),res=rows.reduce((a,r)=>a+r.resolved,0),frt=rows.reduce((a,r)=>a+r.frtSec,0)/rows.length;
  const gy=tableTop+headerH+rows.length*rowH;x.fillStyle=palettes.grand;x.fillRect(pad,gy,W-pad*2,rowH);x.strokeStyle=palettes.grid;x.strokeRect(pad,gy,W-pad*2,rowH);
- x.fillStyle=palettes.fg;x.font=`900 31px ${ff}`;x.textAlign='left';x.fillText('GRAND TOTAL / AVG',pad+35,gy+78);x.textAlign='center';x.fillText(rec,1630,gy+78);x.fillText(res,1980,gy+78);x.fillText(formatSec(avg),2340,gy+78);x.fillText(Math.round(avg)+' —',2750,gy+78);x.fillText(Math.round(frt)+'s',3160,gy+78);
+ x.fillStyle=palettes.fg;x.font=`900 38px ${ff}`;x.textAlign='left';x.fillText('GRAND TOTAL / AVG',pad+35,gy+78);x.textAlign='center';x.fillText(rec,1630,gy+78);x.fillText(res,1980,gy+78);x.fillText(formatSec(avg),2340,gy+78);x.fillText(Math.round(avg)+' —',2750,gy+78);x.fillText(Math.round(frt)+'s',3160,gy+78);
  x.fillStyle=palettes.muted;x.font=`500 20px ${ff}`;x.textAlign='left';x.fillText(`${S.watermark} • ${now()} • 4K UHD 3840 × ${H}`,pad,H-55);
- if(kind==='detail'){
-   x.fillStyle=palettes.fg;x.font=`700 22px ${ff}`;x.textAlign='left';x.fillText('Agent detail mode: email / roster metadata is shown in the live UI; this export keeps the AHT report clean for sharing.',pad,H-88)
- }
  return c
 }
 function copy4K(kind='executive'){
