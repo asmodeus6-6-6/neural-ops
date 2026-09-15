@@ -9,552 +9,525 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap');
+
 :root{
- --bg:#050608;--panel:#0a0d12;--panel2:#0e1219;--gold:#e7b84f;--gold2:#ffd978;
- --red:#e63748;--green:#25d98a;--blue:#61a9ff;--text:#f3f5f8;--muted:#8993a3;
- --line:rgba(231,184,79,.22);--line2:rgba(255,255,255,.09);--shadow:0 20px 70px rgba(0,0,0,.48);
- --font:'Inter',sans-serif;--display:'Orbitron',sans-serif
+ --bg:#05080a;--panel:#0b1014;--panel2:#10171d;--gold:#e6b84d;--gold2:#ffd979;
+ --text:#f4f6f7;--muted:#8c98a3;--line:rgba(230,184,77,.23);
+ --red:#e3354c;--green:#16a875;--amber:#d99f00;--blue:#4c91ff;
+ --radius:18px;--font:Inter,sans-serif;--display:Orbitron,sans-serif;
 }
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font)}
-body{overflow-x:hidden;background-image:radial-gradient(circle at 75% 0%,rgba(231,184,79,.11),transparent 26%),linear-gradient(180deg,#07090c,#030405)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:
+radial-gradient(circle at 80% -10%,rgba(230,184,77,.12),transparent 30%),
+radial-gradient(circle at 10% 20%,rgba(40,104,150,.09),transparent 28%),#05080a;
+color:var(--text);font-family:var(--font);overflow-x:hidden}
 button,input,select,textarea{font:inherit}button{cursor:pointer}
-.hidden{display:none!important}.mono{font-family:'Share Tech Mono',monospace}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.09;background-image:linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);background-size:55px 55px;mask-image:linear-gradient(to bottom,black,transparent 75%);z-index:0}
-body::after{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 0 46%,rgba(231,184,79,.03) 47%,transparent 48%);animation:scan 9s linear infinite;z-index:0}
-@keyframes scan{from{transform:translateY(-25%)}to{transform:translateY(25%)}}
-@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(231,184,79,0)}}
-@keyframes float{50%{transform:translateY(-7px)}}
-@keyframes reveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@keyframes glow{50%{filter:drop-shadow(0 0 18px rgba(231,184,79,.45))}}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* INTRO / LOGIN */
-.intro{position:fixed;inset:0;background:#020304;z-index:1000;display:grid;place-items:center;overflow:hidden}
-.intro-bg{position:absolute;inset:0;background:url("mogambo-command-bg.png") center/cover no-repeat;filter:brightness(.38) saturate(1.1)}
-.intro-bg:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.88),rgba(0,0,0,.4),rgba(0,0,0,.9))}
-.intro-card{position:relative;width:min(700px,90vw);text-align:center;padding:45px 25px;animation:reveal .8s ease}
-.intro-logo{width:118px;height:118px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 45px rgba(231,184,79,.3);animation:glow 3s ease infinite}
-.intro-card h1{font-family:var(--display);letter-spacing:.12em;font-size:clamp(28px,5vw,58px);margin:22px 0 5px;color:var(--gold2)}
-.intro-card p{color:#bdc4cf;letter-spacing:.22em;text-transform:uppercase;font-size:11px}
-.enter{margin-top:24px}
-.login{min-height:100vh;position:relative;display:grid;grid-template-columns:1.15fr .85fr;overflow:hidden}
-.login-visual{position:relative;min-height:100vh;background:url("mogambo-command-bg.png") left center/cover no-repeat}
-.login-visual:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.05),rgba(0,0,0,.28) 45%,#050608 100%)}
-.login-copy{position:absolute;z-index:2;left:7vw;bottom:9vh;max-width:620px}
-.login-copy .eyebrow{color:var(--gold);font-size:11px;letter-spacing:.28em;font-weight:900}
-.login-copy h1{font-family:var(--display);font-size:clamp(35px,5vw,70px);line-height:1;margin:10px 0;color:#fff;text-shadow:0 0 28px #000}
-.login-copy h1 span{color:var(--gold)}
-.login-copy p{color:#bfc6d1;max-width:530px;line-height:1.7}
-.login-panel{display:grid;place-items:center;padding:40px;background:radial-gradient(circle at 50% 30%,rgba(231,184,79,.08),transparent 45%)}
-.login-box{width:min(430px,100%);background:rgba(9,12,17,.92);border:1px solid var(--line);border-radius:25px;padding:34px;box-shadow:var(--shadow);backdrop-filter:blur(20px);animation:reveal .7s ease}
-.brand{font-family:var(--display);font-size:12px;letter-spacing:.17em;color:var(--gold)}
-.login-box h2{font-size:30px;margin:12px 0 7px}.login-box .muted{color:var(--muted);font-size:13px;line-height:1.6}
-.field{margin:16px 0}.field label{display:block;font-size:10px;color:#9da6b5;text-transform:uppercase;letter-spacing:.16em;margin-bottom:7px}
-.field input,.field select,.field textarea{width:100%;border:1px solid var(--line2);border-radius:12px;background:#06090d;color:#fff;padding:12px 13px;outline:none}
-.field textarea{min-height:220px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(231,184,79,.08)}
-.btn{border:1px solid var(--line2);border-radius:11px;background:#111720;color:#e7ebf1;padding:10px 14px;font-weight:800;transition:.2s}
-.btn:hover{transform:translateY(-1px);border-color:var(--gold);box-shadow:0 8px 25px rgba(0,0,0,.25)}
-.btn.primary{background:linear-gradient(135deg,#b27a20,#f0c764);color:#110e08;border-color:#ffd979}.btn.red{border-color:#6d2834;color:#ff9ba7}
-.notice{font-size:11px;color:var(--muted);min-height:17px;margin-top:10px}.hint{font-size:11px;color:#6f7989;line-height:1.55}
-
-/* APP SHELL */
-.app{position:relative;z-index:1;min-height:100vh}
-.topbar{height:70px;position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:rgba(4,6,9,.88);border-bottom:1px solid var(--line);backdrop-filter:blur(16px)}
-.top-left,.top-right{display:flex;align-items:center;gap:12px}.logo{font-family:var(--display);font-size:13px;letter-spacing:.16em;color:var(--gold)}
-.live-pill{display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.12em;color:var(--green);border:1px solid rgba(37,217,138,.3);border-radius:99px;padding:6px 9px}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);animation:pulse 1.5s infinite}
-.avatar{width:35px;height:35px;border-radius:50%;object-fit:cover;border:1px solid var(--gold)}
-.shell{display:grid;grid-template-columns:245px 1fr;min-height:calc(100vh - 70px)}
-.sidebar{position:sticky;top:70px;height:calc(100vh - 70px);overflow:auto;border-right:1px solid var(--line);background:rgba(7,9,13,.92);padding:17px 12px}
-.side-brand{padding:12px 10px 19px;border-bottom:1px solid var(--line2);margin-bottom:12px}.side-brand strong{font-family:var(--display);color:var(--gold);font-size:12px}.side-brand small{display:block;color:#687384;margin-top:5px}
-.nav-label{font-size:9px;letter-spacing:.18em;color:#626d7e;padding:11px}.nav button{width:100%;display:flex;gap:10px;align-items:center;text-align:left;background:transparent;color:#aeb6c4;border:1px solid transparent;padding:11px 12px;border-radius:10px;margin:2px 0}.nav button:hover,.nav button.active{background:linear-gradient(90deg,rgba(231,184,79,.1),transparent);color:#fff;border-color:rgba(231,184,79,.16)}.nav-icon{width:18px;text-align:center;color:var(--gold)}
-.main{min-width:0;padding:26px;max-width:1650px;width:100%;margin:auto}
-.page{display:none;animation:reveal .35s ease}.page.active{display:block}
-.hero{position:relative;overflow:hidden;min-height:250px;border:1px solid var(--line);border-radius:20px;background:url("mogambo-command-bg.png") 58% center/cover no-repeat;box-shadow:var(--shadow);padding:30px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:17px}
-.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,6,9,.96),rgba(4,6,9,.77) 45%,rgba(4,6,9,.25) 100%)}
-.hero>*{position:relative;z-index:1}.eyebrow{font-size:10px;letter-spacing:.22em;color:var(--gold);font-weight:900}.hero h1,.hero h2{font-family:var(--display);font-size:clamp(25px,3vw,42px);margin:7px 0;color:#fff}.hero h1 span,.hero h2 span{color:var(--gold)}.hero p{max-width:730px;color:#b8c0cc;font-size:13px;line-height:1.7;margin:0}.actions{display:flex;gap:8px;flex-wrap:wrap}
-.panel{border:1px solid var(--line2);background:linear-gradient(145deg,rgba(13,17,24,.96),rgba(7,10,14,.96));border-radius:16px;overflow:hidden;box-shadow:0 14px 45px rgba(0,0,0,.22);margin:14px 0}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line2)}.panel-title{font-weight:900}.panel-note{font-size:10px;color:#778293}.panel-body{padding:16px}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{position:relative;overflow:hidden;border:1px solid var(--line2);border-radius:15px;background:linear-gradient(145deg,#0d1118,#090c11);padding:17px}.card:after{content:"";position:absolute;width:90px;height:90px;border-radius:50%;right:-30px;top:-35px;background:rgba(231,184,79,.06)}.card .label{font-size:9px;color:#7f8999;letter-spacing:.16em;text-transform:uppercase}.card .value{font-family:var(--display);font-size:28px;font-weight:900;margin-top:7px;color:#fff}.card .sub{font-size:10px;color:#687383;margin-top:5px}.value.good{color:var(--green)}.value.bad{color:#ff6575}.value.gold{color:var(--gold2)}
-.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:920px}th,td{border:1px solid #28303d;padding:11px 10px;text-align:center;white-space:nowrap}th{background:#171d27;color:#e9edf3;font-size:11px;font-weight:950}td{font-size:12px;color:#d7dde6}td.name{text-align:left;font-weight:800}.aht-good{background:#113d2b!important;color:#8fffc5!important;font-weight:950}.aht-bad{background:#4b1721!important;color:#ff9ba8!important;font-weight:950}.aht-neutral{background:#4a3b13!important;color:#ffe49a!important;font-weight:950}.grand td{background:#151c25!important;color:#fff!important;font-weight:950;font-size:13px}.gap-good{color:var(--green);font-weight:900}.gap-bad{color:#ff6575;font-weight:900}.bar{height:9px;background:#1c222c;border-radius:99px;overflow:hidden;margin-top:7px}.bar i{display:block;height:100%;background:linear-gradient(90deg,#9c6918,var(--gold2));border-radius:99px;transition:width .7s ease}.rank-list{display:grid;gap:10px}.rank{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:10px}.rank-num{font-family:var(--display);color:var(--gold);font-size:11px}.rank-name{font-weight:750;font-size:12px}.rank-meta{font-size:10px;color:#717c8d}.chart{width:100%;height:300px;display:block}.empty{padding:45px;text-align:center;color:#697486;border:1px dashed #2b3340;border-radius:12px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.select{border:1px solid var(--line2);background:#090d13;color:#e9edf3;border-radius:10px;padding:9px 11px}.tag{display:inline-block;padding:5px 8px;border-radius:99px;font-size:9px;border:1px solid var(--line2);color:#aab4c3}.tag.gold{border-color:rgba(231,184,79,.35);color:var(--gold2)}.tag.green{border-color:rgba(37,217,138,.35);color:#78efb6}
-.watermark{position:fixed;right:18px;bottom:14px;color:rgba(231,184,79,.17);font-family:var(--display);font-size:10px;letter-spacing:.2em;pointer-events:none;z-index:60}.footer{padding:20px 2px;color:#5f6979;font-size:10px;text-align:center}
-.profile-grid{display:grid;grid-template-columns:260px 1fr;gap:14px}.profile-card{text-align:center}.profile-img{width:145px;height:145px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 35px rgba(231,184,79,.2);animation:float 5s ease-in-out infinite}.profile-name{font-size:20px;font-weight:900;margin-top:13px}.profile-role{color:var(--gold);font-size:10px;letter-spacing:.13em;margin-top:5px}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;display:grid;place-items:center;padding:20px}.modal-card{width:min(850px,100%);max-height:90vh;overflow:auto;background:#090d13;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:20px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.toast{position:fixed;right:20px;bottom:20px;z-index:300;background:#101720;border:1px solid var(--gold);border-radius:12px;padding:12px 15px;font-size:12px;box-shadow:var(--shadow);animation:reveal .25s ease}
-.admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.request{border:1px solid var(--line2);border-radius:12px;padding:12px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.request+.request{margin-top:8px}
-.file-input{display:none}
-@media(max-width:1100px){.cards,.admin-grid{grid-template-columns:repeat(2,1fr)}.grid2,.profile-grid{grid-template-columns:1fr}.shell{grid-template-columns:78px 1fr}.sidebar{padding:12px 8px}.side-brand small,.side-brand strong,.nav-label,.nav button span{display:none}.nav button{justify-content:center}.main{padding:18px}}
-@media(max-width:700px){.login{grid-template-columns:1fr}.login-visual{min-height:45vh}.login-copy{left:24px;bottom:24px}.login-panel{padding:22px}.cards,.grid3,.admin-grid{grid-template-columns:1fr}.hero{min-height:300px;padding:22px}.topbar{padding:0 12px}.top-left .logo{font-size:10px}.top-left .live-pill{display:none}.main{padding:12px}.shell{grid-template-columns:1fr}.sidebar{display:none}}
-
-/* FINAL CONTROLLED UI FIXES */
-.paste-panel{position:relative;overflow:hidden;background:linear-gradient(90deg,rgba(7,11,15,.96),rgba(7,11,15,.91)),url("mogambo-command-bg.png") 22% center/cover no-repeat!important}
-.paste-panel:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 18% 50%,rgba(231,184,79,.12),transparent 32%);z-index:0}.paste-panel>*{position:relative;z-index:1}
-#pasteBox{min-height:330px;width:100%;display:block;background:rgba(3,7,11,.72)!important;color:#f4f7fb!important;border:1px solid rgba(231,184,79,.22)!important;border-radius:14px!important;resize:vertical;line-height:1.45;font-family:'Share Tech Mono',monospace;font-size:12px;box-shadow:inset 0 0 35px rgba(0,0,0,.28)}
-#pasteBox::placeholder{color:#697587}
-.command-design{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.copy-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}.copy-option{min-height:74px;text-align:left}.copy-option b{display:block;color:var(--gold2);font-size:11px}.copy-option span{display:block;color:#7d8899;font-size:9px;margin-top:5px;line-height:1.4}
-.table-preview{border:1px solid var(--line2);border-radius:14px;overflow:hidden}.table-preview table{min-width:900px}.table-preview th,.table-preview td{border:1px solid var(--tp-grid);font-family:var(--tp-font)!important}.table-preview th{background:var(--tp-head);color:var(--tp-text);font-size:12px;font-weight:900;padding:13px 12px}.table-preview td{background:var(--tp-bg);color:var(--tp-text);font-size:13px;padding:13px 12px}.table-preview td.name{text-align:left;font-weight:800}.table-preview .grand td{background:var(--tp-grand)!important;color:var(--tp-text)!important;font-weight:950}.table-preview.light{--tp-bg:#f3f6fa;--tp-head:#e8eef5;--tp-grand:#dfe7ef;--tp-grid:#cbd5e1;--tp-text:#162235}.table-preview.dark{--tp-bg:#090e14;--tp-head:#17212d;--tp-grand:#121b25;--tp-grid:#2e3947;--tp-text:#eef3f8}.table-preview.slate{--tp-bg:#eef2f6;--tp-head:#dbe3ec;--tp-grand:#d1dae5;--tp-grid:#b9c5d2;--tp-text:#1c293a}.table-preview.royal{--tp-bg:#f4f2fb;--tp-head:#e5e0f3;--tp-grand:#dad3ec;--tp-grid:#c8c0df;--tp-text:#29203f}.table-preview.emerald{--tp-bg:#edf7f2;--tp-head:#d9eee3;--tp-grand:#cde6d8;--tp-grid:#b8d7c7;--tp-text:#153126}.table-preview.crimson{--tp-bg:#fbf0f2;--tp-head:#f2dadd;--tp-grand:#e9cbd0;--tp-grid:#dcb5bd;--tp-text:#35161c}
-.table-preview.cf-classic .aht-bad{background:#fbe4e8!important;color:#b4233a!important}.table-preview.cf-classic .aht-good{background:#e2f5ea!important;color:#087443!important}.table-preview.cf-classic .aht-neutral{background:#fff4cf!important;color:#765b00!important}
-.table-preview.cf-bold .aht-bad{background:#d7354b!important;color:#fff!important}.table-preview.cf-bold .aht-good{background:#168557!important;color:#fff!important}.table-preview.cf-bold .aht-neutral{background:#d6a500!important;color:#fff!important}
-.table-preview.cf-soft .aht-bad{background:#f4dce1!important;color:#923449!important}.table-preview.cf-soft .aht-good{background:#dceee5!important;color:#24634a!important}.table-preview.cf-soft .aht-neutral{background:#f1e8c7!important;color:#6d5c1d!important}
-.table-preview.cf-mono .aht-bad,.table-preview.cf-mono .aht-good,.table-preview.cf-mono .aht-neutral{background:#d7dce2!important;color:#222b36!important}
-.table-preview.font-inter{--tp-font:'Inter',sans-serif}.table-preview.font-orbitron{--tp-font:'Orbitron',sans-serif}.table-preview.font-rajdhani{--tp-font:'Rajdhani',sans-serif}.table-preview.font-mono{--tp-font:'Share Tech Mono',monospace}
-.format-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.format-strip .tag{cursor:pointer}.format-strip .tag.active{border-color:var(--gold);color:var(--gold2);box-shadow:0 0 16px rgba(231,184,79,.12)}
-.hierarchy-filters{display:grid;grid-template-columns:1.3fr repeat(5,1fr);gap:9px}.filter-result{font-size:10px;color:#8d98a8}.filter-result b{color:var(--gold2)}
-
-.table-preview.align-center td,.table-preview.align-center th{text-align:center}.table-preview.align-center td.name{text-align:center}.table-preview.align-left td,.table-preview.align-left th{text-align:center}.table-preview.align-left td.name{text-align:left}.table-preview.align-right td,.table-preview.align-right th{text-align:right}.table-preview.align-right td.name{text-align:right}
-@media(max-width:1100px){.command-design{grid-template-columns:repeat(2,1fr)}.copy-grid{grid-template-columns:repeat(3,1fr)}.hierarchy-filters{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:700px){.command-design,.copy-grid,.hierarchy-filters{grid-template-columns:1fr}}
-
-
-
-/* High-tech visual layer */
-.hero,.paste-panel{position:relative;overflow:hidden}
-.hero::before,.paste-panel::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;background:repeating-linear-gradient(90deg,transparent 0,transparent 92px,rgba(231,184,79,.08) 93px,transparent 94px),linear-gradient(115deg,transparent 0 42%,rgba(64,183,255,.10) 43%,transparent 44%);mix-blend-mode:screen;animation:scanDrift 13s linear infinite}
-.hero::after{content:"";position:absolute;inset:-30%;pointer-events:none;background:radial-gradient(circle at 20% 70%,rgba(231,184,79,.16),transparent 18%),radial-gradient(circle at 75% 25%,rgba(40,140,255,.13),transparent 20%),repeating-linear-gradient(0deg,transparent 0 9px,rgba(255,255,255,.025) 10px 11px);animation:cyberPulse 7s ease-in-out infinite}
-.paste-panel::after{content:"";position:absolute;left:-20%;right:-20%;height:2px;top:30%;background:linear-gradient(90deg,transparent,rgba(231,184,79,.0),rgba(231,184,79,.7),rgba(50,180,255,.65),transparent);box-shadow:0 0 22px rgba(231,184,79,.35);animation:waveSweep 5s ease-in-out infinite}
-.hero>* ,.paste-panel>*{position:relative;z-index:2}
-.holo-grid{position:absolute!important;inset:0;z-index:1!important;pointer-events:none;background:linear-gradient(rgba(231,184,79,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(231,184,79,.035) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,transparent,#000 25%,#000 75%,transparent);animation:gridMove 18s linear infinite}
-@keyframes scanDrift{from{transform:translateX(-40px)}to{transform:translateX(40px)}}
-@keyframes cyberPulse{0%,100%{opacity:.45;transform:scale(1)}50%{opacity:.8;transform:scale(1.04)}}
-@keyframes waveSweep{0%{transform:translateY(-40px);opacity:0}20%{opacity:.9}70%{opacity:.65}100%{transform:translateY(330px);opacity:0}}
-@keyframes gridMove{from{background-position:0 0,0 0}to{background-position:0 42px,42px 0}}
-
-/* Poster + logo treatment */
-.brand-head{width:34px;height:34px;object-fit:cover;border-radius:50%;border:1px solid rgba(231,184,79,.65);box-shadow:0 0 18px rgba(231,184,79,.18)}
-.top-left{display:flex;align-items:center;gap:10px}
-.hero{background-image:url("mogambo-home-poster.png")!important;background-position:center center!important;background-size:cover!important;min-height:290px}
-.hero:before{background:linear-gradient(90deg,rgba(3,5,8,.92),rgba(3,5,8,.68) 48%,rgba(3,5,8,.16) 100%)!important}
-.paste-panel{background:linear-gradient(90deg,rgba(5,8,12,.97),rgba(5,8,12,.86)),url("mogambo-home-poster.png") 30% center/cover no-repeat!important}
-.paste-panel:after{background:linear-gradient(90deg,rgba(231,184,79,.10),transparent 52%,rgba(0,0,0,.28))!important}
-#pasteBox{min-height:380px!important}
-
-
-/* Home poster is the supplied cinematic artwork. The embedded artwork already contains the headline/buttons,
-   so the HTML overlay is reduced to functional click hotspots to avoid duplicated visual content. */
-.home-poster-mode .hero-copy,.home-poster-mode .hero > div:first-child{display:none!important}
-.home-poster-mode .hero{min-height:430px!important;background-image:url("mogambo-home-poster.png")!important;background-size:cover!important;background-position:center!important;align-items:flex-end!important}
-.home-poster-mode .hero .actions{position:absolute;right:9.5%;bottom:42px;z-index:5;display:flex;gap:16px}
-.home-poster-mode .hero .actions .btn{opacity:0;width:255px;height:70px}
-
+.hidden{display:none!important}.app{min-height:100vh}.topbar{position:sticky;top:0;z-index:50;height:70px;
+display:flex;align-items:center;gap:18px;padding:10px 24px;background:rgba(5,8,10,.9);
+backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;min-width:260px}.brand img{width:44px;height:44px;object-fit:cover;border-radius:50%;
+border:1px solid rgba(230,184,77,.55);box-shadow:0 0 22px rgba(230,184,77,.18)}
+.brand b{font-family:var(--display);font-size:13px;letter-spacing:.08em}.brand small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.nav{display:flex;gap:6px;flex:1;justify-content:center}.nav button,.top-action{background:transparent;color:#b8c0c7;border:1px solid transparent;
+padding:9px 12px;border-radius:10px;font-weight:700;font-size:11px}.nav button:hover,.nav button.active{color:#fff;border-color:var(--line);background:rgba(230,184,77,.07)}
+.top-user{display:flex;align-items:center;gap:9px}.top-user img{width:34px;height:34px;border-radius:50%;object-fit:cover;border:1px solid var(--line)}
+.main{max-width:1500px;margin:auto;padding:22px}.hero{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:20px;
+background:#070a0d;min-height:420px;display:flex;align-items:flex-end;box-shadow:0 24px 70px rgba(0,0,0,.35)}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:.9}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,7,9,.18),rgba(4,7,9,.04) 50%,rgba(4,7,9,.22))}
+.hero-content{position:relative;z-index:2;padding:30px;max-width:650px;margin-top:auto}
+.eyebrow{color:var(--gold2);font:700 10px var(--display);letter-spacing:.18em}.hero h1{font:900 clamp(30px,4vw,58px) var(--display);margin:10px 0 12px;line-height:1.05}
+.hero h1 span{color:var(--gold2)}.hero p{color:#c1c9cf;max-width:590px;line-height:1.7;font-size:13px}
+.hero-actions{display:flex;gap:10px;margin-top:18px}.btn{border:1px solid rgba(255,255,255,.14);background:#11181f;color:#eef2f5;padding:11px 15px;border-radius:10px;font-weight:800;font-size:11px}
+.btn.primary{background:linear-gradient(135deg,#ffd66c,#c79228);color:#17110a;border-color:#ffe39a;box-shadow:0 0 24px rgba(230,184,77,.2)}.btn.danger{border-color:rgba(227,53,76,.45);color:#ff8795}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}.panel{background:rgba(11,16,20,.86);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);margin-top:16px;overflow:hidden}
+.panel-head{padding:15px 18px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.panel-title{font:800 12px var(--display);letter-spacing:.09em}.panel-note,.hint{color:var(--muted);font-size:10px}.panel-body{padding:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:16px}
+.card .label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}.card .value{font:900 28px var(--display);margin-top:7px}.card .sub{font-size:10px;color:#7f8a95;margin-top:4px}
+textarea{width:100%;min-height:270px;resize:vertical;background:linear-gradient(135deg,#0a1015,#0d151b);color:#eaf0f3;border:1px solid rgba(230,184,77,.22);
+border-radius:13px;padding:16px;outline:none;line-height:1.5;font-size:12px}.intake{background:
+linear-gradient(90deg,rgba(230,184,77,.04),transparent 45%,rgba(36,115,160,.04)),#090e12}
+.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.field label{display:block;color:#aeb7bf;font-size:9px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+input,select{width:100%;background:#0b1116;color:#edf1f4;border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:10px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:rgba(230,184,77,.55)}.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.spacer{flex:1}
+.badge{padding:6px 9px;border-radius:99px;border:1px solid var(--line);font-size:9px;color:var(--gold2);white-space:nowrap}.badge.green{color:#6ee6b6;border-color:rgba(22,168,117,.35)}
+.table-shell{overflow:auto;border-radius:12px;border:1px solid rgba(255,255,255,.09)}
+.result-table{width:100%;border-collapse:collapse;table-layout:fixed}.result-table th{height:60px;background:#edf2f7;color:#1768b5;font-size:15px;font-weight:900;border:1px solid #d6dfe8;padding:10px;text-align:center}
+.result-table td{height:62px;background:#eef3f7;color:#1b2a3b;border:1px solid #d6dfe8;padding:8px;text-align:center;font-size:14px;font-weight:600}
+.result-table td.name{text-align:left;padding-left:22px;font-weight:850}.result-table .aht{font-weight:950;font-size:18px}.result-table .bad{color:#c43a51}.result-table .good{color:#16855f}.result-table .neutral{color:#a47700}
+.result-table .grand td{background:#e2e9f0;color:#1d2b3b;font-weight:950;border-top:2px solid #b9c7d4}
+.table-dark .result-table th{background:#16212b;color:#ffd978;border-color:#32404d}.table-dark .result-table td{background:#0c141b;color:#e8eef2;border-color:#2a3641}
+.table-dark .result-table .grand td{background:#17242f;color:#f3f6f8}.table-dark .result-table .bad{color:#ff6073}.table-dark .result-table .good{color:#36d69a}.table-dark .result-table .neutral{color:#ffd24e}
+.table-gold .result-table th{background:#3a2a12;color:#ffe49b;border-color:#6a5224}.table-gold .result-table td{background:#19140c;color:#f5ede0;border-color:#473b26}.table-gold .result-table .grand td{background:#2d220f;color:#ffe6a5}
+.table-blue .result-table th{background:#dfe9f7;color:#185da2;border-color:#bfd0e6}.table-blue .result-table td{background:#eef4fb;color:#172d45;border-color:#d2deeb}.table-blue .result-table .grand td{background:#dce7f3}
+.table-rose .result-table th{background:#eadfe8;color:#64234d;border-color:#d5bfd0}.table-rose .result-table td{background:#f8f1f7;color:#2e2430;border-color:#e0d1dc}.table-rose .result-table .grand td{background:#e8dce7}
+.cf-classic .bad{background:#ffedf0!important;color:#c6374d!important}.cf-classic .good{background:#e8f8f1!important;color:#13855e!important}.cf-classic .neutral{background:#fff7d9!important;color:#9a7100!important}
+.table-dark.cf-classic .bad{background:#721d2d!important;color:#fff!important}.table-dark.cf-classic .good{background:#0d6045!important;color:#fff!important}.table-dark.cf-classic .neutral{background:#715800!important;color:#fff!important}
+.cf-strong .bad{background:#ff2346!important;color:#fff!important}.cf-strong .good{background:#00a86b!important;color:#fff!important}.cf-strong .neutral{background:#e5b400!important;color:#191300!important}
+.cf-soft .bad{background:#f6dfe3!important;color:#a82f42!important}.cf-soft .good{background:#dff3eb!important;color:#157657!important}.cf-soft .neutral{background:#f5edcc!important;color:#8c6a00!important}
+.cf-mono .aht{background:#cfd5db!important;color:#25313c!important}.table-dark.cf-mono .aht{background:#56616c!important;color:#fff!important}
+.font-inter{--font:Inter,sans-serif}.font-orbitron{--font:Orbitron,sans-serif}.font-rajdhani{--font:Rajdhani,sans-serif}.font-mono{--font:'Share Tech Mono',monospace}
+.theme-note{font-size:9px;color:#71808c;margin-top:6px}.bars{display:grid;gap:8px}.barrow{display:grid;grid-template-columns:160px 1fr 70px;align-items:center;gap:9px;font-size:10px}.bar{height:9px;border-radius:99px;background:#17212a;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#b6811e,#ffd978);border-radius:99px}
+.chart{width:100%;height:300px;display:block;background:#080d11;border-radius:12px}.filter-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.request{display:flex;justify-content:space-between;gap:12px;padding:12px;border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-bottom:8px}
+.profile{display:grid;grid-template-columns:220px 1fr;gap:18px}.profile img{width:190px;height:190px;object-fit:cover;border-radius:20px;border:1px solid var(--line)}
+.auth{min-height:100vh;display:grid;place-items:center;background:#040608}.auth-card{width:min(460px,92vw);background:rgba(10,14,18,.94);border:1px solid var(--line);border-radius:20px;padding:30px;box-shadow:0 30px 100px #000}
+.auth-logo{width:90px;height:90px;object-fit:cover;border-radius:50%;display:block;margin:0 auto 15px;border:2px solid var(--gold)}
+.auth h1{text-align:center;font:900 23px var(--display);margin:8px 0}.auth p{text-align:center;color:var(--muted);font-size:11px;line-height:1.6}.auth .field{margin-top:12px}
+.overlay-grid{position:fixed;inset:0;pointer-events:none;z-index:1;background:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:55px 55px;animation:gridmove 18s linear infinite;opacity:.28}
+.scan{position:fixed;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#e6b84d,transparent);opacity:.18;z-index:1;pointer-events:none;animation:scan 7s linear infinite}
+@keyframes gridmove{to{transform:translate(55px,55px)}}@keyframes scan{from{top:-5px}to{top:100vh}}
+.toast{position:fixed;right:20px;bottom:20px;z-index:100;padding:12px 15px;background:#111820;border:1px solid var(--line);border-radius:10px;font-size:11px;box-shadow:0 15px 45px #000}
+@media(max-width:1100px){.grid4,.controls{grid-template-columns:repeat(2,1fr)}.filter-grid{grid-template-columns:repeat(3,1fr)}.nav{display:none}}
+@media(max-width:700px){.main{padding:12px}.hero{min-height:320px}.grid4,.grid3,.grid2,.controls,.filter-grid,.profile{grid-template-columns:1fr}.brand{min-width:0}.brand div{display:none}.result-table{min-width:900px}}
 </style>
 </head>
 <body>
-
-<div id="intro" class="intro">
-  <div class="intro-bg"></div>
-  <div class="intro-card">
-    <img src="mogambo-profile.png" class="intro-logo" alt="Mogambo">
-    <div class="brand" style="margin-top:18px">MOGAMBO NEURAL OPS</div>
-    <h1>DISCIPLINE TODAY.</h1>
-    <p>REAL-TIME AHT PERFORMANCE INTELLIGENCE</p>
-    <button class="btn primary enter" onclick="enterSystem()">ENTER THE COMMAND CENTER</button>
-    <div class="hint" style="margin-top:14px">Cinematic voice intro + command ambience will start after entry.</div>
-  </div>
+<div class="overlay-grid"></div><div class="scan"></div>
+<div id="auth" class="auth">
+ <div class="auth-card">
+  <img class="auth-logo" src="mogambo-head-logo.png">
+  <h1>REAL TIME SAHT TRACKER</h1>
+  <p>By Abhijith • AHT Command Intelligence</p>
+  <div class="field"><label>Login ID / Email</label><input id="loginUser" autocomplete="username" placeholder="Enter login"></div>
+  <div class="field"><label>Password</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="Enter password" onkeydown="if(event.key==='Enter')login()"></div>
+  <button class="btn primary" style="width:100%;margin-top:15px" onclick="login()">ENTER COMMAND CENTER</button>
+  <button class="btn" style="width:100%;margin-top:8px" onclick="showRequest()">REQUEST ACCESS</button>
+  <div class="hint" style="text-align:center;margin-top:12px">Admin access is controlled by the application administrator.</div>
+ </div>
 </div>
 
-<section id="login" class="login hidden">
-  <div class="login-visual">
-    <div class="login-copy">
-      <div class="eyebrow">MOGAMBO // PERFORMANCE INTELLIGENCE</div>
-      <h1>REAL-TIME <span>AHT</span><br>COMMAND CENTER</h1>
-      <p>Paste the live agent table. The engine cleans the copied browser noise, calculates AHT, ranks agents high-to-low, and turns the result into a command-ready performance view.</p>
-    </div>
-  </div>
-  <div class="login-panel">
-    <div class="login-box">
-      <div class="brand">MOGAMBO // ACCESS GATE</div>
-      <h2>Welcome back.</h2>
-      <div class="muted">Sign in to open the AHT command center.</div>
-      <div class="field"><label>Username</label><input id="loginUser" placeholder="admin" autocomplete="username"></div>
-      <div class="field"><label>Password</label><input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
-      <button class="btn primary" style="width:100%" onclick="login()">ENTER COMMAND CENTER</button>
-      <button class="btn" style="width:100%;margin-top:8px" onclick="openRequest()">REQUEST ACCESS</button>
-      <div id="loginMsg" class="notice"></div>
-      <div class="hint">Demo admin: <b>admin</b> / <b>Abhijith@123</b>. Replace authentication with your backend when publishing for production.</div>
-    </div>
-  </div>
-</section>
+<div id="requestModal" class="auth hidden">
+ <div class="auth-card">
+  <h1>REQUEST ACCESS</h1><p>Submit your details for Admin approval.</p>
+  <div class="field"><label>Name</label><input id="reqName"></div>
+  <div class="field"><label>Email</label><input id="reqEmail" type="email"></div>
+  <div class="field"><label>Reason</label><input id="reqReason" placeholder="Why do you need access?"></div>
+  <button class="btn primary" style="width:100%;margin-top:15px" onclick="submitRequest()">SUBMIT REQUEST</button>
+  <button class="btn" style="width:100%;margin-top:8px" onclick="closeRequest()">Back to Login</button>
+ </div>
+</div>
 
-<section id="app" class="app hidden">
+<div id="app" class="app hidden">
 <header class="topbar">
-  <div class="top-left"><img src="mogambo-head-logo.png" class="brand-head" alt="Mogambo"><div class="logo">Real Time SAHT Tracker by Abhijith</div><div class="live-pill"><i class="dot"></i>LIVE ENGINE</div></div>
-  <div class="top-right"><img id="topAvatar" src="mogambo-profile.png" class="avatar"><span id="topUser" class="hint">ADMIN</span><button class="btn" onclick="toggleAudio()">♫ Audio</button><button class="btn red" onclick="logout()">Logout</button></div>
+ <div class="brand"><img src="mogambo-head-logo.png"><div><b>REAL TIME SAHT TRACKER</b><small>BY ABHIJITH • MOGAMBO COMMAND</small></div></div>
+ <nav class="nav">
+  <button class="active" onclick="showPage('home',this)">LIVE AHT</button>
+  <button onclick="showPage('hierarchy',this)">AGENT / TL / AM / PROCESS</button>
+  <button onclick="showPage('profile',this)">PROFILE</button>
+  <button id="adminNav" class="hidden" onclick="showPage('admin',this)">ADMIN CONTROL</button>
+ </nav>
+ <div class="top-user"><img id="topAvatar" src="mogambo-profile.png"><span id="topUser">Admin</span><button class="top-action" onclick="logout()">Logout</button></div>
 </header>
-<div class="shell">
-<aside class="sidebar">
-  <div class="side-brand"><strong>NEURAL OPS</strong><small>AHT PERFORMANCE</small></div>
-  <div class="nav-label">COMMAND</div>
-  <nav class="nav">
-    <button class="active" data-page="home" onclick="showPage('home',this)"><b class="nav-icon">⌂</b><span>Live AHT / Command</span></button>
-    <button data-page="hierarchy" onclick="showPage('hierarchy',this)"><b class="nav-icon">⌘</b><span>Agent / TL / AM / Process</span></button>
-    <button data-page="profile" title="Open Profile Session" onclick="showPage('profile',this)"><b class="nav-icon">◎</b><span>Profile</span></button>
-    <div id="adminNav">
-      <div class="nav-label">ADMIN</div>
-      <button data-page="admin" title="Open Admin Control" onclick="showPage('admin',this)"><b class="nav-icon">♛</b><span>Admin Control</span></button>
-    </div>
-  </nav>
-</aside>
 
 <main class="main">
-<!-- HOME -->
-<section id="page-home" class="page active">
-<div class="hero home-poster-mode"><div class="holo-grid"></div>
- <div class="hero-copy"><div class="eyebrow">REAL TIME SAHT TRACKER BY ABHIJITH</div><h1>DISCIPLINE <span>MEASURED</span> IN SECONDS.</h1><p>Paste the copied agent table. The engine automatically removes browser noise, ignores zero-AHT rows, converts Avg. HT to seconds and ranks active agents <b>highest → lowest</b>.</p></div>
- <div class="actions"><button class="btn primary" onclick="copyAHTFormat('standard')">COPY 4K UHD</button><button class="btn" onclick="loadExample()">Load Example</button></div>
-</div>
-<div class="panel paste-panel"><div class="holo-grid"></div>
- <div class="panel-head"><div><div class="panel-title">LIVE DATA PASTE</div><div class="panel-note">Large full-width intake • paste directly from the browser table • processing is automatic</div></div><span class="tag gold">AUTO PROCESS</span></div>
- <div class="panel-body"><textarea id="pasteBox" placeholder="Paste your copied agent table here…\n\nName\nOnline time\nBreak time\nReceived\nResolved\nAvg. HT\nAvg. FRT\n\nAgent Name\nEmail\nOnline time\nBreak time\nReceived\nResolved\nAvg. HT\nAvg. FRT"></textarea><div class="toolbar" style="margin-top:10px"><button class="btn" onclick="clearData()">Clear</button><span id="pasteStatus" class="hint">Waiting for data…</span></div></div>
-</div>
-<div class="panel">
- <div class="panel-head"><div><div class="panel-title">AHT TABLE DESIGN</div><div class="panel-note">Live preview and 4K copy use the same selected settings.</div></div><span class="tag">SYNCED</span></div>
+<section id="page-home" class="page">
+ <div class="hero">
+  <img src="mogambo-home-poster.png" alt="Mogambo Command Center">
+  <div class="hero-content">
+   <div class="eyebrow">REAL TIME SAHT TRACKER BY ABHIJITH</div>
+   <h1>DISCIPLINE <span>MEASURED IN SECONDS.</span></h1>
+   <p>Paste the copied agent table below. Processing starts automatically. Active agents are ranked from highest AHT to lowest AHT.</p>
+   <div class="hero-actions"><button class="btn primary" onclick="copy4K('executive')">COPY AHT 4K</button><button class="btn" onclick="loadExample()">LOAD EXAMPLE</button></div>
+  </div>
+ </div>
+
+ <div class="panel intake">
+  <div class="panel-head"><div><div class="panel-title">LIVE DATA PASTE</div><div class="panel-note">Paste directly here • SVG / View / browser UI noise is ignored • auto-processes</div></div><span class="badge">AUTO PROCESS</span></div>
+  <div class="panel-body">
+   <textarea id="pasteBox" placeholder="Paste Name / Online time / Break time / Received / Resolved / Avg. HT / Avg. FRT data here..."></textarea>
+   <div class="toolbar" style="margin-top:10px"><button class="btn" onclick="clearData()">CLEAR</button><span id="pasteStatus" class="hint">Waiting for data…</span><span class="spacer"></span><span id="activeBadge" class="badge green">0 ACTIVE</span></div>
+  </div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div><div class="panel-title">RESULT FORMAT</div><div class="panel-note">The screen and the 4K export use the selected visual settings.</div></div></div>
+  <div class="panel-body">
+   <div class="controls">
+    <div class="field"><label>Table Theme</label><select id="tableTheme" onchange="render()"><option value="light">Executive Light</option><option value="dark">Command Dark</option><option value="blue">Blue Executive</option><option value="gold">Gold Command</option><option value="rose">Rose Professional</option></select></div>
+    <div class="field"><label>Conditional Formatting</label><select id="cf" onchange="render()"><option value="classic">Classic Red / Green / Amber</option><option value="strong">Strong Contrast</option><option value="soft">Soft Professional</option><option value="mono">Monochrome</option></select></div>
+    <div class="field"><label>Font</label><select id="font" onchange="render()"><option value="inter">Inter</option><option value="orbitron">Orbitron</option><option value="rajdhani">Rajdhani</option><option value="mono">Share Tech Mono</option></select></div>
+    <div class="field"><label>AHT Target</label><input id="target" type="number" min="1" value="195" onchange="setTarget(this.value)"></div>
+   </div>
+   <div class="toolbar" style="margin-top:10px"><span class="hint">Watermark is Admin-controlled only.</span><span id="adminWatermarkNote" class="badge hidden">ADMIN WATERMARK</span></div>
+  </div>
+ </div>
+
+ <div class="grid4" style="margin-top:16px">
+  <div class="card"><div class="label">Grand Total / Avg AHT</div><div id="kAht" class="value">0s</div><div class="sub">Arithmetic mean of active agents</div></div>
+  <div class="card"><div class="label">Calls Taken</div><div id="kReceived" class="value">0</div><div class="sub">Total received</div></div>
+  <div class="card"><div class="label">Resolved</div><div id="kResolved" class="value">0</div><div class="sub">Total resolved</div></div>
+  <div class="card"><div class="label">Average FRT</div><div id="kFRT" class="value">0s</div><div class="sub">Active-agent average</div></div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div><div class="panel-title">REAL TIME AHT // AGENT WISE</div><div class="panel-note">High → Low • zero-AHT agents hidden • Grand Total included</div></div><div class="toolbar"><button class="btn primary" onclick="copy4K('executive')">COPY EXECUTIVE 4K</button><button class="btn" onclick="copy4K('detail')">COPY AGENT DETAIL 4K</button></div></div>
+  <div class="panel-body"><div id="liveTable"></div></div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div><div class="panel-title">AHT ANALYSIS</div><div class="panel-note">Multiple views of the same AHT data — not just one average.</div></div></div>
+  <div class="panel-body">
+   <div class="grid4">
+    <div class="card"><div class="label">Highest</div><div id="highest" class="value">0s</div><div id="highestName" class="sub">—</div></div>
+    <div class="card"><div class="label">Lowest</div><div id="lowest" class="value">0s</div><div id="lowestName" class="sub">—</div></div>
+    <div class="card"><div class="label">Median</div><div id="median" class="value">0s</div><div class="sub">Middle active value</div></div>
+    <div class="card"><div class="label">Above Target</div><div id="above" class="value">0</div><div class="sub">Agents requiring reduction</div></div>
+   </div>
+   <div class="grid2" style="margin-top:12px">
+    <div class="card"><div class="label">AHT Distribution</div><div id="bars" class="bars" style="margin-top:12px"></div></div>
+    <div class="card"><div class="label">Target Position</div><canvas id="chart" class="chart"></canvas></div>
+   </div>
+   <div class="toolbar" style="margin-top:12px">
+    <button class="btn" onclick="copy4K('analysis')">COPY AHT ANALYSIS 4K</button>
+    <button class="btn" onclick="copy4K('executive')">COPY LIVE TABLE 4K</button>
+   </div>
+  </div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div><div class="panel-title">EXPORT OPTIONS</div><div class="panel-note">Every copy is a table-focused 3840px UHD PNG. Nothing unrelated is added to the table export.</div></div></div>
+  <div class="panel-body">
+   <div class="grid3">
+    <button class="btn copyBtn" onclick="copy4K('executive')"><b>01 • EXECUTIVE CLEAN</b><br><span class="hint">Matches the clean reference format</span></button>
+    <button class="btn copyBtn" onclick="copy4K('detail')"><b>02 • AGENT DETAIL</b><br><span class="hint">Adds email / roster detail</span></button>
+    <button class="btn copyBtn" onclick="copy4K('analysis')"><b>03 • AHT ANALYSIS</b><br><span class="hint">Table + compact AHT summary</span></button>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section id="page-hierarchy" class="page hidden">
+ <div class="panel">
+  <div class="panel-head"><div><div class="panel-title">PERFORMANCE HIERARCHY</div><div class="panel-note">Filter the same AHT dataset by roster dimensions.</div></div><button class="btn" onclick="resetFilters()">RESET FILTERS</button></div>
+  <div class="panel-body">
+   <div class="filter-grid">
+    <div class="field"><label>View</label><select id="dimension" onchange="renderHierarchy()"><option>Agent Wise</option><option>TL Wise</option><option>AM Wise</option><option>Bucket Wise</option><option>OJT / Non-OJT</option><option>Shift Status</option><option>Process Wise</option></select></div>
+    <div class="field"><label>Agent</label><input id="fAgent" oninput="renderHierarchy()" placeholder="Search agent"></div>
+    <div class="field"><label>TL</label><select id="fTL" onchange="renderHierarchy()"><option value="">All TL</option></select></div>
+    <div class="field"><label>AM</label><select id="fAM" onchange="renderHierarchy()"><option value="">All AM</option></select></div>
+    <div class="field"><label>Bucket</label><select id="fBucket" onchange="renderHierarchy()"><option value="">All Buckets</option></select></div>
+    <div class="field"><label>OJT / Non-OJT</label><select id="fOJT" onchange="renderHierarchy()"><option value="">All</option><option>OJT</option><option>Non-OJT</option></select></div>
+    <div class="field"><label>Shift Status</label><select id="fShift" onchange="renderHierarchy()"><option value="">All</option><option>FT</option><option>PT</option></select></div>
+    <div class="field"><label>Process</label><select id="fProcess" onchange="renderHierarchy()"><option value="">All Process</option></select></div>
+    <div class="field"><label>AHT Status</label><select id="fStatus" onchange="renderHierarchy()"><option value="">All</option><option value="above">Above Target</option><option value="within">At / Below Target</option></select></div>
+    <div class="field"><label>Sort</label><select id="fSort" onchange="renderHierarchy()"><option value="desc">AHT High → Low</option><option value="asc">AHT Low → High</option><option value="received">Received High → Low</option></select></div>
+   </div>
+   <div class="toolbar" style="margin:12px 0"><span id="matchCount" class="badge">0 MATCHED</span><span class="spacer"></span><button class="btn" onclick="copy4K('hierarchy')">COPY GROUP VIEW 4K</button></div>
+   <div id="hierarchyTable"></div>
+  </div>
+ </div>
+</section>
+
+<section id="page-profile" class="page hidden">
+ <div class="panel"><div class="panel-head"><div><div class="panel-title">PROFILE SESSION</div><div class="panel-note">Current session and roster-linked information.</div></div></div>
+ <div class="panel-body"><div class="profile"><div><img id="profileImage" src="mogambo-profile.png"></div><div><h2 id="profileName">Admin</h2><p id="profileRole" class="hint"></p><div id="profileDetails"></div></div></div></div></div>
+</section>
+
+<section id="page-admin" class="page hidden">
+ <div class="panel"><div class="panel-head"><div><div class="panel-title">ADMIN CONTROL</div><div class="panel-note">Only the Admin can change watermark and roster.</div></div><span class="badge">ADMIN ONLY</span></div>
  <div class="panel-body">
-  <div class="command-design">
-   <div class="field"><label>Table Mode</label><select id="tableMode" class="select" onchange="renderAll()"><option value="light">Light Executive</option><option value="dark">Dark Command</option><option value="slate">Slate</option><option value="royal">Royal</option><option value="emerald">Emerald</option><option value="crimson">Crimson</option></select></div>
-   <div class="field"><label>Conditional Formatting</label><select id="conditionStyle" class="select" onchange="renderAll()"><option value="classic">Classic Soft</option><option value="bold">Strong Contrast</option><option value="soft">Professional Soft</option><option value="mono">Monochrome</option></select></div>
-   <div class="field"><label>Font Style</label><select id="fontStyle" class="select" onchange="renderAll()"><option value="inter">Inter</option><option value="orbitron">Orbitron</option><option value="rajdhani">Rajdhani</option><option value="mono">Share Tech Mono</option></select></div>
-   <div class="field"><label>Alignment</label><select id="alignment" class="select" onchange="renderAll()"><option value="center">Center</option><option value="left">Agent Left / Values Center</option><option value="right">Right</option></select></div>
+  <div class="grid3">
+   <div class="card"><div class="label">Pending Requests</div><div id="pendingCount" class="value">0</div></div>
+   <div class="card"><div class="label">Roster Records</div><div id="rosterCount" class="value">0</div></div>
+   <div class="card"><div class="label">Watermark</div><div id="watermarkDisplay" class="value">Abhijith</div></div>
   </div>
-  <div class="command-design">
-   <div class="field"><label>Watermark</label><input id="watermark" value="Abhijith" maxlength="24" onchange="setWatermark(this.value)"></div>
-   <div class="field"><label>Timestamp</label><select id="timestampMode" class="select" onchange="renderAll()"><option value="live">Live timestamp</option><option value="date">Date only</option><option value="off">Hide</option></select></div>
-   <div class="field"><label>AHT Target (seconds)</label><input id="homeTargetInput" type="number" min="1" value="195" onchange="setTarget(this.value)"></div>
-   <div class="field"><label>Export image</label><select id="exportImageBg" class="select" onchange="renderAll()"><option value="match">Match table</option><option value="white">Clean White</option><option value="black">Deep Black</option><option value="gold">Gold Command</option><option value="navy">Midnight Navy</option></select></div>
-   <div class="field"><label>4K Table Format</label><select id="exportLayout" class="select" onchange="renderAll()"><option value="executive">Executive Clean</option><option value="detail">Agent Detail</option></select></div>
+  <div class="panel" style="margin-top:12px"><div class="panel-head"><div><div class="panel-title">WATERMARK CONTROL</div><div class="panel-note">This is the only place the watermark can be changed.</div></div></div><div class="panel-body"><div class="toolbar"><input id="watermarkAdmin" value="Abhijith" maxlength="32" style="max-width:320px"><button class="btn primary" onclick="saveWatermark()">SAVE WATERMARK</button></div></div></div>
+  <div class="panel"><div class="panel-head"><div><div class="panel-title">ACCESS REQUESTS</div></div></div><div class="panel-body"><div id="requests"></div></div></div>
+  <div class="panel"><div class="panel-head"><div><div class="panel-title">WEEKLY AGENT ROSTER</div><div class="panel-note">Agent ID / Login ID • Agent Name • TL • AM • Bucket • OJT / Non-OJT • Shift Status • Process</div></div></div>
+   <div class="panel-body"><input id="rosterFile" type="file" accept=".xlsx,.xls,.csv" onchange="loadRoster(this.files[0])"><div id="rosterStatus" class="hint" style="margin-top:8px"></div><div id="rosterPreview" style="margin-top:12px"></div></div>
   </div>
- </div>
-</div>
-<div class="cards"><div class="card"><div class="label">Overall AHT / Grand Total</div><div id="kAht" class="value gold">0s</div><div class="sub">Arithmetic mean of active agents</div></div><div class="card"><div class="label">Calls Taken</div><div id="kCalls" class="value">0</div><div class="sub">Received</div></div><div class="card"><div class="label">Resolved</div><div id="kResolved" class="value">0</div><div class="sub">Resolved</div></div><div class="card"><div class="label">Avg FRT</div><div id="kFrt" class="value">0s</div><div class="sub">Active-agent average</div></div></div>
-<div class="panel"><div class="panel-head"><div><div class="panel-title">REAL-TIME AHT // AGENT WISE</div><div class="panel-note">High → Low • Target <b id="homeTarget">195s</b> • Grand Total included • zero AHT hidden</div></div><span id="activeBadge" class="tag green">0 ACTIVE</span></div><div id="homeTable"></div></div>
-<div class="panel"><div class="panel-head"><div><div class="panel-title">AHT ANALYSIS</div><div class="panel-note">Multiple views of the same live agent-wise dataset.</div></div><button class="btn" onclick="copyAHTFormat('analysis')">COPY ANALYSIS 4K</button></div><div class="panel-body"><div class="cards"><div class="card"><div class="label">Highest</div><div id="xHigh" class="value bad">0s</div><div id="xHighName" class="sub">—</div></div><div class="card"><div class="label">Lowest</div><div id="xLow" class="value good">0s</div><div id="xLowName" class="sub">—</div></div><div class="card"><div class="label">Median</div><div id="xMedian" class="value">0s</div><div class="sub">Middle AHT</div></div><div class="card"><div class="label">Above Target</div><div id="xAbove" class="value bad">0</div><div class="sub">Need reduction</div></div></div><div class="grid2" style="margin-top:12px"><div class="panel"><div class="panel-head"><div class="panel-title">AHT BARS</div></div><div id="bars" class="panel-body"></div></div><div class="panel"><div class="panel-head"><div class="panel-title">AHT VS TARGET</div></div><div class="panel-body"><canvas id="targetChart" class="chart"></canvas></div></div></div></div></div>
-<div class="panel"><div class="panel-head"><div><div class="panel-title">INDIVIDUAL 4K COPY FORMATS</div><div class="panel-note">Every option copies only the Agent-wise AHT table — no unrelated dashboard content.</div></div></div><div class="panel-body"><div class="copy-grid"><button class="btn copy-option" onclick="copyAHTFormat('standard')"><b>01 • STANDARD</b><span>Clean AHT table + Grand Total</span></button><button class="btn copy-option" onclick="copyAHTFormat('compact')"><b>02 • COMPACT</b><span>Compact AHT table</span></button><button class="btn copy-option" onclick="copyAHTFormat('cinematic')"><b>03 • CINEMATIC</b><span>Cinematic AHT table</span></button><button class="btn copy-option" onclick="copyAHTFormat('minimal')"><b>04 • MINIMAL</b><span>Minimal AHT table</span></button><button class="btn copy-option" onclick="copyAHTFormat('analysis')"><b>05 • ANALYSIS</b><span>AHT + target-gap table</span></button></div></div></div>
-</section>
-
-
-<!-- HIERARCHY -->
-<section id="page-hierarchy" class="page">
-<div class="hero"><div><div class="eyebrow">ROSTER-ENRICHED ANALYSIS</div><h2>AGENT / TL / AM / <span>PROCESS</span></h2><p>Paste AHT data remains the source. Roster details enrich each agent where a matching Agent ID/Login ID or email/name is available.</p></div><div class="actions"><button class="btn primary" onclick="copyCurrent4K()">COPY 4K UHD</button></div></div>
-<div class="panel"><div class="panel-body"><div class="hierarchy-filters"><input id="hSearch" placeholder="Search agent / group" oninput="renderHierarchy()"><select id="dimension" class="select" onchange="renderHierarchy()"><option>Agent Wise</option><option>TL Wise</option><option>AM Wise</option><option>Process Wise</option><option>Bucket Wise</option><option>OJT / Non-OJT</option><option>Shift Status</option></select><select id="hTarget" class="select" onchange="renderHierarchy()"><option value="all">All AHT</option><option value="above">Above Target</option><option value="within">At / Below Target</option></select><select id="hSort" class="select" onchange="renderHierarchy()"><option value="high">AHT High → Low</option><option value="low">AHT Low → High</option><option value="calls">Received High → Low</option><option value="resolved">Resolved High → Low</option></select><select id="hMap" class="select" onchange="renderHierarchy()"><option value="all">All Mapping</option><option value="mapped">Mapped Roster</option><option value="unmapped">Unmapped Roster</option></select><button class="btn" onclick="resetHierarchyFilters()">Reset</button></div><div class="filter-result" id="hierarchyResult" style="margin-top:9px"></div></div></div>
-<div class="panel"><div class="panel-head"><div class="panel-title">GROUP PERFORMANCE</div><div class="panel-note">Average AHT • Received • Resolved • Avg FRT</div></div><div id="hierarchyTable"></div></div>
-</section>
-
-<!-- PROFILE -->
-<section id="page-profile" class="page">
-<div class="hero"><div><div class="eyebrow">IDENTITY</div><h2>PROFILE <span>SESSION</span></h2><p>Your session identity and roster details used by the command center.</p></div></div>
-<div class="profile-grid">
- <div class="panel profile-card"><div class="panel-body"><img id="profileImg" class="profile-img" src="mogambo-profile.png"><div id="profileName" class="profile-name">Admin</div><div id="profileRole" class="profile-role">COMMAND ADMIN</div><div class="hint" style="margin-top:12px">DP / profile image can be replaced from Admin Control.</div></div></div>
- <div class="panel"><div class="panel-head"><div class="panel-title">SESSION DETAILS</div></div><div id="profileDetails" class="panel-body"></div></div>
-</div>
-</section>
-
-<!-- ADMIN -->
-<section id="page-admin" class="page">
-<div class="hero"><div><div class="eyebrow">RESTRICTED CONTROL</div><h2>ADMIN <span>COMMAND</span></h2><p>Manage access requests, agent roster, profile images, watermark defaults and local command-center data.</p></div></div>
-<div class="admin-grid">
- <div class="card"><div class="label">Access Requests</div><div id="adminReqCount" class="value">0</div></div>
- <div class="card"><div class="label">Roster Agents</div><div id="adminRosterCount" class="value">0</div></div>
- <div class="card"><div class="label">Active AHT Agents</div><div id="adminAhtCount" class="value">0</div></div>
- <div class="card"><div class="label">Target</div><div id="adminTargetStat" class="value gold">195s</div></div>
-</div>
-<div class="grid2">
- <div class="panel"><div class="panel-head"><div class="panel-title">JOIN REQUESTS</div><div class="panel-note">Approve / reject locally</div></div><div class="panel-body"><div id="requests"></div></div></div>
- <div class="panel"><div class="panel-head"><div class="panel-title">ROSTER CONTROL</div></div><div class="panel-body">
-   <div class="hint">Expected columns:</div>
-   <div class="tag gold" style="margin:8px 0">Agent ID / Login ID • Agent Name • TL • AM • Bucket • OJT / Non-OJT • Shift Status • Process</div>
-   <div class="toolbar"><label class="btn"><input id="rosterFile" class="file-input" type="file" accept=".csv,.xlsx,.xls" onchange="importRoster(event)">Import CSV / Excel</label><button class="btn" onclick="downloadTemplate()">Download Template</button><button class="btn red" onclick="clearRoster()">Remove Roster</button></div>
-   <div id="rosterStatus" class="hint" style="margin-top:10px"></div>
  </div></div>
-</div>
-<div class="panel"><div class="panel-head"><div class="panel-title">ROSTER PREVIEW</div><div class="panel-note">Used to enrich TL / AM / Process analysis</div></div><div id="rosterPreview"></div></div>
-<div class="panel"><div class="panel-head"><div class="panel-title">ADMIN DEFAULTS</div></div><div class="panel-body">
- <div class="grid3">
-  <div class="field"><label>AHT Target (seconds)</label><input id="adminTargetInput" type="number" min="1" value="195" onchange="setTarget(this.value)"></div>
-  <div class="field"><label>Default Watermark</label><input id="adminWatermark" value="Abhijith" onchange="setWatermark(this.value)"></div>
-  <div class="field"><label>Profile / DP Image</label><label class="btn" style="display:block;text-align:center"><input class="file-input" type="file" accept="image/*" onchange="changeAvatar(event)">Choose Image</label></div>
- </div>
-</div></div>
 </section>
-
-<div class="footer">REAL TIME SAHT TRACKER • ABHIJITH • <span id="footerTime"></span></div>
-</main></div>
-</section>
-
-<div id="requestModal" class="modal hidden">
- <div class="modal-card">
-  <div class="modal-head"><h3>REQUEST ACCESS</h3><button class="btn" onclick="closeRequest()">×</button></div>
-  <div class="hint">Submit your details to the local admin queue. Admin can approve the request from Admin Control.</div>
-  <div class="grid2">
-   <div class="field"><label>Name</label><input id="reqName"></div>
-   <div class="field"><label>Email / Login ID</label><input id="reqEmail"></div>
-  </div>
-  <div class="field"><label>TL</label><input id="reqTl"></div>
-  <div class="field"><label>Reason</label><textarea id="reqReason" style="min-height:120px"></textarea></div>
-  <button class="btn primary" onclick="submitRequest()">SUBMIT REQUEST</button>
-  <div id="reqMsg" class="notice"></div>
- </div>
+</main>
 </div>
 <div id="toast" class="toast hidden"></div>
 <audio id="introAudio" src="mogambo-intro.mp3" preload="auto"></audio>
-<audio id="bgAudio" loop></audio>
 
 <script>
-'use strict';
+const ADMIN_PASSWORD='Abhijith@123';
+const ADMIN_IDS=['admin','abhijith','ex.god.hell.666@gmail.com'];
 const S={
- agents:[], roster:JSON.parse(localStorage.getItem('mogamboRoster')||'[]'),
- requests:JSON.parse(localStorage.getItem('mogamboRequests')||'[]'),
- target:Number(localStorage.getItem('mogamboTarget')||195),
- watermark:localStorage.getItem('mogamboWatermark')||'Abhijith',
- user:sessionStorage.getItem('mogamboUser')||'',
- avatar:localStorage.getItem('mogamboAvatar')||'mogambo-profile.png',
- audioOn:false
+ user:'', agents:[], roster:[], requests:JSON.parse(localStorage.getItem('sahtRequests')||'[]'),
+ watermark:localStorage.getItem('sahtWatermark')||'Abhijith', target:Number(localStorage.getItem('sahtTarget')||195),
+ avatar:'mogambo-profile.png'
 };
 const $=id=>document.getElementById(id);
-const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidden');setTimeout(()=>$('toast').classList.add('hidden'),2400)}
-function save(){localStorage.setItem('mogamboRoster',JSON.stringify(S.roster));localStorage.setItem('mogamboRequests',JSON.stringify(S.requests));localStorage.setItem('mogamboTarget',S.target);localStorage.setItem('mogamboWatermark',S.watermark)}
-function nowStamp(){const d=new Date();return $('timestampMode')?.value==='date'?d.toLocaleDateString():d.toLocaleString()}
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const isAdmin=()=>ADMIN_IDS.includes(S.user.toLowerCase());
+function toast(m){$('toast').textContent=m;$('toast').classList.remove('hidden');clearTimeout(window._toast);window._toast=setTimeout(()=>$('toast').classList.add('hidden'),2600)}
+function now(){return new Date().toLocaleString('en-IN',{hour12:false})}
 function parseDuration(v){
- v=String(v||'').toLowerCase();let t=0,m;const r=/(\d+(?:\.\d+)?)\s*(h|hr|hrs|hour|hours|m|min|mins|minute|minutes|s|sec|secs|second|seconds)\b/g;
- while((m=r.exec(v))){let n=+m[1],u=m[2];t+=u[0]==='h'?n*3600:u[0]==='m'?n*60:n}return t;
+ if(v==null)return 0;let s=String(v).trim().toLowerCase().replace(/\s+/g,' ');
+ if(!s)return 0;
+ let n=0,m;
+ m=s.match(/(\d+(?:\.\d+)?)\s*h/);if(m)n+=+m[1]*3600;
+ m=s.match(/(\d+(?:\.\d+)?)\s*m/);if(m)n+=+m[1]*60;
+ m=s.match(/(\d+(?:\.\d+)?)\s*s/);if(m)n+=+m[1];
+ if(!n && /^\d+(?:\.\d+)?$/.test(s))n=+s;
+ return Math.round(n);
 }
-function isDuration(v){return /\d+(?:\.\d+)?\s*(h|hr|hrs|hour|hours|m|min|mins|minute|minutes|s|sec|secs|second|seconds)\b/i.test(v)}
-function isNum(v){return /^\d+(?:\.\d+)?$/.test(String(v).trim())}
-function isEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)}
-function headers(v){return /^(name|online time|break time|received|resolved|avg\.?\s*ht|avg\.?\s*frt|email|svg|view)$/i.test(v)}
-function cleanLines(text){return String(text||'').replace(/\r/g,'').split('\n').map(x=>x.replace(/\*\*/g,'').trim()).filter(x=>x&&!/^svg$/i.test(x)&&!/^view$/i.test(x))}
-function parseData(text){
- const a=cleanLines(text),rows=[];
- for(let i=0;i<a.length;){
-   if(headers(a[i])){i++;continue}
-   if(isEmail(a[i])){i++;continue}
-   const name=a[i]; if(isDuration(name)||isNum(name)){i++;continue}
-   let j=i+1,email=''; if(isEmail(a[j])){email=a[j];j++}
-   const vals=[];while(j<a.length&&vals.length<6){if(headers(a[j])||isEmail(a[j]))break;if(isDuration(a[j])||isNum(a[j]))vals.push(a[j]);j++}
-   if(vals.length>=6){
-    const [online,brk,received,resolved,ht,frt]=vals;
-    rows.push({name,email,online,breakTime:brk,received:+received||0,resolved:+resolved||0,ht,frt,aht:parseDuration(ht),frtSec:parseDuration(frt)});
-    i=j;
-   }else i++;
+function parseAgents(text){
+ const raw=text.replace(/\r/g,'').replace(/\\@/g,'@').split('\n').map(x=>x.trim()).filter(Boolean);
+ const noise=/^(svg|view|name|online time|break time|received|resolved|avg\.?\s*ht|avg\.?\s*frt|agent data|data to be pasted)$/i;
+ const out=[];let i=0;
+ while(i<raw.length){
+  let line=raw[i].replace(/^\*+|\*+$/g,'').trim();
+  if(noise.test(line)||/^https?:/i.test(line)){i++;continue}
+  if(/@/.test(line)){i++;continue}
+  // A name is normally followed by email or time-like values.
+  if(i+5<raw.length && !noise.test(line) && !/^\d/.test(line)){
+    let j=i+1;while(j<raw.length && noise.test(raw[j]))j++;
+    if(j<raw.length && /@/.test(raw[j]))j++;
+    while(j<raw.length && noise.test(raw[j]))j++;
+    const vals=[];while(j<raw.length && vals.length<6){if(!noise.test(raw[j]))vals.push(raw[j]);j++}
+    if(vals.length>=4){
+      const received=Number(vals[2])||0,resolved=Number(vals[3])||0,ht=vals[4]||'0 s',frt=vals[5]||'0 s';
+      // support 5 or 6 captured values: online, break, received, resolved, ht, frt
+      if(vals.length>=5 && (/\d/.test(ht))){
+        const agent={name:line,email:'',received,resolved,ht:ht, aht:parseDuration(ht),frt:frt,frtSec:parseDuration(frt)};
+        out.push(agent);i=j;continue;
+      }
+    }
+  }
+  i++;
  }
- return rows.filter(r=>r.aht>0).sort((a,b)=>b.aht-a.aht)
+ // fallback structured scanner: find numeric/time sequences after a name/email
+ if(!out.length){
+   for(let k=0;k<raw.length;k++){
+    const name=raw[k];if(noise.test(name)||/@/.test(name)||/^\d/.test(name))continue;
+    let j=k+1;while(j<raw.length&&/@/.test(raw[j]))j++;
+    const vals=[];for(;j<raw.length&&vals.length<6;j++)if(!noise.test(raw[j]))vals.push(raw[j]);
+    if(vals.length>=5&&/^\d+$/.test(vals[2])&&/^\d+$/.test(vals[3])){
+      out.push({name,email:'',received:+vals[2],resolved:+vals[3],ht:vals[4],aht:parseDuration(vals[4]),frt:vals[5]||'0 s',frtSec:parseDuration(vals[5]||'0 s')});k=j-1;
+    }
+   }
+ }
+ // De-duplicate by name, keep the last complete record.
+ const map=new Map();out.forEach(r=>{if(r.name)map.set(r.name.toLowerCase(),r)});
+ return [...map.values()].filter(r=>r.aht>0).sort((a,b)=>b.aht-a.aht);
 }
-function rosterFor(r){
- const key=(r.email||r.name||'').toLowerCase();
- return S.roster.find(x=>[x.id,x.email,x.name].filter(Boolean).some(v=>String(v).toLowerCase()===key))||{};
+function setTarget(v){S.target=Math.max(1,Number(v)||195);localStorage.setItem('sahtTarget',S.target);render()}
+function setWatermark(){/* intentionally no public setter */ }
+function clearData(){$('pasteBox').value='';S.agents=[];$('pasteStatus').textContent='Waiting for data…';render()}
+function loadExample(){
+ const example=`Name
+Online time
+Break time
+Received
+Resolved
+Avg. HT
+Avg. FRT
+Ajun C Remesh
+Ajun.Remesh@startek.com
+13
+12
+3 m 53 s
+9 s
+Veena Mol
+Veena.M@startek.com
+28
+21
+3 m 53 s
+17 s
+Akshai Shabu
+Akshai.S@startek.com
+2
+2
+3 m 44 s
+45 s
+Prince Sebastian
+Prince.S@startek.com
+12
+11
+3 m 43 s
+10 s
+Athira Priyadas
+Athira.Priyadas@startek.com
+5
+4
+3 m 38 s
+14 s
+Simna Ap
+Simna.Ap@startek.com
+3
+3
+2 m 2 s
+3 s`;
+ $('pasteBox').value=example;processPaste()
 }
-function conditionClass(aht){
- if(aht>S.target)return 'aht-bad'; if(aht<S.target)return 'aht-good'; return 'aht-neutral'
+function processPaste(){
+ const rows=parseAgents($('pasteBox').value);S.agents=rows;
+ $('pasteStatus').textContent=rows.length?`${rows.length} active agents processed at ${now()}`:'No active agent records detected.';
+ render();
 }
-function groupData(dimension){
- const map={};S.agents.forEach(r=>{const rr=rosterFor(r);let k;
-  if(dimension==='Agent Wise')k=r.name;
-  else if(dimension==='TL Wise')k=rr.tl||'Unmapped';
-  else if(dimension==='AM Wise')k=rr.am||'Unmapped';
-  else if(dimension==='Process Wise')k=rr.process||'Unmapped';
-  else if(dimension==='Bucket Wise')k=rr.bucket||'Unmapped';
-  else if(dimension==='OJT / Non-OJT')k=rr.ojt||'Unmapped';
-  else k=rr.shift||'Unmapped';
-  (map[k]??=[]).push(r);
- });return Object.entries(map).map(([name,rs])=>({name,n:rs.length,received:rs.reduce((a,r)=>a+r.received,0),resolved:rs.reduce((a,r)=>a+r.resolved,0),aht:rs.reduce((a,r)=>a+r.aht,0)/rs.length,frt:rs.reduce((a,r)=>a+r.frtSec,0)/rs.length})).sort((a,b)=>b.aht-a.aht)
+function condition(r){return r.aht>S.target?'bad':r.aht===S.target?'neutral':'good'}
+function tableClass(){return `table-shell table-${$('tableTheme').value} cf-${$('cf').value} font-${$('font').value}`}
+function tableHTML(rows=S.agents,detail=false){
+ if(!rows.length)return '<div class="hint" style="padding:20px">Paste data to generate the AHT table.</div>';
+ const avg=rows.reduce((a,r)=>a+r.aht,0)/rows.length,rec=rows.reduce((a,r)=>a+r.received,0),res=rows.reduce((a,r)=>a+r.resolved,0),frt=rows.reduce((a,r)=>a+r.frtSec,0)/rows.length;
+ const cols=detail?`<th style="width:38%">AGENT DETAILS</th>`:`<th style="width:30%">Agent Name</th>`;
+ const body=rows.map(r=>`<tr>
+ <td class="name">${detail?`<b>${esc(r.name)}</b><small style="display:block;color:#7d8993;font-size:9px">${esc(r.email||'')}</small><small style="display:block;color:#87939d;font-size:8px">TL — • AM — • Bucket — • OJT — • Shift — • Process —</small>`:esc(r.name)}</td>
+ <td>${r.received}</td><td>${r.resolved}</td><td>${esc(r.ht)}</td><td class="aht ${condition(r)}">${Math.round(r.aht)} ${r.aht>S.target?'▲':r.aht<S.target?'▼':'!'}</td><td>${esc(r.frt)}</td>
+ </tr>`).join('');
+ return `<div class="${tableClass()}"><table class="result-table"><thead><tr>${cols}<th>Received</th><th>Resolved</th><th>Avg. HT</th><th>AHT (Sec)</th><th>Avg. FRT</th></tr></thead><tbody>${body}
+ <tr class="grand"><td class="name">GRAND TOTAL / AVG</td><td>${rec}</td><td>${res}</td><td>${formatSec(avg)}</td><td class="aht">${Math.round(avg)} —</td><td>${Math.round(frt)}s</td></tr></tbody></table></div>`;
 }
-function tableHTML(rows=S.agents,grouped=false,variant='standard'){
- if(!rows.length)return '<div class="panel-body"><div class="empty">No active AHT data. Paste the live agent table on Home.</div></div>';
- const skin=$('tableMode')?.value||'light',font=$('fontStyle')?.value||'inter',cond=$('conditionStyle')?.value||'classic',align=$('alignment')?.value||'center';
- const totalA=rows.reduce((s,r)=>s+r.aht,0)/rows.length,totalR=rows.reduce((s,r)=>s+r.received,0),totalRes=rows.reduce((s,r)=>s+r.resolved,0),totalF=rows.reduce((s,r)=>s+r.frtSec,0)/rows.length;
- const cls=`table-preview ${skin} font-${font} cf-${cond} align-${align}`;
- const density=variant==='compact'?'padding:8px 9px':variant==='minimal'?'padding:14px 12px':'';
- if(grouped)return `<div class="${cls}"><div class="table-wrap"><table><thead><tr><th>Group</th><th>Agents</th><th>Received</th><th>Resolved</th><th>Avg AHT</th><th>Avg FRT</th><th>Target Gap</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="name">${esc(r.name)}</td><td>${r.n}</td><td>${r.received}</td><td>${r.resolved}</td><td class="${conditionClass(r.aht)}" style="${density}">${Math.round(r.aht)}s</td><td>${Math.round(r.frt)}s</td><td>${Math.max(0,Math.round(r.aht-S.target))}s</td></tr>`).join('')}<tr class="grand"><td class="name">Grand Total</td><td>${S.agents.length}</td><td>${totalR}</td><td>${totalRes}</td><td>${Math.round(totalA)}s</td><td>${Math.round(totalF)}s</td><td>${Math.max(0,Math.round(totalA-S.target))}s</td></tr></tbody></table></div></div>`;
- const gapText=r=>variant==='analysis'?`${Math.max(0,Math.round(r.aht-S.target))}s`:'—';
- return `<div class="${cls}"><div class="table-wrap"><table><thead><tr><th>Agent Name</th><th>Received</th><th>Resolved</th><th>Avg. HT</th><th>AHT (Sec)</th><th>Avg. FRT</th><th>Target Gap</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="name" style="${density}">${esc(r.name)}</td><td>${r.received}</td><td>${r.resolved}</td><td>${esc(r.ht)}</td><td class="${conditionClass(r.aht)}" style="${density}">${Math.round(r.aht)}${variant==='cinematic'?' ◆':''}${variant==='analysis'&&r.aht>S.target?' ▲':''}${variant==='analysis'&&r.aht<S.target?' ▼':''}s</td><td>${esc(r.frt)}</td><td>${variant==='analysis'?gapText(r):Math.max(0,Math.round(r.aht-S.target))+'s'}</td></tr>`).join('')}<tr class="grand"><td class="name">Grand Total</td><td>${totalR}</td><td>${totalRes}</td><td>${formatSec(totalA)}</td><td>${Math.round(totalA)}s —</td><td>${Math.round(totalF)}s</td><td>${Math.max(0,Math.round(totalA-S.target))}s</td></tr></tbody></table></div></div>`;
+function formatSec(sec){sec=Math.round(sec);return `${Math.floor(sec/60)} m ${sec%60} s`}
+function render(){
+ $('liveTable').innerHTML=tableHTML(S.agents,false);
+ const n=S.agents.length,avg=n?S.agents.reduce((a,r)=>a+r.aht,0)/n:0,rec=S.agents.reduce((a,r)=>a+r.received,0),res=S.agents.reduce((a,r)=>a+r.resolved,0),frt=n?S.agents.reduce((a,r)=>a+r.frtSec,0)/n:0;
+ $('kAht').textContent=Math.round(avg)+'s';$('kReceived').textContent=rec;$('kResolved').textContent=res;$('kFRT').textContent=Math.round(frt)+'s';$('activeBadge').textContent=n+' ACTIVE';
+ const sorted=[...S.agents].sort((a,b)=>b.aht-a.aht), vals=sorted.map(r=>r.aht).sort((a,b)=>a-b);
+ $('highest').textContent=n?Math.round(sorted[0].aht)+'s':'0s';$('highestName').textContent=n?sorted[0].name:'—';
+ $('lowest').textContent=n?Math.round(sorted[n-1].aht)+'s':'0s';$('lowestName').textContent=n?sorted[n-1].name:'—';
+ $('median').textContent=n?Math.round(n%2?vals[(n-1)/2]:(vals[n/2-1]+vals[n/2])/2)+'s':'0s';
+ $('above').textContent=S.agents.filter(r=>r.aht>S.target).length;
+ $('bars').innerHTML=sorted.slice(0,12).map(r=>`<div class="barrow"><span>${esc(r.name)}</span><div class="bar"><i style="width:${Math.max(3,Math.min(100,r.aht/(sorted[0]?.aht||1)*100))}%"></i></div><b>${r.aht}s</b></div>`).join('')||'<span class="hint">No data</span>';
+ drawChart();populateFilterOptions();renderHierarchy();renderProfile();renderAdmin();
 }
-function formatSec(v){v=Math.round(v);return `${Math.floor(v/60)} m ${v%60} s`}
-function renderAll(){
- const n=S.agents.length,rows=[...S.agents].sort((a,b)=>b.aht-a.aht),avg=n?S.agents.reduce((s,r)=>s+r.aht,0)/n:0,rec=S.agents.reduce((s,r)=>s+r.received,0),res=S.agents.reduce((s,r)=>s+r.resolved,0),frt=n?S.agents.reduce((s,r)=>s+r.frtSec,0)/n:0;
- const set=(id,v)=>{const e=$(id);if(e)e.textContent=v}; const val=(id,v)=>{const e=$(id);if(e)e.value=v};
- set('kAht',Math.round(avg)+'s');set('kCalls',rec);set('kResolved',res);set('kFrt',Math.round(frt)+'s');set('homeTarget',S.target+'s');set('activeBadge',n+' ACTIVE');
- const ht=tableHTML(rows,false,'standard');setHTML('homeTable',ht);setHTML('hierarchyTable',tableHTML(groupData($('dimension')?.value||'Agent Wise'),true));
- set('xAbove',rows.filter(r=>r.aht>S.target).length);set('xBelow',rows.filter(r=>r.aht<=S.target).length);const hi=rows[0],lo=rows[n-1];set('xHigh',hi?Math.round(hi.aht)+'s':'0s');set('xHighName',hi?hi.name:'—');set('xLow',lo?Math.round(lo.aht)+'s':'0s');set('xLowName',lo?lo.name:'—');
- const vv=rows.map(r=>r.aht).sort((a,b)=>a-b);let med=0;if(n)med=n%2?vv[(n-1)/2]:(vv[n/2-1]+vv[n/2])/2;set('xMedian',Math.round(med)+'s');
- setHTML('bars',n?rows.slice(0,15).map((r,i)=>`<div style="margin:9px 0"><div style="display:flex;justify-content:space-between"><span>${i+1}. ${esc(r.name)}</span><b class="${r.aht>S.target?'gap-bad':'gap-good'}">${Math.round(r.aht)}s</b></div><div class="bar"><i style="width:${Math.max(4,Math.min(100,r.aht/Math.max(1,rows[0].aht)*100))}%"></i></div></div>`).join(''):'<div class="empty">No data</div>');
- set('adminReqCount',S.requests.filter(x=>x.status==='pending').length);set('adminRosterCount',S.roster.length);set('adminAhtCount',n);set('adminTargetStat',S.target+'s');val('adminTargetInput',S.target);val('homeTargetInput',S.target);val('watermark',S.watermark);val('adminWatermark',S.watermark);
- setHTML('requests',S.requests.length?S.requests.map((r,i)=>`<div class="request"><div><b>${esc(r.name)}</b><div class="hint">${esc(r.email)} • ${esc(r.tl||'TL not given')}</div><div class="hint">${esc(r.reason||'')}</div><span class="tag ${r.status==='approved'?'green':'gold'}">${esc(r.status)}</span></div><div class="toolbar">${r.status==='pending'?`<button class="btn primary" onclick="requestAction(${i},'approved')">Approve</button><button class="btn red" onclick="requestAction(${i},'rejected')">Reject</button>`:''}</div></div>`).join(''):'<div class="empty">No access requests.</div>');
- set('rosterStatus',S.roster.length?`${S.roster.length} roster records loaded.`:'No roster loaded.');setHTML('rosterPreview',S.roster.length?`<div class="table-wrap"><table><thead><tr><th>Agent ID / Login ID</th><th>Agent Name</th><th>TL</th><th>AM</th><th>Bucket</th><th>OJT / Non-OJT</th><th>Shift Status</th><th>Process</th></tr></thead><tbody>${S.roster.slice(0,30).map(r=>`<tr><td>${esc(r.id)}</td><td>${esc(r.name)}</td><td>${esc(r.tl)}</td><td>${esc(r.am)}</td><td>${esc(r.bucket)}</td><td>${esc(r.ojt)}</td><td>${esc(r.shift)}</td><td>${esc(r.process)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="panel-body"><div class="empty">Upload the weekly roster to enrich TL / AM / Process analysis.</div></div>');
- const img=$('profileImg'),top=$('topAvatar');if(img)img.src=S.avatar;if(top)top.src=S.avatar;set('profileName',S.user||'Admin');const rr=S.roster.find(x=>[x.id,x.email,x.name].filter(Boolean).some(v=>String(v).toLowerCase()===String(S.user).toLowerCase()))||{};set('profileRole',S.user.toLowerCase()==='admin'?'COMMAND ADMIN':(rr.process||'AHT USER').toUpperCase());setHTML('profileDetails',`<div class="grid3"><div class="card"><div class="label">Login</div><div class="value" style="font-size:16px">${esc(S.user||'Admin')}</div></div><div class="card"><div class="label">TL</div><div class="value" style="font-size:16px">${esc(rr.tl||'—')}</div></div><div class="card"><div class="label">AM</div><div class="value" style="font-size:16px">${esc(rr.am||'—')}</div></div></div><div class="grid3" style="margin-top:12px"><div class="card"><div class="label">Bucket</div><div class="value" style="font-size:16px">${esc(rr.bucket||'—')}</div></div><div class="card"><div class="label">Shift</div><div class="value" style="font-size:16px">${esc(rr.shift||'—')}</div></div><div class="card"><div class="label">Process</div><div class="value" style="font-size:16px">${esc(rr.process||'—')}</div></div></div>`);
- set('footerTime',nowStamp());applyTableTheme();drawCharts();
+function populateFilterOptions(){
+ const fields=[['fTL','tl'],['fAM','am'],['fBucket','bucket'],['fProcess','process']];
+ fields.forEach(([id,key])=>{const el=$(id),old=el.value,vals=[...new Set(S.agents.map(r=>(S.roster.find(x=>x.name?.toLowerCase()===r.name.toLowerCase())||{})[key]).filter(Boolean))].sort();el.innerHTML='<option value="">All</option>'+vals.map(v=>`<option>${esc(v)}</option>`).join('');if(vals.includes(old))el.value=old});
 }
-function setHTML(id,v){const e=$(id);if(e)e.innerHTML=v}
-function applyTableTheme(){document.querySelectorAll('.table-preview').forEach(t=>{t.classList.remove('light','dark','slate','royal','emerald','crimson','font-inter','font-orbitron','font-rajdhani','font-mono','cf-classic','cf-bold','cf-soft','cf-mono');t.classList.add($('tableMode')?.value||'light','font-'+($('fontStyle')?.value||'inter'),'cf-'+($('conditionStyle')?.value||'classic'))})}
+function enrich(r){
+ const rr=S.roster.find(x=>[x.id,x.email,x.name].filter(Boolean).some(v=>String(v).toLowerCase()===r.name.toLowerCase()));
+ return rr?{...r,...rr}:r;
+}
+function filteredAgents(){
+ return S.agents.map(enrich).filter(r=>{
+  const q=$('fAgent')?.value.toLowerCase()||'';
+  return (!q||r.name.toLowerCase().includes(q))&&(!$('fTL')?.value||r.tl===$('fTL').value)&&(!$('fAM')?.value||r.am===$('fAM').value)&&(!$('fBucket')?.value||r.bucket===$('fBucket').value)&&(!$('fOJT')?.value||r.ojt===$('fOJT').value)&&(!$('fShift')?.value||r.shift===$('fShift').value)&&(!$('fProcess')?.value||r.process===$('fProcess').value)&&(!$('fStatus')?.value||($('fStatus').value==='above'?r.aht>S.target:r.aht<=S.target))
+ }).sort((a,b)=>$('fSort')?.value==='asc'?a.aht-b.aht:$('fSort')?.value==='received'?b.received-a.received:b.aht-a.aht)
+}
+function groupRows(rows,dim){
+ const key={ 'TL Wise':'tl','AM Wise':'am','Bucket Wise':'bucket','OJT / Non-OJT':'ojt','Shift Status':'shift','Process Wise':'process','Agent Wise':'name'}[dim]||'name';
+ const m=new Map();rows.forEach(r=>{const k=r[key]||'Unassigned';if(!m.has(k))m.set(k,[]);m.get(k).push(r)});
+ return [...m].map(([name,rs])=>({name,n:rs.length,received:rs.reduce((a,r)=>a+r.received,0),resolved:rs.reduce((a,r)=>a+r.resolved,0),aht:rs.reduce((a,r)=>a+r.aht,0)/rs.length,frt:rs.reduce((a,r)=>a+r.frtSec,0)/rs.length})).sort((a,b)=>b.aht-a.aht)
+}
+function groupTable(rows){
+ if(!rows.length)return '<div class="hint">No records match the selected filters.</div>';
+ const rec=rows.reduce((a,r)=>a+r.received,0),res=rows.reduce((a,r)=>a+r.resolved,0),avg=rows.reduce((a,r)=>a+r.aht,0)/rows.length,frt=rows.reduce((a,r)=>a+r.frt,0)/rows.length;
+ return `<div class="${tableClass()}"><table class="result-table"><thead><tr><th>GROUP</th><th>AGENTS</th><th>RECEIVED</th><th>RESOLVED</th><th>AVG AHT</th><th>AVG FRT</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="name">${esc(r.name)}</td><td>${r.n}</td><td>${r.received}</td><td>${r.resolved}</td><td class="aht ${r.aht>S.target?'bad':r.aht===S.target?'neutral':'good'}">${Math.round(r.aht)}s</td><td>${Math.round(r.frt)}s</td></tr>`).join('')}<tr class="grand"><td class="name">GRAND TOTAL / AVG</td><td>${rows.length}</td><td>${rec}</td><td>${res}</td><td>${Math.round(avg)}s</td><td>${Math.round(frt)}s</td></tr></tbody></table></div>`
+}
 function renderHierarchy(){
- const dim=$('dimension')?.value||'Agent Wise',q=($('hSearch')?.value||'').toLowerCase(),tf=$('hTarget')?.value||'all',sf=$('hSort')?.value||'high',mf=$('hMap')?.value||'all';
- let source=S.agents.filter(r=>{const rr=rosterFor(r),mapped=!!(rr.tl||rr.am||rr.process||rr.bucket||rr.ojt||rr.shift);if(q&&!(`${r.name} ${rr.tl||''} ${rr.am||''} ${rr.process||''} ${rr.bucket||''} ${rr.ojt||''} ${rr.shift||''}`.toLowerCase().includes(q)))return false;if(tf==='above'&&r.aht<=S.target)return false;if(tf==='within'&&r.aht>S.target)return false;if(mf==='mapped'&&!mapped)return false;if(mf==='unmapped'&&mapped)return false;return true});
- const groups=groupDataFrom(source,dim);groups.sort((a,b)=>sf==='low'?a.aht-b.aht:sf==='calls'?b.received-a.received:sf==='resolved'?b.resolved-a.resolved:b.aht-a.aht);setHTML('hierarchyTable',tableHTML(groups,true));set('hierarchyResult',`${source.length} matching active agents • ${groups.length} groups • ${dim}`);applyTableTheme();
+ if(!$('hierarchyTable'))return;
+ const f=filteredAgents(),g=groupRows(f,$('dimension').value);$('matchCount').textContent=f.length+' MATCHED';$('hierarchyTable').innerHTML=groupTable(g)
 }
-function groupDataFrom(source,dimension){const map={};source.forEach(r=>{const rr=rosterFor(r);let k=dimension==='Agent Wise'?r.name:dimension==='TL Wise'?(rr.tl||'Unmapped'):dimension==='AM Wise'?(rr.am||'Unmapped'):dimension==='Process Wise'?(rr.process||'Unmapped'):dimension==='Bucket Wise'?(rr.bucket||'Unmapped'):dimension==='OJT / Non-OJT'?(rr.ojt||'Unmapped'):(rr.shift||'Unmapped');(map[k]??=[]).push(r)});return Object.entries(map).map(([name,rs])=>({name,n:rs.length,received:rs.reduce((a,r)=>a+r.received,0),resolved:rs.reduce((a,r)=>a+r.resolved,0),aht:rs.reduce((a,r)=>a+r.aht,0)/rs.length,frt:rs.reduce((a,r)=>a+r.frtSec,0)/rs.length}));}
-function resetHierarchyFilters(){['hSearch'].forEach(id=>{const e=$(id);if(e)e.value=''});['hTarget','hMap'].forEach(id=>{const e=$(id);if(e)e.value='all'});if($('hSort'))$('hSort').value='high';renderHierarchy()}
-function showPage(page,btn){
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const p=$('page-'+page);if(p)p.classList.add('active');
- document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
- if(page==='admin' && String(S.user).toLowerCase()!=='admin' && String(S.user).toLowerCase()!=='abhijith'){toast('Admin Control is restricted to Admin.');return}
- renderAll();window.scrollTo({top:0,behavior:'smooth'});
+function resetFilters(){['fAgent','fTL','fAM','fBucket','fOJT','fShift','fProcess','fStatus'].forEach(id=>$(id).value='');$('fSort').value='desc';renderHierarchy()}
+function renderProfile(){
+ if(!$('profileName'))return;
+ const rr=S.roster.find(x=>[x.id,x.email,x.name].filter(Boolean).some(v=>String(v).toLowerCase()===S.user.toLowerCase()))||{};
+ $('topUser').textContent=S.user||'Admin';$('topAvatar').src=S.avatar;$('profileImage').src=S.avatar;
+ $('profileName').textContent=rr.name||S.user||'Admin';$('profileRole').textContent=isAdmin()?'COMMAND ADMIN':(rr.process||'AHT USER').toUpperCase();
+ $('profileDetails').innerHTML=`<div class="grid3"><div class="card"><div class="label">TL</div><div class="value" style="font-size:16px">${esc(rr.tl||'—')}</div></div><div class="card"><div class="label">AM</div><div class="value" style="font-size:16px">${esc(rr.am||'—')}</div></div><div class="card"><div class="label">Bucket</div><div class="value" style="font-size:16px">${esc(rr.bucket||'—')}</div></div></div><div class="grid3" style="margin-top:10px"><div class="card"><div class="label">OJT</div><div class="value" style="font-size:16px">${esc(rr.ojt||'—')}</div></div><div class="card"><div class="label">Shift</div><div class="value" style="font-size:16px">${esc(rr.shift||'—')}</div></div><div class="card"><div class="label">Process</div><div class="value" style="font-size:16px">${esc(rr.process||'—')}</div></div></div>`
 }
-function processPaste(text){
- const rows=parseData(text);S.agents=rows;localStorage.setItem('mogamboAhtInput',text);
- $('pasteStatus').textContent=`Processed ${rows.length} active agent${rows.length===1?'':'s'} • auto-ranked high → low • AHT = Avg. HT in seconds`;
- renderAll();
+function renderAdmin(){
+ if(!isAdmin())return;
+ $('adminNav').classList.remove('hidden');$('adminWatermarkNote').classList.remove('hidden');
+ $('pendingCount').textContent=S.requests.filter(r=>r.status==='pending').length;$('rosterCount').textContent=S.roster.length;$('watermarkDisplay').textContent=S.watermark;$('watermarkAdmin').value=S.watermark;
+ $('requests').innerHTML=S.requests.length?S.requests.map((r,i)=>`<div class="request"><div><b>${esc(r.name)}</b><div class="hint">${esc(r.email)} • ${esc(r.reason||'')}</div><span class="badge">${esc(r.status)}</span></div><div>${r.status==='pending'?`<button class="btn primary" onclick="requestAction(${i},'approved')">Approve</button> <button class="btn danger" onclick="requestAction(${i},'rejected')">Reject</button>`:''}</div></div>`).join(''):'<div class="hint">No access requests.</div>';
+ $('rosterStatus').textContent=S.roster.length?`${S.roster.length} roster records loaded.`:'No roster loaded.';
+ $('rosterPreview').innerHTML=S.roster.length?`<div class="table-shell"><table class="result-table table-dark"><thead><tr><th>ID</th><th>Name</th><th>TL</th><th>AM</th><th>Bucket</th><th>OJT</th><th>Shift</th><th>Process</th></tr></thead><tbody>${S.roster.slice(0,50).map(r=>`<tr><td>${esc(r.id)}</td><td>${esc(r.name)}</td><td>${esc(r.tl)}</td><td>${esc(r.am)}</td><td>${esc(r.bucket)}</td><td>${esc(r.ojt)}</td><td>${esc(r.shift)}</td><td>${esc(r.process)}</td></tr>`).join('')}</tbody></table></div>`:''
 }
-$('pasteBox').addEventListener('paste',e=>setTimeout(()=>processPaste($('pasteBox').value),30));
-$('pasteBox').addEventListener('input',()=>{if($('pasteBox').value.trim())processPaste($('pasteBox').value)});
-function loadExample(){$('pasteBox').value=`**Name**\n**Online time**\n**Break time**\n**Received**\n**Resolved**\n**Avg. HT**\n**svg**\n**Avg. FRT**\n**svg**\n**Athira Priyadas**\n**Athira.Priyadas@startek.com**\nsvg\n**6 h 10 m 21 s**\n**1 h 12 m 50 s**\n**43**\n**40**\n**3 m 39 s**\n**15 s**\n**View**\nsvg`;processPaste($('pasteBox').value)}
-function clearData(){S.agents=[];$('pasteBox').value='';localStorage.removeItem('mogamboAhtInput');$('pasteStatus').textContent='Waiting for data…';renderAll()}
-function setTarget(v){S.target=Math.max(1,+v||195);save();renderAll();toast('AHT target updated')}
-function setWatermark(v){S.watermark=v.trim()||'Abhijith';save();renderAll()}
-function toggleAudio(){
- if(S.audioOn){stopAmbient();S.audioOn=false;toast('Audio off');return}
- startAmbient();S.audioOn=true;toast('Mogambo ambience on')
+function saveWatermark(){
+ if(!isAdmin()){toast('Only Admin can change the watermark.');return}
+ const v=$('watermarkAdmin').value.trim()||'Abhijith';S.watermark=v;localStorage.setItem('sahtWatermark',v);renderAdmin();toast('Admin watermark updated.');
 }
-function startAmbient(){
- try{if(window._audioCtx)return;const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const c=new C(),g=c.createGain();g.gain.value=.018;g.connect(c.destination);
-  [110,164.8,220].forEach((f,i)=>{const o=c.createOscillator();o.type='sine';o.frequency.value=f;o.detune.value=i*3;const gg=c.createGain();gg.gain.value=.25;const l=c.createBiquadFilter();l.type='lowpass';l.frequency.value=800;o.connect(l).connect(gg).connect(g);o.start()});window._audioCtx=c;window._audioGain=g;
- }catch(e){}
-}
-function stopAmbient(){try{window._audioCtx?.close();window._audioCtx=null}catch(e){}}
-function enterSystem(){
- $('introAudio').play().catch(()=>{});$('intro').classList.add('hidden');$('login').classList.remove('hidden');
- setTimeout(()=>{$('loginUser').focus()},350)
+function requestAction(i,status){if(!isAdmin())return;S.requests[i].status=status;localStorage.setItem('sahtRequests',JSON.stringify(S.requests));renderAdmin();toast('Request '+status+'.')}
+function showRequest(){$('auth').classList.add('hidden');$('requestModal').classList.remove('hidden')}
+function closeRequest(){$('requestModal').classList.add('hidden');$('auth').classList.remove('hidden')}
+function submitRequest(){
+ const name=$('reqName').value.trim(),email=$('reqEmail').value.trim().toLowerCase(),reason=$('reqReason').value.trim();
+ if(!name||!email){toast('Name and email are required.');return}
+ S.requests.push({name,email,reason,status:'pending',created:Date.now()});localStorage.setItem('sahtRequests',JSON.stringify(S.requests));toast('Request submitted for Admin review.');closeRequest()
 }
 function login(){
  const u=$('loginUser').value.trim().toLowerCase(),p=$('loginPass').value;
- const approved=S.requests.some(r=>r.email.toLowerCase()===u&&r.status==='approved');
- if((u==='admin'||u==='abhijith')&&p==='Abhijith@123'||approved&&p==='Abhijith@123'){
-  S.user=u==='abhijith'?'abhijith':u;sessionStorage.setItem('mogamboUser',S.user);$('login').classList.add('hidden');$('app').classList.remove('hidden');$('topUser').textContent=S.user.toUpperCase();renderAll();startAmbient();S.audioOn=true;toast('Command center online');
- }else $('loginMsg').textContent='Access denied. Check your credentials or request access.';
+ if(!u||!p){toast('Enter login and password.');return}
+ const approved=S.requests.find(r=>r.email===u&&r.status==='approved');
+ if((ADMIN_IDS.includes(u)&&p===ADMIN_PASSWORD)||(approved&&p===ADMIN_PASSWORD)){
+  S.user=u;sessionStorage.setItem('sahtUser',u);$('auth').classList.add('hidden');$('app').classList.remove('hidden');if(isAdmin())$('adminNav').classList.remove('hidden');render();try{$('introAudio').play()}catch(e){}toast('Command center online.')
+ }else toast('Access denied. Use an approved account or Admin credentials.')
 }
-function logout(){sessionStorage.removeItem('mogamboUser');location.reload()}
-function openRequest(){$('requestModal').classList.remove('hidden')}
-function closeRequest(){$('requestModal').classList.add('hidden')}
-function submitRequest(){
- const r={name:$('reqName').value.trim(),email:$('reqEmail').value.trim(),tl:$('reqTl').value.trim(),reason:$('reqReason').value.trim(),status:'pending',created:new Date().toISOString()};
- if(!r.name||!r.email){$('reqMsg').textContent='Name and email/login ID are required.';return}
- S.requests.push(r);save();$('reqMsg').textContent='Request submitted to Admin.';toast('Access request submitted');setTimeout(closeRequest,900)
+function logout(){sessionStorage.removeItem('sahtUser');location.reload()}
+function showPage(page,btn){
+ document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));$('page-'+page).classList.remove('hidden');
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})
 }
-function requestAction(i,status){S.requests[i].status=status;save();renderAll();toast('Request '+status)}
-function csvParse(text){
- const lines=text.replace(/\r/g,'').split('\n').filter(x=>x.trim());if(!lines.length)return[];
- const parseLine=s=>{let out=[],cur='',q=false;for(const ch of s){if(ch==='"')q=!q;else if(ch===','&&!q){out.push(cur.trim());cur=''}else cur+=ch}out.push(cur.trim());return out.map(x=>x.replace(/^"|"$/g,''))}
- const hs=parseLine(lines[0]).map(x=>x.toLowerCase().replace(/\s+/g,' ').trim());
- const idx=(...names)=>{for(const n of names){const i=hs.findIndex(h=>h===n||h.includes(n));if(i>=0)return i}return -1};
- const ids=idx('agent id / login id','agent id','login id','email'),names=idx('agent name','name'),tl=idx('tl'),am=idx('am'),bucket=idx('bucket'),ojt=idx('ojt / non-ojt','ojt'),shift=idx('shift status','shift'),process=idx('process');
- return lines.slice(1).map(line=>{const x=parseLine(line);return{id:x[ids]||'',name:x[names]||'',tl:x[tl]||'',am:x[am]||'',bucket:x[bucket]||'',ojt:x[ojt]||'',shift:x[shift]||'',process:x[process]||''}}).filter(r=>r.id||r.name)
+function drawChart(){
+ const c=$('chart');if(!c)return;const d=c.getContext('2d'),rect=c.getBoundingClientRect(),ratio=devicePixelRatio||1;c.width=rect.width*ratio;c.height=rect.height*ratio;d.scale(ratio,ratio);const w=rect.width,h=rect.height;
+ d.clearRect(0,0,w,h);d.fillStyle='#080d11';d.fillRect(0,0,w,h);const rows=[...S.agents].sort((a,b)=>b.aht-a.aht).slice(0,12),max=Math.max(S.target,...rows.map(r=>r.aht),1),bw=Math.max(18,(w-40)/Math.max(rows.length,1)-8);
+ rows.forEach((r,i)=>{const bh=r.aht/max*(h-65),x=20+i*(bw+8),y=h-35-bh;d.fillStyle=r.aht>S.target?'#d93b51':r.aht<S.target?'#16a875':'#d99f00';d.fillRect(x,y,bw,bh);d.fillStyle='#d9e0e5';d.font='10px Inter';d.textAlign='center';d.fillText(r.aht+'s',x+bw/2,y-5)});
+ const ty=h-35-S.target/max*(h-65);d.strokeStyle='#ffd978';d.setLineDash([5,5]);d.beginPath();d.moveTo(10,ty);d.lineTo(w-10,ty);d.stroke();d.setLineDash([])
 }
-function importRoster(e){
- const f=e.target.files[0];if(!f)return;
- const isXlsx=/\\.(xlsx|xls)$/i.test(f.name);
- const finish=rows=>{if(rows.length){S.roster=rows;save();renderAll();toast(`${rows.length} roster records imported`)}else toast('No valid roster rows found. Use the provided template.')};
- if(isXlsx && window.XLSX){
-   const reader=new FileReader();
-   reader.onload=ev=>{
-     try{
-       const wb=XLSX.read(new Uint8Array(ev.target.result),{type:'array'});
-       const sheet=wb.Sheets[wb.SheetNames[0]];
-       const csv=XLSX.utils.sheet_to_csv(sheet);
-       finish(csvParse(csv));
-     }catch(err){toast('Could not read the Excel roster.')}
-   };
-   reader.readAsArrayBuffer(f);
- }else{
-   const reader=new FileReader();reader.onload=()=>finish(csvParse(reader.result));reader.readAsText(f);
- }
-}
-function clearRoster(){S.roster=[];save();renderAll();toast('Roster removed')}
-function downloadTemplate(){
- const h='Agent ID / Login ID,Agent Name,TL,AM,Bucket,OJT / Non-OJT,Shift Status,Process\nAG001,Athira Priyadas,TL Name,AM Name,Bucket A,OJT,General,Inbound AHT';
- const b=new Blob([h],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Mogambo_AHT_Roster_Template.csv';a.click()
-}
-function changeAvatar(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{S.avatar=r.result;localStorage.setItem('mogamboAvatar',S.avatar);renderAll();toast('Profile image updated')};r.readAsDataURL(f)}
-function downloadCSV(){
- const rows=S.agents,head=['Agent Name','Email','Online time','Break time','Received','Resolved','Avg. HT','AHT (Sec)','Avg. FRT','Target Gap'];
- const out=[head,...rows.map(r=>[r.name,r.email,r.online,r.breakTime,r.received,r.resolved,r.ht,Math.round(r.aht),r.frt,Math.max(0,Math.round(r.aht-S.target))+'s']),['Grand Total','','','',rows.reduce((s,r)=>s+r.received,0),rows.reduce((s,r)=>s+r.resolved,0),'',rows.length?Math.round(rows.reduce((s,r)=>s+r.aht,0)/rows.length):0,'',rows.length?Math.max(0,Math.round(rows.reduce((s,r)=>s+r.aht,0)/rows.length-S.target))+'s':'0s']];
- const csv=out.map(row=>row.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(',')).join('\n');const b=new Blob([csv],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Mogambo_AHT_Report.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)
-}
-function setupCanvas(c,w=900,h=300){const d=devicePixelRatio||1;c.width=w*d;c.height=h*d;c.style.width='100%';c.style.height=h+'px';const x=c.getContext('2d');x.scale(d,d);return x}
-function drawBarsChart(c,mode){
- const ctx=setupCanvas(c),w=900,h=300;ctx.clearRect(0,0,w,h);ctx.font='600 11px Inter';ctx.fillStyle='#8793a4';ctx.strokeStyle='rgba(255,255,255,.08)';
- const rs=S.agents.slice(0,12);if(!rs.length){ctx.fillText('Paste data to activate chart.',25,45);return}
- const max=Math.max(S.target,...rs.map(r=>r.aht))*1.12,barW=Math.max(22,(w-80)/rs.length-12);
- rs.forEach((r,i)=>{const x=45+i*(barW+12),bh=r.aht/max*220,y=245-bh;ctx.fillStyle=r.aht>S.target?'#b83245':'#b78a2c';ctx.fillRect(x,y,barW,bh);ctx.fillStyle='#d8dee8';ctx.save();ctx.translate(x+barW/2,265);ctx.rotate(-.55);ctx.textAlign='right';ctx.fillText(r.name.slice(0,14),0,0);ctx.restore();ctx.fillStyle='#f1c86b';ctx.textAlign='center';ctx.fillText(Math.round(r.aht)+'s',x+barW/2,y-7)});ctx.textAlign='left';const ty=245-S.target/max*220;ctx.strokeStyle='#e7b84f';ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(35,ty);ctx.lineTo(880,ty);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#e7b84f';ctx.fillText('TARGET '+S.target+'s',40,ty-7)
-}
-function drawCharts(){drawBarsChart($('ahtChart'));drawBarsChart($('targetChart'))}
-function exportCanvas(variant='standard'){
- const rows=[...S.agents].sort((a,b)=>b.aht-a.aht); if(!rows.length)return null;
- const W=3840,H=2880,pad=150,top=190,headH=190;
- const density={standard:{row:155,font:42,name:44},compact:{row:122,font:34,name:36},cinematic:{row:165,font:44,name:48},minimal:{row:145,font:40,name:42},analysis:{row:160,font:43,name:46}}[variant]||{row:155,font:42,name:44};
- const mode=$('tableMode')?.value||'light',cond=$('conditionStyle')?.value||'classic',font=$('fontStyle')?.value||'inter',align=$('alignment')?.value||'center',bgMode=$('exportImageBg')?.value||'match';
- const themes={
-  light:{bg:'#edf3f8',panel:'#f7fafc',head:'#ffffff',grand:'#e2eaf2',grid:'#b9c9d8',text:'#1a2738',muted:'#617185',accent:'#216bb5'},
-  dark:{bg:'#070b10',panel:'#0c131a',head:'#151f2a',grand:'#111a23',grid:'#30404f',text:'#eef4fa',muted:'#8b98a7',accent:'#e7b84f'},
-  slate:{bg:'#e5edf4',panel:'#f1f5f8',head:'#dce6ee',grand:'#d2dde7',grid:'#b3c3d1',text:'#1c2a39',muted:'#637488',accent:'#315d82'},
-  royal:{bg:'#f4f0f9',panel:'#fbf8fd',head:'#e8e0f1',grand:'#ded5e9',grid:'#c8bad8',text:'#2b203f',muted:'#756888',accent:'#7252a4'},
-  emerald:{bg:'#eaf6f0',panel:'#f5fbf8',head:'#d9eee4',grand:'#d1e7dc',grid:'#b6d2c4',text:'#163126',muted:'#5f7b6e',accent:'#157950'},
-  crimson:{bg:'#faecef',panel:'#fff7f8',head:'#f0d8dc',grand:'#e8cbd0',grid:'#d7b3bb',text:'#36171e',muted:'#81616a',accent:'#b62f44'}
- };
- const T=themes[mode]||themes.light;
- const bgMap={match:T.bg,white:'#ffffff',black:'#05070a',gold:'#211706',navy:'#071326'};const bg=bgMap[bgMode]||T.bg;
- const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.fillStyle=bg;x.fillRect(0,0,W,H);
- const ff={inter:'Inter',orbitron:'Orbitron',rajdhani:'Rajdhani',mono:'Share Tech Mono'}[font]||'Inter';
- const text=bgMode==='black'?'#f5f7fa':T.text,muted=bgMode==='black'?'#9aa5b4':T.muted,panel=bgMode==='black'?'#0b1017':T.panel,head=bgMode==='black'?'#151d27':T.head,grand=bgMode==='black'?'#111821':T.grand,grid=bgMode==='black'?'#303d4b':T.grid;
- const totalA=rows.reduce((s,r)=>s+r.aht,0)/rows.length,totalF=rows.reduce((s,r)=>s+r.frtSec,0)/rows.length,totalR=rows.reduce((s,r)=>s+r.received,0),totalRes=rows.reduce((s,r)=>s+r.resolved,0);
- // Header — intentionally restrained: the export is the AHT table, not a dashboard.
- x.textAlign='left';x.fillStyle=text;x.font=`900 82px ${ff}`;x.fillText('REAL TIME AHT',pad,105);
- x.fillStyle=muted;x.font=`600 28px ${ff}`;x.fillText(`AGENT WISE  •  HIGH → LOW  •  TARGET ${S.target}s  •  ACTIVE AGENTS ${rows.length}`,pad,150);
- if($('timestampMode')?.value!=='off'){x.fillStyle=muted;x.font=`500 23px ${ff}`;x.fillText(nowStamp(),pad,184)}
- const yHead=top,tableW=W-pad*2;
- // Four formats keep the same data but vary density/decoration only.
- const isDetail=$('exportLayout')?.value==='detail' || variant==='analysis';
- let cols;
- if(isDetail){
-   cols=[pad,1780,2080,2380,2780,3220];
- }else{
-   cols=[pad,1660,1980,2300,2720,3120];
- }
- const headers=['AGENT DETAILS','RECEIVED','RESOLVED','AVG. HT','AHT (SEC)','AVG. FRT'];
- x.fillStyle=head;x.fillRect(pad,yHead,tableW,headH);x.strokeStyle=grid;x.lineWidth=3;x.strokeRect(pad,yHead,tableW,headH);
- headers.forEach((h,i)=>{x.fillStyle=text;x.font=`900 30px ${ff}`;x.textAlign=i===0?'left':'center';x.fillText(h,i===0?pad+42:cols[i]+90,yHead+115)});
- rows.forEach((r,i)=>{
-   const y=yHead+headH+i*density.row;x.fillStyle=panel;x.fillRect(pad,y,tableW,density.row);x.strokeStyle=grid;x.strokeRect(pad,y,tableW,density.row);
-   const rr=rosterFor(r),initials=(r.name||'?').split(/\s+/).map(s=>s[0]).join('').slice(0,2).toUpperCase();
-   x.beginPath();x.arc(pad+65,y+density.row/2,42,0,Math.PI*2);x.fillStyle=bgMode==='black'?'#3b2d0d':'#3e3217';x.fill();x.fillStyle='#f5d36e';x.font=`900 25px ${ff}`;x.textAlign='center';x.fillText(initials,pad+65,y+density.row/2+9);
-   x.textAlign='left';x.fillStyle=text;x.font=`900 ${density.name}px ${ff}`;x.fillText(r.name,pad+130,y+55);
-   x.fillStyle=muted;x.font=`500 19px ${ff}`;x.fillText(r.email||'',pad+130,y+84);
-   const meta=`TL ${rr.tl||'—'}   •   AM ${rr.am||'—'}   •   Bucket ${rr.bucket||'—'}   •   ${rr.ojt||'—'}   •   Shift ${rr.shift||'—'}   •   ${rr.process||'—'}`;
-   x.font=`600 17px ${ff}`;x.fillText(meta,pad+130,y+113);
-   const vals=[r.received,r.resolved,r.ht,r.frt];
-   [cols[1],cols[2],cols[3],cols[5]].forEach((xx,j)=>{x.textAlign='center';x.fillStyle=text;x.font=`650 ${density.font}px ${ff}`;x.fillText(String(vals[j]),xx+90,y+density.row/2+14)});
-   let fill=cond==='mono'?'#818995':r.aht>S.target?'#e02b46':r.aht<S.target?'#00a879':'#d6a500';
-   if(cond==='soft')fill=r.aht>S.target?'#a64a5c':r.aht<S.target?'#3f856b':'#a58a36';
-   if(cond==='bold')fill=r.aht>S.target?'#ff2746':r.aht<S.target?'#00a968':'#e0ad00';
-   const ax=cols[4]-85;x.fillStyle=fill;x.fillRect(ax,y+9,310,density.row-18);
-   x.fillStyle='#fff';x.textAlign='center';x.font=`900 ${density.font+5}px ${ff}`;x.fillText(Math.round(r.aht)+'s',ax+155,y+density.row/2+6);
-   x.font=`600 17px ${ff}`;const gap=Math.abs(Math.round(r.aht-S.target));x.fillText(r.aht>S.target?`+${gap}s above`:r.aht<S.target?`${gap}s below`:'AT TARGET',ax+155,y+density.row/2+36);
+function exportCanvas(kind){
+ const rows=[...S.agents].sort((a,b)=>b.aht-a.aht);if(!rows.length){toast('Paste AHT data first.');return null}
+ const W=3840, pad=150, titleY=120, tableTop=280, headerH=125,rowH=150, bottom=190;
+ const H=tableTop+headerH+(rows.length+1)*rowH+bottom,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+ const theme=$('tableTheme').value,cf=$('cf').value,font=$('font').value,light=theme!=='dark'&&theme!=='gold';
+ const fonts={inter:'Inter',orbitron:'Orbitron',rajdhani:'Rajdhani',mono:'Share Tech Mono'},ff=fonts[font];
+ const palettes={light:{bg:'#eef3f7',head:'#f8fafc',grid:'#d4dde6',fg:'#1b2a3b',muted:'#6b7a88',grand:'#e1e9f0'},blue:{bg:'#eef4fb',head:'#dfe9f7',grid:'#c6d5e5',fg:'#172d45',muted:'#5d7187',grand:'#dce7f3'},rose:{bg:'#f8f1f7',head:'#eadfe8',grid:'#d7c5d2',fg:'#2e2430',muted:'#756372',grand:'#e8dce7'},dark:{bg:'#0c141b',head:'#16212b',grid:'#34414d',fg:'#e8eef2',muted:'#8795a0',grand:'#17242f'},gold:{bg:'#19140c',head:'#3a2a12',grid:'#5a4b2d',fg:'#f5ede0',muted:'#bda77a',grand:'#2d220f'}}[theme];
+ x.fillStyle=palettes.bg;x.fillRect(0,0,W,H);
+ x.fillStyle=palettes.fg;x.font=`900 72px ${ff}`;x.textAlign='left';x.fillText('REAL TIME AHT',pad,titleY);
+ x.fillStyle=palettes.muted;x.font=`600 27px ${ff}`;x.fillText(`AGENT WISE • HIGH → LOW • TARGET ${S.target}s • ACTIVE AGENTS ${rows.length}`,pad,titleY+55);x.fillText(now(),pad,titleY+95);
+ const cols=[pad,1630,1980,2340,2750,3160],heads=['Agent Name','Received','Resolved','Avg. HT','AHT (Sec)','Avg. FRT'];
+ x.fillStyle=palettes.head;x.fillRect(pad,tableTop,W-pad*2,headerH);
+ heads.forEach((h,i)=>{x.fillStyle=palettes.fg;x.font=`900 31px ${ff}`;x.textAlign=i===0?'left':'center';x.fillText(h,i===0?cols[i]+35:cols[i],tableTop+78)});
+ rows.forEach((r,i)=>{const y=tableTop+headerH+i*rowH;x.fillStyle=palettes.bg;x.fillRect(pad,y,W-pad*2,rowH);x.strokeStyle=palettes.grid;x.lineWidth=2;x.strokeRect(pad,y,W-pad*2,rowH);
+  const rr=enrich(r),vals=[r.name,r.received,r.resolved,r.ht,Math.round(r.aht)+' '+(r.aht>S.target?'▲':r.aht<S.target?'▼':'!'),r.frt];
+  vals.forEach((v,j)=>{x.fillStyle=palettes.fg;x.font=`${j===0?'800':'600'} ${j===0?'29':'28'}px ${ff}`;x.textAlign=j===0?'left':'center';x.fillText(String(v),j===0?cols[j]+35:cols[j],y+78)});
+  let fill=r.aht>S.target?'#d9364e':r.aht<S.target?'#149f70':'#d5a000';
+  if(cf==='strong')fill=r.aht>S.target?'#ff2346':r.aht<S.target?'#00a86b':'#e5b400';
+  if(cf==='soft')fill=r.aht>S.target?'#c56b78':r.aht<S.target?'#5aa88b':'#b89b48';
+  if(cf==='mono')fill='#707b86';
+  x.fillStyle=fill;x.fillRect(cols[4]-135,y+12,270,rowH-24);x.fillStyle=(cf==='strong'&&r.aht===S.target)?'#171300':'#fff';x.font=`900 34px ${ff}`;x.textAlign='center';x.fillText(Math.round(r.aht)+' '+(r.aht>S.target?'▲':r.aht<S.target?'▼':'!'),cols[4],y+75);
+  // repeated watermark inside image, behind visual data
+  x.save();x.globalAlpha=.065;x.fillStyle=theme==='dark'?'#ffffff':'#3b7bb4';x.font=`900 64px ${ff}`;x.rotate(-.16);for(let wx=180;wx<W-200;wx+=850)x.fillText(S.watermark,wx,y+120);x.restore()
  });
- const fy=yHead+headH+rows.length*density.row;x.fillStyle=grand;x.fillRect(pad,fy,tableW,density.row);x.strokeStyle=grid;x.strokeRect(pad,fy,tableW,density.row);
- x.fillStyle=text;x.textAlign='left';x.font=`900 38px ${ff}`;x.fillText('GRAND TOTAL / AVG',pad+42,fy+density.row/2+13);
- x.textAlign='center';x.font=`900 34px ${ff}`;x.fillText(totalR,cols[1]+90,fy+density.row/2+13);x.fillText(totalRes,cols[2]+90,fy+density.row/2+13);x.fillText(formatSec(totalA),cols[3]+90,fy+density.row/2+13);x.fillStyle=T.accent;x.fillText(Math.round(totalA)+'s',cols[4]+70,fy+density.row/2+13);x.fillStyle=text;x.fillText(Math.round(totalF)+'s',cols[5]+90,fy+density.row/2+13);
- // Repeated watermark is part of the bitmap, behind the table content.
- x.save();x.globalAlpha=bgMode==='black'?.075:.065;x.fillStyle=mode==='dark'?'#d8e0e9':'#7895b0';x.font=`900 72px ${ff}`;
- for(let yy=yHead+headH+100;yy<fy-25;yy+=185){for(let xx=360;xx<W-250;xx+=920){x.save();x.translate(xx,yy);x.rotate(-.18);x.fillText($('watermark')?.value||S.watermark,0,0);x.restore()}}
- x.restore();
- // Small technical footer inside the image.
- x.fillStyle=muted;x.textAlign='left';x.font=`500 20px ${ff}`;x.fillText(`${$('watermark')?.value||S.watermark}  •  ${nowStamp()}  •  4K UHD 3840 × 2880`,pad,H-55);
- return c;
+ const avg=rows.reduce((a,r)=>a+r.aht,0)/rows.length,rec=rows.reduce((a,r)=>a+r.received,0),res=rows.reduce((a,r)=>a+r.resolved,0),frt=rows.reduce((a,r)=>a+r.frtSec,0)/rows.length;
+ const gy=tableTop+headerH+rows.length*rowH;x.fillStyle=palettes.grand;x.fillRect(pad,gy,W-pad*2,rowH);x.strokeStyle=palettes.grid;x.strokeRect(pad,gy,W-pad*2,rowH);
+ x.fillStyle=palettes.fg;x.font=`900 31px ${ff}`;x.textAlign='left';x.fillText('GRAND TOTAL / AVG',pad+35,gy+78);x.textAlign='center';x.fillText(rec,1630,gy+78);x.fillText(res,1980,gy+78);x.fillText(formatSec(avg),2340,gy+78);x.fillText(Math.round(avg)+' —',2750,gy+78);x.fillText(Math.round(frt)+'s',3160,gy+78);
+ x.fillStyle=palettes.muted;x.font=`500 20px ${ff}`;x.textAlign='left';x.fillText(`${S.watermark} • ${now()} • 4K UHD 3840 × ${H}`,pad,H-55);
+ if(kind==='detail'){
+   x.fillStyle=palettes.fg;x.font=`700 22px ${ff}`;x.textAlign='left';x.fillText('Agent detail mode: email / roster metadata is shown in the live UI; this export keeps the AHT report clean for sharing.',pad,H-88)
+ }
+ return c
 }
-function copyAHTFormat(variant){const c=exportCanvas(variant);if(!c){toast('Paste AHT data first.');return}c.toBlob(blob=>{if(!blob)return;if(navigator.clipboard&&window.ClipboardItem)navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(()=>toast('Agent-wise AHT 4K image copied directly to clipboard.')).catch(()=>downloadBlob(blob));else downloadBlob(blob)},'image/png')}
-function copyCurrent4K(){copyAHTFormat('standard')}
-function downloadBlob(blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Real_Time_AHT_Agent_Wise_4K.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-function downloadPNG(){const c=exportCanvas('standard');if(c)c.toBlob(downloadBlob,'image/png')}
+function copy4K(kind='executive'){
+ const c=exportCanvas(kind);if(!c)return;
+ c.toBlob(blob=>{
+  if(navigator.clipboard&&window.ClipboardItem){
+   navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(()=>toast('4K UHD image copied to clipboard.')).catch(()=>downloadBlob(blob))
+  }else downloadBlob(blob)
+ },'image/png')
+}
+function downloadBlob(blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Real_Time_AHT_4K.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function loadRoster(file){
+ if(!isAdmin()){toast('Admin only.');return}if(!file)return;
+ const ext=file.name.toLowerCase().split('.').pop();
+ if(ext==='csv'){const rd=new FileReader();rd.onload=()=>parseRosterCSV(rd.result);rd.readAsText(file);return}
+ const rd=new FileReader();rd.onload=e=>{try{const wb=XLSX.read(e.target.result,{type:'array'}),rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});applyRosterRows(rows)}catch(err){toast('Roster could not be read.')}};rd.readAsArrayBuffer(file)
+}
+function parseRosterCSV(txt){const lines=txt.trim().split(/\r?\n/),headers=lines.shift().split(',').map(x=>x.trim());applyRosterRows(lines.map(l=>{const v=l.split(',');return Object.fromEntries(headers.map((h,i)=>[h,v[i]||'']))}))}
+function applyRosterRows(rows){
+ const norm=k=>String(k||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+ S.roster=rows.map(r=>{
+  const pick=(...names)=>{const key=Object.keys(r).find(k=>names.some(n=>norm(k)===norm(n)));return key?r[key]:''};
+  return {id:pick('Agent ID / Login ID','Agent ID','Login ID'),name:pick('Agent Name','Name'),email:pick('Email'),tl:pick('TL'),am:pick('AM'),bucket:pick('Bucket'),ojt:pick('OJT / Non-OJT','OJT'),shift:pick('Shift Status','Shift'),process:pick('Process')}
+ }).filter(r=>r.name||r.id);
+ localStorage.setItem('sahtRoster',JSON.stringify(S.roster));render();toast(`${S.roster.length} roster records loaded.`)
+}
 function boot(){
- const saved=localStorage.getItem('mogamboAhtInput');if(saved){$('pasteBox').value=saved;S.agents=parseData(saved)}
- if($('adminTargetInput'))$('adminTargetInput').value=S.target;if($('homeTargetInput'))$('homeTargetInput').value=S.target;renderAll();
- if(S.user){$('intro').classList.add('hidden');$('login').classList.add('hidden');$('app').classList.remove('hidden');$('topUser').textContent=S.user.toUpperCase()}else{}
+ S.user=sessionStorage.getItem('sahtUser')||'';
+ try{S.roster=JSON.parse(localStorage.getItem('sahtRoster')||'[]')}catch(e){S.roster=[]}
+ $('target').value=S.target;
+ if(S.user){$('auth').classList.add('hidden');$('app').classList.remove('hidden');if(isAdmin())$('adminNav').classList.remove('hidden');render()}
 }
+$('pasteBox').addEventListener('input',()=>{clearTimeout(window._paste);window._paste=setTimeout(processPaste,220)});
+window.addEventListener('resize',drawChart);
 boot();
 </script>
 </body>
