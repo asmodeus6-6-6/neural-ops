@@ -105,6 +105,19 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;background:lin
 @media(max-width:700px){.command-design,.copy-grid,.hierarchy-filters{grid-template-columns:1fr}}
 
 
+
+/* High-tech visual layer */
+.hero,.paste-panel{position:relative;overflow:hidden}
+.hero::before,.paste-panel::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;background:repeating-linear-gradient(90deg,transparent 0,transparent 92px,rgba(231,184,79,.08) 93px,transparent 94px),linear-gradient(115deg,transparent 0 42%,rgba(64,183,255,.10) 43%,transparent 44%);mix-blend-mode:screen;animation:scanDrift 13s linear infinite}
+.hero::after{content:"";position:absolute;inset:-30%;pointer-events:none;background:radial-gradient(circle at 20% 70%,rgba(231,184,79,.16),transparent 18%),radial-gradient(circle at 75% 25%,rgba(40,140,255,.13),transparent 20%),repeating-linear-gradient(0deg,transparent 0 9px,rgba(255,255,255,.025) 10px 11px);animation:cyberPulse 7s ease-in-out infinite}
+.paste-panel::after{content:"";position:absolute;left:-20%;right:-20%;height:2px;top:30%;background:linear-gradient(90deg,transparent,rgba(231,184,79,.0),rgba(231,184,79,.7),rgba(50,180,255,.65),transparent);box-shadow:0 0 22px rgba(231,184,79,.35);animation:waveSweep 5s ease-in-out infinite}
+.hero>* ,.paste-panel>*{position:relative;z-index:2}
+.holo-grid{position:absolute!important;inset:0;z-index:1!important;pointer-events:none;background:linear-gradient(rgba(231,184,79,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(231,184,79,.035) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,transparent,#000 25%,#000 75%,transparent);animation:gridMove 18s linear infinite}
+@keyframes scanDrift{from{transform:translateX(-40px)}to{transform:translateX(40px)}}
+@keyframes cyberPulse{0%,100%{opacity:.45;transform:scale(1)}50%{opacity:.8;transform:scale(1.04)}}
+@keyframes waveSweep{0%{transform:translateY(-40px);opacity:0}20%{opacity:.9}70%{opacity:.65}100%{transform:translateY(330px);opacity:0}}
+@keyframes gridMove{from{background-position:0 0,0 0}to{background-position:0 42px,42px 0}}
+
 /* Poster + logo treatment */
 .brand-head{width:34px;height:34px;object-fit:cover;border-radius:50%;border:1px solid rgba(231,184,79,.65);box-shadow:0 0 18px rgba(231,184,79,.18)}
 .top-left{display:flex;align-items:center;gap:10px}
@@ -184,11 +197,11 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;background:lin
 <main class="main">
 <!-- HOME -->
 <section id="page-home" class="page active">
-<div class="hero home-poster-mode">
+<div class="hero home-poster-mode"><div class="holo-grid"></div>
  <div class="hero-copy"><div class="eyebrow">REAL TIME SAHT TRACKER BY ABHIJITH</div><h1>DISCIPLINE <span>MEASURED</span> IN SECONDS.</h1><p>Paste the copied agent table. The engine automatically removes browser noise, ignores zero-AHT rows, converts Avg. HT to seconds and ranks active agents <b>highest → lowest</b>.</p></div>
  <div class="actions"><button class="btn primary" onclick="copyAHTFormat('standard')">COPY 4K UHD</button><button class="btn" onclick="loadExample()">Load Example</button></div>
 </div>
-<div class="panel paste-panel">
+<div class="panel paste-panel"><div class="holo-grid"></div>
  <div class="panel-head"><div><div class="panel-title">LIVE DATA PASTE</div><div class="panel-note">Large full-width intake • paste directly from the browser table • processing is automatic</div></div><span class="tag gold">AUTO PROCESS</span></div>
  <div class="panel-body"><textarea id="pasteBox" placeholder="Paste your copied agent table here…\n\nName\nOnline time\nBreak time\nReceived\nResolved\nAvg. HT\nAvg. FRT\n\nAgent Name\nEmail\nOnline time\nBreak time\nReceived\nResolved\nAvg. HT\nAvg. FRT"></textarea><div class="toolbar" style="margin-top:10px"><button class="btn" onclick="clearData()">Clear</button><span id="pasteStatus" class="hint">Waiting for data…</span></div></div>
 </div>
@@ -213,7 +226,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;background:lin
 <div class="cards"><div class="card"><div class="label">Overall AHT / Grand Total</div><div id="kAht" class="value gold">0s</div><div class="sub">Arithmetic mean of active agents</div></div><div class="card"><div class="label">Calls Taken</div><div id="kCalls" class="value">0</div><div class="sub">Received</div></div><div class="card"><div class="label">Resolved</div><div id="kResolved" class="value">0</div><div class="sub">Resolved</div></div><div class="card"><div class="label">Avg FRT</div><div id="kFrt" class="value">0s</div><div class="sub">Active-agent average</div></div></div>
 <div class="panel"><div class="panel-head"><div><div class="panel-title">REAL-TIME AHT // AGENT WISE</div><div class="panel-note">High → Low • Target <b id="homeTarget">195s</b> • Grand Total included • zero AHT hidden</div></div><span id="activeBadge" class="tag green">0 ACTIVE</span></div><div id="homeTable"></div></div>
 <div class="panel"><div class="panel-head"><div><div class="panel-title">AHT ANALYSIS</div><div class="panel-note">Multiple views of the same live agent-wise dataset.</div></div><button class="btn" onclick="copyAHTFormat('analysis')">COPY ANALYSIS 4K</button></div><div class="panel-body"><div class="cards"><div class="card"><div class="label">Highest</div><div id="xHigh" class="value bad">0s</div><div id="xHighName" class="sub">—</div></div><div class="card"><div class="label">Lowest</div><div id="xLow" class="value good">0s</div><div id="xLowName" class="sub">—</div></div><div class="card"><div class="label">Median</div><div id="xMedian" class="value">0s</div><div class="sub">Middle AHT</div></div><div class="card"><div class="label">Above Target</div><div id="xAbove" class="value bad">0</div><div class="sub">Need reduction</div></div></div><div class="grid2" style="margin-top:12px"><div class="panel"><div class="panel-head"><div class="panel-title">AHT BARS</div></div><div id="bars" class="panel-body"></div></div><div class="panel"><div class="panel-head"><div class="panel-title">AHT VS TARGET</div></div><div class="panel-body"><canvas id="targetChart" class="chart"></canvas></div></div></div></div></div>
-<div class="panel"><div class="panel-head"><div><div class="panel-title">INDIVIDUAL 4K COPY FORMATS</div><div class="panel-note">Every option copies only the Agent-wise AHT table — no unrelated dashboard content.</div></div></div><div class="panel-body"><div class="copy-grid"><button class="btn copy-option" onclick="copyAHTFormat('standard')"><b>01 • STANDARD</b><span>Clean executive table + Grand Total</span></button><button class="btn copy-option" onclick="copyAHTFormat('compact')"><b>02 • COMPACT</b><span>Tighter rows for reporting</span></button><button class="btn copy-option" onclick="copyAHTFormat('cinematic')"><b>03 • CINEMATIC</b><span>Mogambo command presentation</span></button><button class="btn copy-option" onclick="copyAHTFormat('minimal')"><b>04 • MINIMAL</b><span>Maximum readability / no distraction</span></button><button class="btn copy-option" onclick="copyAHTFormat('analysis')"><b>05 • ANALYSIS</b><span>Agent AHT + target gap emphasis</span></button></div></div></div>
+<div class="panel"><div class="panel-head"><div><div class="panel-title">INDIVIDUAL 4K COPY FORMATS</div><div class="panel-note">Every option copies only the Agent-wise AHT table — no unrelated dashboard content.</div></div></div><div class="panel-body"><div class="copy-grid"><button class="btn copy-option" onclick="copyAHTFormat('standard')"><b>01 • STANDARD</b><span>Clean AHT table + Grand Total</span></button><button class="btn copy-option" onclick="copyAHTFormat('compact')"><b>02 • COMPACT</b><span>Compact AHT table</span></button><button class="btn copy-option" onclick="copyAHTFormat('cinematic')"><b>03 • CINEMATIC</b><span>Cinematic AHT table</span></button><button class="btn copy-option" onclick="copyAHTFormat('minimal')"><b>04 • MINIMAL</b><span>Minimal AHT table</span></button><button class="btn copy-option" onclick="copyAHTFormat('analysis')"><b>05 • ANALYSIS</b><span>AHT + target-gap table</span></button></div></div></div>
 </section>
 
 
@@ -472,74 +485,68 @@ function drawBarsChart(c,mode){
 function drawCharts(){drawBarsChart($('ahtChart'));drawBarsChart($('targetChart'))}
 function exportCanvas(variant='standard'){
  const rows=[...S.agents].sort((a,b)=>b.aht-a.aht); if(!rows.length)return null;
- const W=3840, pad=130, layout=$('exportLayout')?.value||'executive';
- const compact=variant==='compact', cinematic=variant==='cinematic', minimal=variant==='minimal';
- const rowH=layout==='detail'?(compact?92:112):(compact?82:104), headerH=125, topH=245;
- const H=topH+headerH+(rows.length+1)*rowH+120;
- const c=document.createElement('canvas'); c.width=W;c.height=H; const x=c.getContext('2d');
+ const W=3840,H=2880,pad=150,top=190,headH=190;
+ const density={standard:{row:155,font:42,name:44},compact:{row:122,font:34,name:36},cinematic:{row:165,font:44,name:48},minimal:{row:145,font:40,name:42},analysis:{row:160,font:43,name:46}}[variant]||{row:155,font:42,name:44};
  const mode=$('tableMode')?.value||'light',cond=$('conditionStyle')?.value||'classic',font=$('fontStyle')?.value||'inter',align=$('alignment')?.value||'center',bgMode=$('exportImageBg')?.value||'match';
  const themes={
- light:{bg:'#f2f6fa',panel:'#edf2f7',head:'#ffffff',grand:'#e6edf4',grid:'#c7d2df',text:'#172235',muted:'#637083',accent:'#246fbe'},
- dark:{bg:'#070b10',panel:'#0b1219',head:'#17212c',grand:'#111a23',grid:'#2e3b49',text:'#eef3f8',muted:'#8592a2',accent:'#e7b84f'},
- slate:{bg:'#e8eef4',panel:'#eef3f7',head:'#dce5ee',grand:'#d5dfe9',grid:'#b8c6d4',text:'#1d2939',muted:'#657386',accent:'#315c83'},
- royal:{bg:'#f5f1fa',panel:'#f0ebf7',head:'#e5dff0',grand:'#ded6ea',grid:'#c9bedb',text:'#2a2140',muted:'#72678a',accent:'#6b4ea0'},
- emerald:{bg:'#edf7f2',panel:'#f1f9f5',head:'#d9eee3',grand:'#d2e8dc',grid:'#b8d4c5',text:'#153126',muted:'#617d70',accent:'#167b54'},
- crimson:{bg:'#fcf0f2',panel:'#fff6f7',head:'#f1dadd',grand:'#ebced2',grid:'#dcb7bf',text:'#35161d',muted:'#81616a',accent:'#b62e43'}
- }[mode]||null;
- const bgMap={match:themes.bg,white:'#ffffff',black:'#06080b',gold:'#241a08',navy:'#081426'};
- const bg=bgMap[bgMode]||themes.bg; x.fillStyle=bg;x.fillRect(0,0,W,H);
+  light:{bg:'#edf3f8',panel:'#f7fafc',head:'#ffffff',grand:'#e2eaf2',grid:'#b9c9d8',text:'#1a2738',muted:'#617185',accent:'#216bb5'},
+  dark:{bg:'#070b10',panel:'#0c131a',head:'#151f2a',grand:'#111a23',grid:'#30404f',text:'#eef4fa',muted:'#8b98a7',accent:'#e7b84f'},
+  slate:{bg:'#e5edf4',panel:'#f1f5f8',head:'#dce6ee',grand:'#d2dde7',grid:'#b3c3d1',text:'#1c2a39',muted:'#637488',accent:'#315d82'},
+  royal:{bg:'#f4f0f9',panel:'#fbf8fd',head:'#e8e0f1',grand:'#ded5e9',grid:'#c8bad8',text:'#2b203f',muted:'#756888',accent:'#7252a4'},
+  emerald:{bg:'#eaf6f0',panel:'#f5fbf8',head:'#d9eee4',grand:'#d1e7dc',grid:'#b6d2c4',text:'#163126',muted:'#5f7b6e',accent:'#157950'},
+  crimson:{bg:'#faecef',panel:'#fff7f8',head:'#f0d8dc',grand:'#e8cbd0',grid:'#d7b3bb',text:'#36171e',muted:'#81616a',accent:'#b62f44'}
+ };
+ const T=themes[mode]||themes.light;
+ const bgMap={match:T.bg,white:'#ffffff',black:'#05070a',gold:'#211706',navy:'#071326'};const bg=bgMap[bgMode]||T.bg;
+ const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.fillStyle=bg;x.fillRect(0,0,W,H);
  const ff={inter:'Inter',orbitron:'Orbitron',rajdhani:'Rajdhani',mono:'Share Tech Mono'}[font]||'Inter';
- const text=bgMode==='black'?'#f5f7fa':themes.text, muted=bgMode==='black'?'#9aa5b4':themes.muted;
- const panel=bgMode==='black'?'#0b1017':themes.panel,head=bgMode==='black'?'#151d27':themes.head,grand=bgMode==='black'?'#111821':themes.grand,grid=bgMode==='black'?'#303b48':themes.grid;
+ const text=bgMode==='black'?'#f5f7fa':T.text,muted=bgMode==='black'?'#9aa5b4':T.muted,panel=bgMode==='black'?'#0b1017':T.panel,head=bgMode==='black'?'#151d27':T.head,grand=bgMode==='black'?'#111821':T.grand,grid=bgMode==='black'?'#303d4b':T.grid;
  const totalA=rows.reduce((s,r)=>s+r.aht,0)/rows.length,totalF=rows.reduce((s,r)=>s+r.frtSec,0)/rows.length,totalR=rows.reduce((s,r)=>s+r.received,0),totalRes=rows.reduce((s,r)=>s+r.resolved,0);
- x.fillStyle=text;x.textAlign='left';x.font=`900 ${cinematic?64:58}px ${ff}`;x.fillText('REAL TIME AHT',pad,78);
- x.fillStyle=muted;x.font=`600 23px ${ff}`;x.fillText(`AGENT WISE  •  HIGH → LOW  •  TARGET ${S.target}s  •  ACTIVE AGENTS ${rows.length}`,pad,120);
- if($('timestampMode')?.value!=='off')x.fillText(nowStamp(),pad,158);
- x.fillStyle=themes.accent;x.fillRect(pad,184,190,5);
- const yHead=topH;
- if(layout==='detail'){
-   const X=[pad,1660,1940,2220,2520,2860]; const HDS=['AGENT DETAILS','RECEIVED','RESOLVED','AVG. HT','AHT (SEC)','AVG. FRT'];
-   x.fillStyle=head;x.fillRect(pad,yHead,W-pad*2,headerH);x.strokeStyle=grid;x.lineWidth=2;
-   HDS.forEach((hd,i)=>{x.fillStyle=text;x.font=`900 27px ${ff}`;x.textAlign=i===0?'left':'center';x.fillText(hd,i===0?pad+28:X[i]+100,yHead+75)});
-   rows.forEach((r,i)=>{
-     const y=yHead+headerH+i*rowH;x.fillStyle=panel;x.fillRect(pad,y,W-pad*2,rowH);x.strokeStyle=grid;x.strokeRect(pad,y,W-pad*2,rowH);
-     const rr=rosterFor(r),initials=(r.name||'?').split(/\s+/).map(s=>s[0]).join('').slice(0,2).toUpperCase();
-     const cx=pad+58,cy=y+rowH/2;x.beginPath();x.arc(cx,cy,35,0,Math.PI*2);x.fillStyle=bgMode==='black'?'#33260b':'#4a3a16';x.fill();
-     x.fillStyle='#f6d778';x.font=`900 21px ${ff}`;x.textAlign='center';x.fillText(initials,cx,cy+7);
-     x.textAlign='left';x.fillStyle=text;x.font=`800 ${compact?24:27}px ${ff}`;x.fillText(r.name,pad+112,y+42);
-     x.fillStyle=muted;x.font=`500 17px ${ff}`;x.fillText(r.email||'',pad+112,y+69);
-     const meta=`TL ${rr.tl||'—'}   •   AM ${rr.am||'—'}   •   Bucket ${rr.bucket||'—'}   •   ${rr.ojt||'—'}   •   Shift ${rr.shift||'—'}   •   ${rr.process||'—'}`;
-     x.font=`600 15px ${ff}`;x.fillText(meta,pad+112,y+92);
-     const vals=[r.received,r.resolved,r.ht,Math.round(r.aht)+'s',r.frt]; [1660,1940,2220,2620,2960].forEach((xx,j)=>{x.textAlign='center';x.fillStyle=text;x.font=`${j===3?'900':'650'} ${j===3?29:24}px ${ff}`;x.fillText(String(vals[j]),xx,y+rowH/2+8)});
-     let fill=cond==='mono'?'#8c949e':r.aht>S.target?'#d7354b':r.aht<S.target?'#00a879':'#d6a500';
-     if(cond==='soft')fill=r.aht>S.target?'#a84a5b':r.aht<S.target?'#43856b':'#a58a36';
-     if(cond==='bold')fill=r.aht>S.target?'#ff2746':r.aht<S.target?'#00a968':'#e1af00';
-     x.fillStyle=fill;x.fillRect(2500,y+8,280,rowH-16);x.fillStyle='#fff';x.font=`900 ${compact?25:29}px ${ff}`;x.fillText(Math.round(r.aht)+'s',2640,y+rowH/2+9);
-   });
- } else {
-   const X=[pad,1540,1810,2080,2390,2730,3110],HDS=['AGENT NAME','RECEIVED','RESOLVED','AVG. HT','AHT (SEC)','AVG. FRT','TARGET GAP'];
-   x.fillStyle=head;x.fillRect(pad,yHead,W-pad*2,headerH);x.strokeStyle=grid;x.lineWidth=2;
-   HDS.forEach((hd,i)=>{x.fillStyle=text;x.font=`900 ${compact?25:29}px ${ff}`;x.textAlign=i===0&&align==='left'?'left':align==='right'?'right':'center';x.fillText(hd,i===0?X[i]+30:X[i]+100,yHead+75)});
-   rows.forEach((r,i)=>{
-     const y=yHead+headerH+i*rowH;x.fillStyle=panel;x.fillRect(pad,y,W-pad*2,rowH);x.strokeStyle=grid;x.strokeRect(pad,y,W-pad*2,rowH);
-     const vals=[r.name,r.received,r.resolved,r.ht,Math.round(r.aht)+'s',r.frt,Math.max(0,Math.round(r.aht-S.target))+'s'];
-     vals.forEach((v,j)=>{x.fillStyle=text;x.font=`${j===0?'800':'600'} ${compact?23:26}px ${ff}`;x.textAlign=j===0&&align==='left'?'left':align==='right'?'right':'center';x.fillText(String(v),j===0?X[j]+30:X[j]+100,y+rowH/2+9)});
-     let fill=cond==='mono'?'#8c949e':r.aht>S.target?'#d7354b':r.aht<S.target?'#00a879':'#d6a500';
-     if(cond==='soft')fill=r.aht>S.target?'#a84a5b':r.aht<S.target?'#43856b':'#a58a36';
-     if(cond==='bold')fill=r.aht>S.target?'#ff2746':r.aht<S.target?'#00a968':'#e1af00';
-     x.fillStyle=fill;x.fillRect(X[4]-45,y+9,245,rowH-18);x.fillStyle='#fff';x.font=`900 ${compact?24:29}px ${ff}`;x.textAlign='center';x.fillText(Math.round(r.aht)+'s'+(variant==='analysis'?(r.aht>S.target?' ▲':r.aht<S.target?' ▼':' —'):''),X[4]+77,y+rowH/2+9);
-   });
+ // Header — intentionally restrained: the export is the AHT table, not a dashboard.
+ x.textAlign='left';x.fillStyle=text;x.font=`900 82px ${ff}`;x.fillText('REAL TIME AHT',pad,105);
+ x.fillStyle=muted;x.font=`600 28px ${ff}`;x.fillText(`AGENT WISE  •  HIGH → LOW  •  TARGET ${S.target}s  •  ACTIVE AGENTS ${rows.length}`,pad,150);
+ if($('timestampMode')?.value!=='off'){x.fillStyle=muted;x.font=`500 23px ${ff}`;x.fillText(nowStamp(),pad,184)}
+ const yHead=top,tableW=W-pad*2;
+ // Four formats keep the same data but vary density/decoration only.
+ const isDetail=$('exportLayout')?.value==='detail' || variant==='analysis';
+ let cols;
+ if(isDetail){
+   cols=[pad,1780,2080,2380,2780,3220];
+ }else{
+   cols=[pad,1660,1980,2300,2720,3120];
  }
- const fy=yHead+headerH+rows.length*rowH;x.fillStyle=grand;x.fillRect(pad,fy,W-pad*2,rowH);x.strokeStyle=grid;x.strokeRect(pad,fy,W-pad*2,rowH);
- x.fillStyle=text;x.font=`900 ${compact?28:31}px ${ff}`;x.textAlign='left';x.fillText('GRAND TOTAL / AVG',pad+28,fy+rowH/2+10);
- if(layout==='detail'){[1660,1940,2220,2960].forEach(()=>{});x.textAlign='center';x.fillText(totalR,1710,fy+rowH/2+10);x.fillText(totalRes,1990,fy+rowH/2+10);x.fillText(formatSec(totalA),2290,fy+rowH/2+10);x.fillText(Math.round(totalF)+'s',3060,fy+rowH/2+10);x.fillStyle=themes.accent;x.fillText(Math.round(totalA)+'s',2640,fy+rowH/2+10)}
- else {x.textAlign='center';x.fillText(totalR,1640,fy+rowH/2+10);x.fillText(totalRes,1910,fy+rowH/2+10);x.fillText(formatSec(totalA),2490,fy+rowH/2+10);x.fillStyle=themes.accent;x.fillText(Math.round(totalA)+'s',2840,fy+rowH/2+10);x.fillStyle=text;x.fillText(Math.round(totalF)+'s',3210,fy+rowH/2+10)}
- // Watermark stays inside the image, tiled behind the data area.
- x.save();x.globalAlpha=.075;x.fillStyle=mode==='dark'?'#dce4ee':'#7e9fbe';x.font=`900 ${cinematic?74:62}px ${ff}`;
- for(let yy=yHead+headerH+65;yy<fy-15;yy+=145){for(let xx=280;xx<W-300;xx+=760){x.save();x.translate(xx,yy);x.rotate(-.18);x.fillText($('watermark')?.value||S.watermark,0,0);x.restore()}}x.restore();
+ const headers=['AGENT DETAILS','RECEIVED','RESOLVED','AVG. HT','AHT (SEC)','AVG. FRT'];
+ x.fillStyle=head;x.fillRect(pad,yHead,tableW,headH);x.strokeStyle=grid;x.lineWidth=3;x.strokeRect(pad,yHead,tableW,headH);
+ headers.forEach((h,i)=>{x.fillStyle=text;x.font=`900 30px ${ff}`;x.textAlign=i===0?'left':'center';x.fillText(h,i===0?pad+42:cols[i]+90,yHead+115)});
+ rows.forEach((r,i)=>{
+   const y=yHead+headH+i*density.row;x.fillStyle=panel;x.fillRect(pad,y,tableW,density.row);x.strokeStyle=grid;x.strokeRect(pad,y,tableW,density.row);
+   const rr=rosterFor(r),initials=(r.name||'?').split(/\s+/).map(s=>s[0]).join('').slice(0,2).toUpperCase();
+   x.beginPath();x.arc(pad+65,y+density.row/2,42,0,Math.PI*2);x.fillStyle=bgMode==='black'?'#3b2d0d':'#3e3217';x.fill();x.fillStyle='#f5d36e';x.font=`900 25px ${ff}`;x.textAlign='center';x.fillText(initials,pad+65,y+density.row/2+9);
+   x.textAlign='left';x.fillStyle=text;x.font=`900 ${density.name}px ${ff}`;x.fillText(r.name,pad+130,y+55);
+   x.fillStyle=muted;x.font=`500 19px ${ff}`;x.fillText(r.email||'',pad+130,y+84);
+   const meta=`TL ${rr.tl||'—'}   •   AM ${rr.am||'—'}   •   Bucket ${rr.bucket||'—'}   •   ${rr.ojt||'—'}   •   Shift ${rr.shift||'—'}   •   ${rr.process||'—'}`;
+   x.font=`600 17px ${ff}`;x.fillText(meta,pad+130,y+113);
+   const vals=[r.received,r.resolved,r.ht,r.frt];
+   [cols[1],cols[2],cols[3],cols[5]].forEach((xx,j)=>{x.textAlign='center';x.fillStyle=text;x.font=`650 ${density.font}px ${ff}`;x.fillText(String(vals[j]),xx+90,y+density.row/2+14)});
+   let fill=cond==='mono'?'#818995':r.aht>S.target?'#e02b46':r.aht<S.target?'#00a879':'#d6a500';
+   if(cond==='soft')fill=r.aht>S.target?'#a64a5c':r.aht<S.target?'#3f856b':'#a58a36';
+   if(cond==='bold')fill=r.aht>S.target?'#ff2746':r.aht<S.target?'#00a968':'#e0ad00';
+   const ax=cols[4]-85;x.fillStyle=fill;x.fillRect(ax,y+9,310,density.row-18);
+   x.fillStyle='#fff';x.textAlign='center';x.font=`900 ${density.font+5}px ${ff}`;x.fillText(Math.round(r.aht)+'s',ax+155,y+density.row/2+6);
+   x.font=`600 17px ${ff}`;const gap=Math.abs(Math.round(r.aht-S.target));x.fillText(r.aht>S.target?`+${gap}s above`:r.aht<S.target?`${gap}s below`:'AT TARGET',ax+155,y+density.row/2+36);
+ });
+ const fy=yHead+headH+rows.length*density.row;x.fillStyle=grand;x.fillRect(pad,fy,tableW,density.row);x.strokeStyle=grid;x.strokeRect(pad,fy,tableW,density.row);
+ x.fillStyle=text;x.textAlign='left';x.font=`900 38px ${ff}`;x.fillText('GRAND TOTAL / AVG',pad+42,fy+density.row/2+13);
+ x.textAlign='center';x.font=`900 34px ${ff}`;x.fillText(totalR,cols[1]+90,fy+density.row/2+13);x.fillText(totalRes,cols[2]+90,fy+density.row/2+13);x.fillText(formatSec(totalA),cols[3]+90,fy+density.row/2+13);x.fillStyle=T.accent;x.fillText(Math.round(totalA)+'s',cols[4]+70,fy+density.row/2+13);x.fillStyle=text;x.fillText(Math.round(totalF)+'s',cols[5]+90,fy+density.row/2+13);
+ // Repeated watermark is part of the bitmap, behind the table content.
+ x.save();x.globalAlpha=bgMode==='black'?.075:.065;x.fillStyle=mode==='dark'?'#d8e0e9':'#7895b0';x.font=`900 72px ${ff}`;
+ for(let yy=yHead+headH+100;yy<fy-25;yy+=185){for(let xx=360;xx<W-250;xx+=920){x.save();x.translate(xx,yy);x.rotate(-.18);x.fillText($('watermark')?.value||S.watermark,0,0);x.restore()}}
+ x.restore();
+ // Small technical footer inside the image.
+ x.fillStyle=muted;x.textAlign='left';x.font=`500 20px ${ff}`;x.fillText(`${$('watermark')?.value||S.watermark}  •  ${nowStamp()}  •  4K UHD 3840 × 2880`,pad,H-55);
  return c;
 }
-function copyAHTFormat(variant){const c=exportCanvas(variant);if(!c){toast('Paste AHT data first.');return}c.toBlob(blob=>{if(!blob)return;if(navigator.clipboard&&window.ClipboardItem)navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(()=>toast('Agent-wise AHT 4K image copied to clipboard.')).catch(()=>downloadBlob(blob));else downloadBlob(blob)},'image/png')}
+function copyAHTFormat(variant){const c=exportCanvas(variant);if(!c){toast('Paste AHT data first.');return}c.toBlob(blob=>{if(!blob)return;if(navigator.clipboard&&window.ClipboardItem)navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(()=>toast('Agent-wise AHT 4K image copied directly to clipboard.')).catch(()=>downloadBlob(blob));else downloadBlob(blob)},'image/png')}
 function copyCurrent4K(){copyAHTFormat('standard')}
 function downloadBlob(blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Real_Time_AHT_Agent_Wise_4K.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function downloadPNG(){const c=exportCanvas('standard');if(c)c.toBlob(downloadBlob,'image/png')}
