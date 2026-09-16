@@ -331,8 +331,16 @@ input:focus,select:focus,textarea:focus{border-color:rgba(230,184,77,.55)}.toolb
   </div>
   <div class="panel" style="margin-top:12px"><div class="panel-head"><div><div class="panel-title">WATERMARK CONTROL</div><div class="panel-note">This is the only place the watermark can be changed.</div></div></div><div class="panel-body"><div class="toolbar"><input id="watermarkAdmin" value="Abhijith" maxlength="32" style="max-width:320px"><button class="btn primary" onclick="saveWatermark()">SAVE WATERMARK</button></div></div></div>
   <div class="panel"><div class="panel-head"><div><div class="panel-title">ACCESS REQUESTS</div></div></div><div class="panel-body"><div id="requests"></div></div></div>
-  <div class="panel"><div class="panel-head"><div><div class="panel-title">WEEKLY AGENT ROSTER</div><div class="panel-note">Agent ID / Login ID • Agent Name • TL • AM • Bucket • OJT / Non-OJT • Shift Status • Process</div></div></div>
-   <div class="panel-body"><input id="rosterFile" type="file" accept=".xlsx,.xls,.csv" onchange="loadRoster(this.files[0])"><div id="rosterStatus" class="hint" style="margin-top:8px"></div><div id="rosterPreview" style="margin-top:12px"></div></div>
+  <div class="panel"><div class="panel-head"><div><div class="panel-title">WEEKLY AGENT ROSTER</div><div class="panel-note">Use the downloadable template for correct hierarchy mapping.</div></div></div>
+   <div class="panel-body">
+    <div class="toolbar" style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn primary" onclick="downloadRosterTemplate()">DOWNLOAD ROSTER TEMPLATE</button>
+      <label class="btn" style="display:inline-flex;align-items:center;cursor:pointer">ADD / REPLACE ROSTER<input id="rosterFile" type="file" accept=".xlsx,.xls,.csv" onchange="loadRoster(this.files[0])" style="display:none"></label>
+      <button class="btn" onclick="clearRoster()">CLEAR ROSTER</button>
+    </div>
+    <div id="rosterStatus" class="hint" style="margin-top:10px">Required columns: Agent ID / Login ID, Agent Name, TL, AM, Bucket, OJT / Non-OJT, Shift Status, Process.</div>
+    <div id="rosterPreview" style="margin-top:12px"></div>
+   </div>
   </div>
  </div></div>
 </section>
@@ -713,20 +721,43 @@ function copy4K(kind='executive'){
  },'image/png')
 }
 function downloadBlob(blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Real_Time_AHT_4K.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-function loadRoster(file){
- if(!isAdmin()){toast('Admin only.');return}if(!file)return;
- const ext=file.name.toLowerCase().split('.').pop();
- if(ext==='csv'){const rd=new FileReader();rd.onload=()=>parseRosterCSV(rd.result);rd.readAsText(file);return}
- const rd=new FileReader();rd.onload=e=>{try{const wb=XLSX.read(e.target.result,{type:'array'}),rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});applyRosterRows(rows)}catch(err){toast('Roster could not be read.')}};rd.readAsArrayBuffer(file)
+function downloadRosterTemplate(){
+ if(!isAdmin()){toast('Admin only.');return}
+ const headers=['Agent ID / Login ID','Agent Name','TL','AM','Bucket','OJT / Non-OJT','Shift Status','Process'];
+ const sample=[['AG001','Sample Agent 01','TL Name','AM Name','>90','Non-OJT','FT','DPIB_Malayalam'],['AG002','Sample Agent 02','TL Name','AM Name','>90','OJT','PT','DPIB_Malayalam']];
+ if(typeof XLSX==='undefined'){toast('Excel library is not available.');return}
+ const ws=XLSX.utils.aoa_to_sheet([headers,...sample]);
+ ws['!cols']=[{wch:22},{wch:24},{wch:20},{wch:20},{wch:14},{wch:18},{wch:16},{wch:24}];
+ const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Agent Roster');XLSX.writeFile(wb,'Real_Time_AHT_Roster_Template.xlsx');toast('Roster template downloaded.');
 }
-function parseRosterCSV(txt){const lines=txt.trim().split(/\r?\n/),headers=lines.shift().split(',').map(x=>x.trim());applyRosterRows(lines.map(l=>{const v=l.split(',');return Object.fromEntries(headers.map((h,i)=>[h,v[i]||'']))}))}
-function applyRosterRows(rows){
- const norm=k=>String(k||'').toLowerCase().replace(/[^a-z0-9]/g,'');
- S.roster=rows.map(r=>{
-  const pick=(...names)=>{const key=Object.keys(r).find(k=>names.some(n=>norm(k)===norm(n)));return key?r[key]:''};
-  return {id:pick('Agent ID / Login ID','Agent ID','Login ID'),name:pick('Agent Name','Name'),email:pick('Email'),tl:pick('TL'),am:pick('AM'),bucket:pick('Bucket'),ojt:pick('OJT / Non-OJT','OJT'),shift:pick('Shift Status','Shift'),process:pick('Process')}
- }).filter(r=>r.name||r.id);
- localStorage.setItem('sahtRoster',JSON.stringify(S.roster));render();toast(`${S.roster.length} roster records loaded.`)
+function loadRoster(file){
+ if(!isAdmin()){toast('Admin only.');return} if(!file)return;
+ $('rosterStatus').textContent='Reading '+file.name+'…';
+ const rd=new FileReader(); const ext=file.name.toLowerCase().split('.').pop();
+ rd.onload=e=>{try{
+  if(typeof XLSX==='undefined')throw new Error('Excel library unavailable');
+  let rows;
+  if(ext==='csv') rows=XLSX.utils.sheet_to_json(XLSX.utils.csv_to_sheet(String(e.target.result||'')),{defval:'',raw:false});
+  else {const wb=XLSX.read(e.target.result,{type:'array',raw:false}); if(!wb.SheetNames.length)throw new Error('No worksheet'); rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:'',raw:false});}
+  applyRosterRows(rows,file.name);
+ }catch(err){console.error(err);$('rosterStatus').textContent='Roster could not be read. Use the downloaded template and keep headers unchanged.';toast('Roster could not be read.')}};
+ if(ext==='csv')rd.readAsText(file);else rd.readAsArrayBuffer(file);
+}
+function applyRosterRows(rows,source='roster file'){
+ const norm=k=>String(k??'').toLowerCase().replace(/[^a-z0-9]/g,'');
+ const pick=(r,...names)=>{const k=Object.keys(r).find(x=>names.some(n=>norm(x)===norm(n)));return k==null?'':String(r[k]??'').trim()};
+ const parsed=rows.map(r=>({id:pick(r,'Agent ID / Login ID','Agent ID','Login ID'),name:pick(r,'Agent Name','Name'),email:pick(r,'Email','Email ID'),tl:pick(r,'TL'),am:pick(r,'AM'),bucket:pick(r,'Bucket'),ojt:pick(r,'OJT / Non-OJT','OJT / Non OJT','OJT'),shift:pick(r,'Shift Status','Shift'),process:pick(r,'Process')})).filter(r=>r.name||r.id);
+ if(!parsed.length)throw new Error('No valid roster records');
+ const seen=new Set();S.roster=parsed.filter(r=>{const k=(r.id||r.name).toLowerCase();if(seen.has(k))return false;seen.add(k);return true});
+ localStorage.setItem('sahtRoster',JSON.stringify(S.roster));$('rosterStatus').textContent=S.roster.length+' roster records loaded from '+source+'.';renderRosterPreview();render();toast(S.roster.length+' roster records loaded.');
+}
+function renderRosterPreview(){
+ const el=$('rosterPreview');if(!el)return;if(!S.roster.length){el.innerHTML='';return}
+ const rows=S.roster.slice(0,10).map(r=>'<tr><td>'+esc(r.id)+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.tl)+'</td><td>'+esc(r.am)+'</td><td>'+esc(r.bucket)+'</td><td>'+esc(r.ojt)+'</td><td>'+esc(r.shift)+'</td><td>'+esc(r.process)+'</td></tr>').join('');
+ el.innerHTML='<div class="table-wrap"><table class="result-table"><thead><tr><th>Agent ID / Login ID</th><th>Agent Name</th><th>TL</th><th>AM</th><th>Bucket</th><th>OJT / Non-OJT</th><th>Shift Status</th><th>Process</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+(S.roster.length>10?'<div class="hint">Previewing 10 of '+S.roster.length+' records.</div>':'');
+}
+function clearRoster(){
+ if(!isAdmin()){toast('Admin only.');return} S.roster=[];localStorage.removeItem('sahtRoster');if($('rosterFile'))$('rosterFile').value='';$('rosterStatus').textContent='Roster cleared.';if($('rosterPreview'))$('rosterPreview').innerHTML='';render();toast('Roster cleared.');
 }
 function boot(){
  S.user=sessionStorage.getItem('sahtUser')||'';
