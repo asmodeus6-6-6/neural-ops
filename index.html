@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="mogambo-head-logo.png">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&family=Roboto+Condensed:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Barlow+Condensed:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
 
 :root{
  --bg:#05080a;--panel:#0b1014;--panel2:#10171d;--gold:#e6b84d;--gold2:#ffd979;
@@ -91,6 +91,10 @@ input:focus,select:focus,textarea:focus{border-color:rgba(230,184,77,.55)}.toolb
 .rt-custom-theme .result-table .aht.good{background:var(--cf-good)!important;color:var(--cf-fg)!important}
 .rt-custom-theme .result-table .aht.neutral{background:var(--cf-neutral)!important;color:var(--cf-nfg)!important}
 .font-inter{--font:Inter,sans-serif}.font-orbitron{--font:Orbitron,sans-serif}.font-rajdhani{--font:Rajdhani,sans-serif}.font-mono{--font:'Share Tech Mono',monospace}
+.font-space{--font:'Space Grotesk',sans-serif}.font-jakarta{--font:'Plus Jakarta Sans',sans-serif}.font-manrope{--font:Manrope,sans-serif}.font-dmsans{--font:'DM Sans',sans-serif}.font-barlow{--font:'Barlow Condensed',sans-serif}.font-robotoCondensed{--font:'Roboto Condensed',sans-serif}.font-oswald{--font:Oswald,sans-serif}.font-ibmmono{--font:'IBM Plex Mono',monospace}.font-playfair{--font:'Playfair Display',serif}
+/* Distinct structural table personalities */
+.design-split .result-table th{letter-spacing:.08em;text-transform:uppercase}.design-split .result-table td{border-width:0 0 1px}.design-card .result-table{border-collapse:separate;border-spacing:0 5px}.design-card .result-table tr:not(.grand) td{border-top:1px solid var(--rt-grid);border-bottom:1px solid var(--rt-grid)}.design-card .result-table td:first-child{border-left:1px solid var(--rt-grid);border-radius:9px 0 0 9px}.design-card .result-table td:last-child{border-right:1px solid var(--rt-grid);border-radius:0 9px 9px 0}.design-stripe .result-table tbody tr:nth-child(even):not(.grand) td{filter:brightness(.985)}.design-pill .result-table .aht{border-radius:999px!important;margin:5px}.design-pill .result-table td{border-color:transparent}.design-frame .result-table{outline:3px double var(--rt-grid)}.design-frame .result-table th{box-shadow:inset 0 -4px 0 var(--rt-grid)}.design-ledger .result-table th,.design-ledger .result-table td{border-color:var(--rt-grid);border-width:1px 0}.design-ledger .result-table th{font-family:'IBM Plex Mono',monospace}.design-compact .result-table th{height:52px}.design-compact .result-table td{height:58px}.design-compact .result-table .aht{font-size:19px}.design-command .result-table th{border-bottom:3px solid var(--rt-grid);letter-spacing:.12em}.design-command .result-table td{border-color:var(--rt-grid)}.design-command .result-table .aht{box-shadow:0 0 0 2px rgba(255,255,255,.10),0 4px 12px rgba(0,0,0,.12)}.design-editorial .result-table th{text-align:left}.design-editorial .result-table th:not(:first-child),.design-editorial .result-table td:not(.name){text-align:right}.design-editorial .result-table td{border-width:0 0 1px}.design-zebra .result-table tbody tr:nth-child(odd):not(.grand) td{filter:brightness(.975)}.design-outline .result-table th,.design-outline .result-table td{border:2px solid var(--rt-grid)}.design-outline .result-table{border-spacing:2px}.design-ribbon .result-table th:first-child{border-left:7px solid var(--rt-grid)}.design-ribbon .result-table td:first-child{border-left:7px solid var(--rt-grid)}.design-ribbon .result-table .grand td:first-child{border-left:7px solid var(--rt-fg)}.design-minimal .result-table th{background:transparent!important;border-bottom:2px solid var(--rt-grid)}.design-minimal .result-table td{background:transparent!important;border-color:transparent transparent var(--rt-grid) transparent}.design-grid .result-table th,.design-grid .result-table td{border:1px solid var(--rt-grid)}.design-grid .result-table th{box-shadow:inset 0 -2px 0 var(--rt-grid)}.design-goldline .result-table th{border-bottom:3px solid var(--rt-grid)}.design-goldline .result-table .grand td{border-top:3px solid var(--rt-grid)}.design-softcard .result-table{border-collapse:separate;border-spacing:0 3px}.design-softcard .result-table td{border-color:transparent}.design-softcard .result-table tr:not(.grand) td{box-shadow:inset 0 0 0 1px var(--rt-grid)}.design-signal .result-table th{position:relative}.design-signal .result-table .aht{font-weight:950;letter-spacing:.03em}.design-terminal .result-table th,.design-terminal .result-table td{font-family:'IBM Plex Mono',monospace}.design-terminal .result-table td.name{font-family:'Share Tech Mono',monospace}.design-magazine .result-table th{font-size:15px;letter-spacing:.16em}.design-magazine .result-table td{border-width:0 0 1px}.design-magazine .result-table .grand td{border-top:3px solid var(--rt-grid)}.design-vertical .result-table th:first-child,.design-vertical .result-table td:first-child{border-left:5px solid var(--rt-grid)}.design-vertical .result-table th{font-size:14px;letter-spacing:.12em}.design-dataviz .result-table .aht{border-radius:8px}.design-dataviz .result-table td{border-color:transparent transparent var(--rt-grid) transparent}
+
 .theme-note{font-size:9px;color:#71808c;margin-top:6px}.bars{display:grid;gap:8px}.barrow{display:grid;grid-template-columns:160px 1fr 70px;align-items:center;gap:9px;font-size:10px}.bar{height:9px;border-radius:99px;background:#17212a;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#b6811e,#ffd978);border-radius:99px}
 .chart{width:100%;height:300px;display:block;background:#080d11;border-radius:12px}.filter-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
 .request{display:flex;justify-content:space-between;gap:12px;padding:12px;border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-bottom:8px}
@@ -235,9 +239,9 @@ input:focus,select:focus,textarea:focus{border-color:rgba(230,184,77,.55)}.toolb
   <div class="panel-head"><div><div class="panel-title">RESULT FORMAT</div><div class="panel-note">The screen and the 4K export use the selected visual settings.</div></div></div>
   <div class="panel-body">
    <div class="controls">
-    <div class="field"><label>Table Theme</label><select id="tableTheme" onchange="render()"><option value="aurora">Aurora Glass</option><option value="arctic">Arctic Mint</option><option value="sand">Sandstone Editorial</option><option value="lavender">Lavender Luxe</option><option value="ocean">Deep Ocean</option><option value="copper">Copper Ledger</option><option value="graphite">Graphite Pro</option><option value="pearl">Pearl Boardroom</option><option value="forest">Forest Executive</option><option value="sunset">Sunset Paper</option><option value="indigo">Indigo Slate</option><option value="teal">Teal Matrix</option><option value="crimson">Crimson Executive</option><option value="cobalt">Cobalt Steel</option><option value="champagne">Champagne Black</option><option value="slate">Slate Silver</option><option value="rosewood">Rosewood Office</option><option value="moss">Moss & Ivory</option><option value="ice">Ice Blue</option><option value="carbon">Carbon Luxe</option></select></div>
+    <div class="field"><label>Table Theme</label><select id="tableTheme" onchange="render()"><option value="aurora">Aurora Split Grid</option><option value="arctic">Arctic Executive</option><option value="sand">Sandstone Ledger</option><option value="lavender">Lavender Card Stack</option><option value="ocean">Deep Ocean Command</option><option value="copper">Copper Framed Report</option><option value="graphite">Graphite Signal</option><option value="pearl">Pearl Boardroom</option><option value="forest">Forest Stripe</option><option value="sunset">Sunset Editorial</option><option value="indigo">Indigo Dashboard</option><option value="teal">Teal Grid</option><option value="crimson">Crimson Ribbon</option><option value="cobalt">Cobalt Frame</option><option value="champagne">Champagne Luxe</option><option value="slate">Slate Minimal</option><option value="rosewood">Rosewood Magazine</option><option value="moss">Moss Softcard</option><option value="ice">Ice Dataviz</option><option value="carbon">Carbon Terminal</option></select></div>
     <div class="field"><label>Conditional Formatting</label><select id="cf" onchange="render()"><option value="traffic">Traffic Signal</option><option value="neon">Neon Signal</option><option value="jewel">Jewel Contrast</option><option value="ocean">Ocean / Coral</option><option value="sunset">Sunset / Mint</option><option value="forest">Forest / Rose</option><option value="violet">Violet / Lime</option><option value="electric">Electric Blue / Amber</option><option value="high">High Contrast</option><option value="pastel">Pastel Professional</option><option value="earth">Earth Tones</option><option value="mono2">Monochrome Pro</option><option value="cyan">Cyan / Magenta</option><option value="amber">Amber / Teal</option><option value="crimson2">Crimson / Lime</option><option value="steel">Steel / Gold</option><option value="ruby">Ruby / Emerald</option><option value="navy">Navy / Ice</option><option value="plum">Plum / Citrus</option><option value="blackwhite">Black / White</option></select></div>
-    <div class="field"><label>Font</label><select id="font" onchange="render()"><option value="inter">Inter</option><option value="orbitron">Orbitron</option><option value="rajdhani">Rajdhani</option><option value="mono">Share Tech Mono</option></select></div>
+    <div class="field"><label>Font</label><select id="font" onchange="render()"><option value="inter">Inter — Clean</option><option value="space">Space Grotesk — Modern</option><option value="jakarta">Plus Jakarta Sans — Premium</option><option value="manrope">Manrope — Executive</option><option value="dmsans">DM Sans — Minimal</option><option value="barlow">Barlow Condensed — Compact</option><option value="robotoCondensed">Roboto Condensed — Report</option><option value="oswald">Oswald — Strong</option><option value="orbitron">Orbitron — Cyber</option><option value="rajdhani">Rajdhani — Tech</option><option value="mono">Share Tech Mono — Terminal</option><option value="ibmmono">IBM Plex Mono — Data</option><option value="playfair">Playfair Display — Editorial</option></select></div>
     <div class="field"><label>AHT Target</label><input id="target" type="number" min="1" value="195" onchange="setTarget(this.value)"></div>
    </div>
    <div class="toolbar" style="margin-top:10px"><span class="hint">Watermark is Admin-controlled only.</span><span id="adminWatermarkNote" class="badge hidden">ADMIN WATERMARK</span></div>
@@ -504,19 +508,25 @@ const CF_THEMES={
  plum:{bad:'#a43b72',good:'#4f8a35',neutral:'#d38c16',fg:'#fff',nfg:'#fff'},
  blackwhite:{bad:'#111',good:'#444',neutral:'#777',fg:'#fff',nfg:'#fff'}
 };
+const EXPORT_DESIGNS={
+ aurora:{headerBand:true,rounded:0,grid:1.2,stripe:false,headerAlign:'left',accent:'none',titleRule:false}, arctic:{headerBand:true,rounded:4,grid:1.4,stripe:true,headerAlign:'left',accent:'top',titleRule:true}, sand:{headerBand:true,rounded:0,grid:1.2,stripe:true,headerAlign:'left',accent:'left',titleRule:false}, lavender:{headerBand:true,rounded:12,grid:1,stripe:false,headerAlign:'center',accent:'bottom',titleRule:true}, ocean:{headerBand:true,rounded:0,grid:2,stripe:false,headerAlign:'left',accent:'top',titleRule:true}, copper:{headerBand:true,rounded:6,grid:1.5,stripe:true,headerAlign:'left',accent:'bottom',titleRule:false}, graphite:{headerBand:true,rounded:0,grid:1.6,stripe:false,headerAlign:'left',accent:'left',titleRule:true}, pearl:{headerBand:true,rounded:10,grid:1,stripe:true,headerAlign:'center',accent:'bottom',titleRule:false}, forest:{headerBand:true,rounded:0,grid:1.3,stripe:true,headerAlign:'left',accent:'left',titleRule:true}, sunset:{headerBand:true,rounded:5,grid:1.2,stripe:false,headerAlign:'left',accent:'top',titleRule:false}, indigo:{headerBand:true,rounded:8,grid:1.5,stripe:true,headerAlign:'center',accent:'bottom',titleRule:true}, teal:{headerBand:true,rounded:0,grid:1.3,stripe:false,headerAlign:'left',accent:'top',titleRule:true}, crimson:{headerBand:true,rounded:4,grid:1.5,stripe:true,headerAlign:'left',accent:'left',titleRule:false}, cobalt:{headerBand:true,rounded:0,grid:2,stripe:false,headerAlign:'center',accent:'top',titleRule:true}, champagne:{headerBand:true,rounded:10,grid:1.5,stripe:true,headerAlign:'left',accent:'bottom',titleRule:true}, slate:{headerBand:true,rounded:0,grid:1,stripe:true,headerAlign:'left',accent:'left',titleRule:false}, rosewood:{headerBand:true,rounded:6,grid:1.3,stripe:false,headerAlign:'center',accent:'bottom',titleRule:true}, moss:{headerBand:true,rounded:12,grid:1,stripe:true,headerAlign:'left',accent:'top',titleRule:false}, ice:{headerBand:true,rounded:0,grid:1.5,stripe:false,headerAlign:'center',accent:'top',titleRule:true}, carbon:{headerBand:true,rounded:3,grid:2,stripe:false,headerAlign:'left',accent:'left',titleRule:true}
+};
 function tableVars(){
  const t=TABLE_THEMES[$('tableTheme')?.value]||TABLE_THEMES.aurora;
  const cf=CF_THEMES[$('cf')?.value]||CF_THEMES.traffic;
  return `--rt-bg:${t.bg};--rt-head:${t.head};--rt-grid:${t.grid};--rt-fg:${t.fg};--rt-muted:${t.muted};--rt-grand:${t.grand};--cf-bad:${cf.bad};--cf-good:${cf.good};--cf-neutral:${cf.neutral};--cf-fg:${cf.fg};--cf-nfg:${cf.nfg};`;
 }
-function tableClass(){return `table-shell rt-custom-theme cf-custom font-${$('font').value}`}
+function tableClass(){return `table-shell rt-custom-theme cf-custom design-${$('tableTheme').value} font-${$('font').value}`}
+const EXPORT_PATTERNS={aurora:0,arctic:1,sand:2,lavender:3,ocean:4,copper:5,graphite:6,pearl:7,forest:8,sunset:9,indigo:10,teal:11,crimson:12,cobalt:13,champagne:14,slate:15,rosewood:16,moss:17,ice:18,carbon:19};
+const CF_SYMBOLS={traffic:['▲','▼','—'],neon:['⬆','⬇','◆'],jewel:['◆','◇','●'],ocean:['▲','▼','●'],sunset:['↗','↘','•'],forest:['↑','↓','—'],violet:['⬆','⬇','◇'],electric:['△','▽','○'],high:['▲','▼','■'],pastel:['▲','▼','●'],earth:['↟','↡','—'],mono2:['+','−','0'],cyan:['⇧','⇩','◆'],amber:['⬆','⬇','●'],crimson2:['▲','▼','◆'],steel:['↑','↓','—'],ruby:['⏶','⏷','◆'],navy:['▲','▼','•'],plum:['↥','↧','◆'],blackwhite:['▲','▼','—']};
+function cfSymbol(status){const a=CF_SYMBOLS[$('cf')?.value]||CF_SYMBOLS.traffic;return status==='bad'?a[0]:status==='good'?a[1]:a[2]}
 function tableHTML(rows=S.agents,detail=false){
  if(!rows.length)return '<div class="hint" style="padding:20px">Paste data to generate the AHT table.</div>';
  const avg=rows.reduce((a,r)=>a+r.aht,0)/rows.length,rec=rows.reduce((a,r)=>a+r.received,0),res=rows.reduce((a,r)=>a+r.resolved,0),frt=rows.reduce((a,r)=>a+r.frtSec,0)/rows.length;
  const cols=detail?`<th style="width:38%">AGENT DETAILS</th>`:`<th style="width:30%">Agent Name</th>`;
  const body=rows.map(r=>`<tr>
  <td class="name">${detail?`<b>${esc(r.name)}</b><small style="display:block;color:#7d8993;font-size:9px">${esc(r.email||'')}</small><small style="display:block;color:#87939d;font-size:8px">TL — • AM — • Bucket — • OJT — • Shift — • Process —</small>`:esc(r.name)}</td>
- <td>${r.received}</td><td>${r.resolved}</td><td>${esc(r.ht)}</td><td class="aht ${condition(r)}">${Math.round(r.aht)} ${r.aht>S.target?'▲':r.aht<S.target?'▼':'!'}</td><td>${esc(r.frt)}</td>
+ <td>${r.received}</td><td>${r.resolved}</td><td>${esc(r.ht)}</td><td class="aht ${condition(r)}">${Math.round(r.aht)} ${cfSymbol(condition(r))}</td><td>${esc(r.frt)}</td>
  </tr>`).join('');
  return `<div class="${tableClass()}" style="${tableVars()}"><table class="result-table"><thead><tr>${cols}<th>Received</th><th>Resolved</th><th>Avg. HT</th><th>AHT (Sec)</th><th>Avg. FRT</th></tr></thead><tbody>${body}
  <tr class="grand"><td class="name">GRAND TOTAL / AVG</td><td>${rec}</td><td>${res}</td><td>${formatSec(avg)}</td><td class="aht">${Math.round(avg)} —</td><td>${Math.round(frt)}s</td></tr></tbody></table></div>`;
@@ -624,25 +634,41 @@ function exportCanvas(kind='executive'){
  const H=top+headerH+(rows.length+1)*rowH+footerH;
  const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
  const theme=$('tableTheme')?.value||'aurora',cf=$('cf')?.value||'traffic',font=$('font')?.value||'inter';
- const t=TABLE_THEMES[theme]||TABLE_THEMES.aurora,cc=CF_THEMES[cf]||CF_THEMES.traffic;
- const ff=({inter:'Inter',orbitron:'Orbitron',rajdhani:'Rajdhani',mono:'Share Tech Mono'})[font]||'Inter';
+ const t=TABLE_THEMES[theme]||TABLE_THEMES.aurora,cc=CF_THEMES[cf]||CF_THEMES.traffic,pattern=EXPORT_PATTERNS[theme]??0;
+ const ff=({inter:'Inter',space:'Space Grotesk',jakarta:'Plus Jakarta Sans',manrope:'Manrope',dmsans:'DM Sans',barlow:'Barlow Condensed',robotoCondensed:'Roboto Condensed',oswald:'Oswald',orbitron:'Orbitron',rajdhani:'Rajdhani',mono:'Share Tech Mono',ibmmono:'IBM Plex Mono',playfair:'Playfair Display'})[font]||'Inter';
  x.fillStyle=t.bg;x.fillRect(0,0,W,H);
  x.fillStyle=t.fg;x.textAlign='left';x.font=`900 ${rows.length>20?42:46}px ${ff}`;x.fillText(title,pad,48);
  x.fillStyle=t.muted;x.font=`700 ${rows.length>20?16:18}px ${ff}`;x.fillText(subtitle,pad,73);
+ if(pattern===14||pattern===16||pattern===19){x.fillStyle=t.fg;x.fillRect(pad,82,pattern===19?170:120,3)}
+ if(pattern===15){x.fillStyle=t.grid;x.fillRect(pad,82,tableW,1)}
  const heads=['AGENT NAME','RECEIVED','RESOLVED','AVG. HT','AHT (SEC)','AVG. FRT'];
  const widths=[370,145,145,180,252,120];
  // widths exactly fill tableW (1212)
  let cx=pad;const colX=[];widths.forEach(w=>{colX.push(cx);cx+=w});
- x.fillStyle=t.head;x.fillRect(pad,top,tableW,headerH);x.strokeStyle=t.grid;x.lineWidth=2;x.strokeRect(pad,top,tableW,headerH);
- heads.forEach((h,i)=>{x.fillStyle=t.fg;x.font=`900 ${rows.length>20?16:18}px ${ff}`;x.textAlign=i===0?'left':'center';x.fillText(h,i===0?colX[i]+16:colX[i]+widths[i]/2,top+40)});
+ const rr=(xx,yy,ww,hh,rad)=>{x.beginPath();x.roundRect(xx,yy,ww,hh,rad);};
+ x.fillStyle=t.head;
+ if(pattern===3||pattern===7||pattern===16||pattern===17){rr(pad,top,tableW,headerH,12);x.fill()}else{x.fillRect(pad,top,tableW,headerH)}
+ x.strokeStyle=t.grid;x.lineWidth=pattern===5?3:pattern===6?1.5:2; if(pattern===6)x.setLineDash([7,5]);x.strokeRect(pad,top,tableW,headerH);x.setLineDash([]);
+ if(pattern===1||pattern===8||pattern===9||pattern===10||pattern===11){x.fillStyle=cc.bad;x.fillRect(pad,top,tableW,4)}
+ if(pattern===11){x.fillStyle=t.fg;x.fillRect(pad+22,top+headerH-5,tableW-44,3)}
+ heads.forEach((h,i)=>{x.fillStyle=t.fg;x.font=`900 ${rows.length>20?16:18}px ${ff}`;x.textAlign=(pattern===14?'left':(i===0?'left':'center'));const xx=(pattern===14?colX[i]+16:(i===0?colX[i]+16:colX[i]+widths[i]/2));x.fillText(h,xx,top+40)});
  // Row backgrounds first, then watermark, then text. This keeps the watermark actually visible.
  rows.forEach((r,i)=>{
    const y=top+headerH+i*rowH;
-   x.fillStyle=t.bg;x.fillRect(pad,y,tableW,rowH);x.strokeStyle=t.grid;x.lineWidth=1.5;x.strokeRect(pad,y,tableW,rowH);
+   const stripe=(pattern===2||pattern===7||pattern===15||pattern===17) && i%2===1;
+   x.fillStyle=stripe?t.grand:t.bg;
+   if(pattern===3||pattern===17){rr(pad+3,y+3,tableW-6,rowH-6,9);x.fill()}else{x.fillRect(pad,y,tableW,rowH)}
+   x.strokeStyle=t.grid;x.lineWidth=pattern===5?2.2:pattern===6?1:1.5;
+   if(pattern===6)x.setLineDash([6,4]);x.strokeRect(pad,y,tableW,rowH);x.setLineDash([]);
+   if(pattern===8){x.fillStyle=t.fg;x.fillRect(pad,y,6,rowH)}
+   if(pattern===9){x.fillStyle=t.fg;x.fillRect(pad+tableW-6,y,6,rowH)}
+   if(pattern===10){x.fillStyle=t.grid;x.fillRect(pad,y,tableW,2)}
+   if(pattern===12){x.fillStyle=t.grid;x.fillRect(colX[4],y,3,rowH);x.fillRect(colX[4]+widths[4]-3,y,3,rowH)}
+   if(pattern===18){x.strokeStyle=t.grid;x.lineWidth=1;x.beginPath();x.moveTo(pad,y+rowH);x.lineTo(pad+tableW,y+rowH);x.stroke()}
  });
  // Professional repeated watermark INSIDE the image.
- x.save();x.globalAlpha=(theme==='carbon'||theme==='champagne')?.11:.075;x.fillStyle=theme==='carbon'||theme==='champagne'?'#ffffff':'#55738a';
- x.font=`800 ${Math.max(30,Math.min(46,rowH*.48))}px ${ff}`;
+ x.save();x.globalAlpha=(theme==='carbon'||theme==='champagne')?.20:.15;x.fillStyle=theme==='carbon'||theme==='champagne'?'#ffffff':'#55738a';
+ x.font=`800 ${Math.max(34,Math.min(54,rowH*.54))}px ${ff}`;
  const wmText=String(S.watermark||'Abhijith');
  for(let wy=top+headerH+rowH*.62;wy<top+headerH+rows.length*rowH;wy+=rowH*3){
    for(let wx=pad+90;wx<tableW+pad-100;wx+=430){
@@ -658,15 +684,18 @@ function exportCanvas(kind='executive'){
    text(r.resolved,colX[2],y+rowH*.56,widths[2],'center',`800 ${rowH>=82?25:22}px ${ff}`);
    text(r.ht,colX[3],y+rowH*.56,widths[3],'center',`800 ${rowH>=82?23:20}px ${ff}`);
    const fill=r.aht>S.target?cc.bad:r.aht<S.target?cc.good:cc.neutral;
-   x.fillStyle=fill;x.fillRect(colX[4]+7,y+6,widths[4]-14,rowH-12);
+   x.fillStyle=fill;
+   if(pattern===3||pattern===17||pattern===19){rr(colX[4]+7,y+7,widths[4]-14,rowH-14,10);x.fill()}else{x.fillRect(colX[4]+7,y+6,widths[4]-14,rowH-12)}
+   if(pattern===12){x.strokeStyle=fill;x.lineWidth=3;x.strokeRect(colX[4]+4,y+4,widths[4]-8,rowH-8)}
    x.fillStyle=cc.fg;x.textAlign='center';x.font=`900 ${rowH>=82?31:27}px ${ff}`;
-   const sym=r.aht>S.target?'▲':r.aht<S.target?'▼':'—';x.fillText(`${Math.round(r.aht)} ${sym}`,colX[4]+widths[4]/2,y+rowH*.48);
+   const sy=CF_SYMBOLS[cf]||CF_SYMBOLS.traffic;const sym=r.aht>S.target?sy[0]:r.aht<S.target?sy[1]:sy[2];x.fillText(`${Math.round(r.aht)} ${sym}`,colX[4]+widths[4]/2,y+rowH*.48);
    x.font=`800 ${rowH>=82?14:12}px ${ff}`;const gap=Math.abs(Math.round(r.aht-S.target));x.fillText(r.aht>S.target?`+${gap}s above`:r.aht<S.target?`${gap}s below`:'at target',colX[4]+widths[4]/2,y+rowH*.72);
    text(r.frt,colX[5],y+rowH*.56,widths[5],'center',`800 ${rowH>=82?22:20}px ${ff}`);
  });
  const rec=rows.reduce((a,r)=>a+(Number(r.received)||0),0),res=rows.reduce((a,r)=>a+(Number(r.resolved)||0),0),avg=rows.reduce((a,r)=>a+r.aht,0)/rows.length,frt=rows.reduce((a,r)=>a+(Number(r.frtSec)||0),0)/rows.length;
  const gy=top+headerH+rows.length*rowH;
- x.fillStyle=t.grand;x.fillRect(pad,gy,tableW,rowH);x.strokeStyle=t.grid;x.lineWidth=2;x.strokeRect(pad,gy,tableW,rowH);
+ x.fillStyle=t.grand;if(pattern===16||pattern===17){rr(pad,gy,tableW,rowH,12);x.fill()}else{x.fillRect(pad,gy,tableW,rowH)}
+ x.strokeStyle=t.grid;x.lineWidth=pattern===5||pattern===16?3:2;x.strokeRect(pad,gy,tableW,rowH);
  text('GRAND TOTAL / AVG',colX[0],gy+rowH*.56,widths[0],'left',`900 ${rowH>=82?25:22}px ${ff}`);
  text(rec,colX[1],gy+rowH*.56,widths[1],'center',`900 ${rowH>=82?24:21}px ${ff}`);
  text(res,colX[2],gy+rowH*.56,widths[2],'center',`900 ${rowH>=82?24:21}px ${ff}`);
